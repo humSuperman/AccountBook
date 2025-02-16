@@ -42,7 +42,7 @@
     [self setDate:[NSDate date]];
     [self monitorNotification];
     [self setModels:[BKMonthModel statisticalMonthWithYear:_date.year month:_date.month]];
-    
+
     // 已经登录
     UserModel *model = [UserInfo loadUserInfo];
     if (model.token && model.token.length != 0) {
@@ -110,13 +110,14 @@
 - (void)homeMonthClick:(id)data {
     @weakify(self)
     NSDate *date = self.date;
-    NSDate *min = [NSDate br_setYear:2000 month:1 day:1];
-    NSDate *max = [NSDate br_setYear:[NSDate date].year + 3 month:12 day:31];
+    NSDate *min = [NSDate br_setYear:2020 month:1 day:1];
+    NSDate *max = [NSDate br_setYear:[NSDate date].year + 1 month:12 day:31];
     [BRDatePickerView showDatePickerWithTitle:@"选择日期" dateType:BRDatePickerModeYM defaultSelValue:[date formatYM] minDate:min maxDate:max isAutoSelect:false themeColor:nil resultBlock:^(NSString *selectValue) {
         @strongify(self)
         [self setDate:[NSDate dateWithYM:selectValue]];
         [self setModels:[BKMonthModel statisticalMonthWithYear:self.date.year month:self.date.month]];
     }];
+    
 }
 // 下拉
 - (void)homeTablePull:(id)data {
@@ -140,7 +141,7 @@
     [bookArrm removeObject:cell.model];
     [NSUserDefaults setObject:bookArrm forKey:PIN_BOOK];
     [NSUserDefaults setObject:bookArrm forKey:PIN_BOOK_SYNCED];
-    
+
     // 更新
     [[NSNotificationCenter defaultCenter] postNotificationName:NOT_BOOK_DELETE object:nil];
 }
@@ -196,13 +197,13 @@
 - (NSDictionary<NSString *, NSInvocation *> *)eventStrategy {
     if (!_eventStrategy) {
         _eventStrategy = @{
-                           HOME_MONTH_CLICK: [self createInvocationWithSelector:@selector(homeMonthClick:)],
-                           HOME_TABLE_PULL: [self createInvocationWithSelector:@selector(homeTablePull:)],
-                           HOME_TABLE_UP: [self createInvocationWithSelector:@selector(homeTableUp:)],
-                           HOME_CELL_REMOVE: [self createInvocationWithSelector:@selector(homeTableCellRemove:)],
-                           HOME_CELL_CLICK: [self createInvocationWithSelector:@selector(homeTableCellClick:)],
-                           
-                           };
+           HOME_MONTH_CLICK: [self createInvocationWithSelector:@selector(homeMonthClick:)],
+           HOME_TABLE_PULL: [self createInvocationWithSelector:@selector(homeTablePull:)],
+           HOME_TABLE_UP: [self createInvocationWithSelector:@selector(homeTableUp:)],
+           HOME_CELL_REMOVE: [self createInvocationWithSelector:@selector(homeTableCellRemove:)],
+           HOME_CELL_CLICK: [self createInvocationWithSelector:@selector(homeTableCellClick:)],
+
+           };
     }
     return _eventStrategy;
 }

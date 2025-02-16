@@ -129,45 +129,20 @@
 // Cell
 - (void)mineCellClick:(NSIndexPath *)indexPath {
     if (indexPath.section == 0) {
-        // 徽章
-        if (indexPath.row == 0) {
-            BadgeController *vc = [[BadgeController alloc] init];
-            [self.navigationController pushViewController:vc animated:YES];
-        }
-    }
-    else if (indexPath.section == 1) {
         // 类别
         if (indexPath.row == 0) {
             CAController *vc = [[CAController alloc] init];
             [self.navigationController pushViewController:vc animated:YES];
         }
-        // 定时
-        else if (indexPath.row == 1) {
-            TIController *vc = [[TIController alloc] init];
-            [self.navigationController pushViewController:vc animated:YES];
-        }
     }
-    else if (indexPath.section == 2) {
-        // 去App Store给鲨鱼记账评分
+    else if (indexPath.section == 1) {
         if (indexPath.row == 0) {
-            
-        }
-        // 意见反馈
-        else if (indexPath.row == 1) {
-            
-        }
-        // 同步数据
-        else if (indexPath.row == 2 && [UserInfo isLogin]) {
-            [self.view syncedDataRequest];
-        }
-        // 帮助
-        else if ((indexPath.row == 3  && [UserInfo isLogin]) || (indexPath.row == 2  && [UserInfo isLogin])) {
             WebVC *vc = [[WebVC alloc] init];
             [vc setNavTitle:@"帮助"];
             [self.navigationController pushViewController:vc animated:YES];
         }
         // 关于
-        else if ((indexPath.row == 4  && [UserInfo isLogin]) || (indexPath.row == 3  && [UserInfo isLogin])) {
+        else if (indexPath.row == 1 ) {
             AboutController *vc = [[AboutController alloc] init];
             [self.navigationController pushViewController:vc animated:YES];
         }

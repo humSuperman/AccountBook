@@ -69,7 +69,6 @@
     cell.icon.image = [UIImage imageNamed:self.datas[1][indexPath.section][indexPath.row]];
     cell.status = [self.datas[2][indexPath.section][indexPath.row] integerValue];
     cell.detailLab.hidden = indexPath.section != 0;
-    cell.badgeCount = 12;
     if (indexPath.section == 1) {
         if (indexPath.row == 2) {
             NSNumber *sound = [NSUserDefaults objectForKey:PIN_SETTING_SOUND];
@@ -121,44 +120,20 @@
     return _header;
 }
 - (NSArray<NSArray<NSArray *> *> *)datas {
-    UserModel *model = [UserInfo loadUserInfo];
-    if (model.token && model.token.length != 0) {
-        _datas = @[
-                   @[
-                       @[@"徽章"],
-                       @[@"类别设置",@"定时提醒",@"声音开关",@"明细详情"],
-                       @[@"去App Store给鲨鱼记账评分",@"意见反馈",@"同步数据",@"帮助",@"关于鲨鱼记账"],
-                       ],
-                   @[
-                       @[@"mine_badge"],
-                       @[@"mine_tallytype",@"mine_remind",@"mine_sound",@"mine_detail"],
-                       @[@"mine_rating",@"mine_feedback",@"mine_merge",@"mine_help",@"mine_about"],
-                       ],
-                   @[
-                       @[@(0)],
-                       @[@(0),@(0),@(1),@(1)],
-                       @[@(0),@(0),@(0),@(0),@(0),@(0)],
-                       ]
-                   ];
-    } else {
-        _datas = @[
-                   @[
-                       @[@"徽章"],
-                       @[@"类别设置",@"定时提醒",@"声音开关",@"明细详情"],
-                       @[@"去App Store给鲨鱼记账评分",@"意见反馈",@"帮助",@"关于鲨鱼记账"],
-                       ],
-                   @[
-                       @[@"mine_badge"],
-                       @[@"mine_tallytype",@"mine_remind",@"mine_sound",@"mine_detail"],
-                       @[@"mine_rating",@"mine_feedback",@"mine_help",@"mine_about"],
-                       ],
-                   @[
-                       @[@(0)],
-                       @[@(0),@(0),@(1),@(1)],
-                       @[@(0),@(0),@(0),@(0),@(0)],
-                       ]
-                   ];
-    }
+    _datas = @[
+        @[
+           @[@"类别设置",@"声音开关",@"明细详情"],
+           @[@"帮助",@"关于鲨鱼记账"],
+        ],
+        @[
+           @[@"mine_tallytype",@"mine_sound",@"mine_detail"],
+           @[@"mine_help",@"mine_about"],
+        ],
+        @[
+           @[@(0),@(1),@(1)],
+           @[@(0),@(0)],
+        ]
+    ];
     return _datas;
 }
 
