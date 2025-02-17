@@ -4,6 +4,7 @@
  */
 
 #import "ChartTableCell.h"
+#import "MoneyConverter.h"
 
 #define ICON_W countcoordinatesX(25)
 #define LINE_L countcoordinatesX(10)
@@ -50,7 +51,7 @@
     _model = model;
     [_icon setImage:[UIImage imageNamed:model.cmodel.icon_l]];
     [_nameLab setText:model.cmodel.name];
-    [_detailLab setText:[@(model.price) description]];
+    [_detailLab setText:[MoneyConverter toRealMoney:model.price]];
     
     CGFloat width = SCREEN_WIDTH - OUT_PADDING * 2 - ICON_W - LINE_L;
     width = width / _maxPrice * model.price;
