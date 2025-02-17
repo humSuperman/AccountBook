@@ -25,14 +25,14 @@
     }
     [self createDBVersionTable];
     [self checkAndMigrateDatabase];
-    
+
 }
 
 - (void)createDBVersionTable {
 
     NSString *checkTableQuery = @"SELECT name FROM sqlite_master WHERE type='table' AND name='DBVersion'";
     FMResultSet *results = [self.db executeQuery:checkTableQuery];
-    
+
     if (![results next]) {
         // 如果没有找到表，创建它
         NSString *createTableQuery = @"CREATE TABLE IF NOT EXISTS DBVersion (id INTEGER PRIMARY KEY, version INTEGER)";
@@ -50,7 +50,7 @@
 
 - (void)checkAndMigrateDatabase {
     NSInteger savedVersion = [self getSavedDatabaseVersion];
-    
+
     [self migrateDatabaseFromVersion:savedVersion];
 }
 
@@ -58,12 +58,12 @@
     // 从数据库中读取当前存储的版本号
     NSString *versionQuery = @"SELECT version FROM DBVersion WHERE id = 1";
     FMResultSet *results = [self.db executeQuery:versionQuery];
-    
+
     NSInteger savedVersion = 0;
     if ([results next]) {
         savedVersion = [results intForColumn:@"version"];
     }
-    
+
     return savedVersion;
 }
 
@@ -73,11 +73,11 @@
         [self createTable];
         [self updateDatabaseVersion:1];
     }
-    
+
     if (fromVersion < 2) {
     // 可以继续添加其他版本的迁移操作
     }
-    
+
 }
 
 
@@ -115,6 +115,50 @@
         // 你可以根据需要填充 `cmodel`
         [models addObject:model];
     }
+    return models;
+}
+
+- (NSArray<BKModel *> *)getAllModelsWithPredicate:(NSPredicate *)predicate {
+    NSMutableArray *models = [NSMutableArray array];
+    NSString *selectQuery = @"SELECT * FROM BKModel";
+    FMResultSet *results;
+
+    if (predicate) {
+        // 使用谓词进行筛选
+        results = [self.db executeQuery:selectQuery];
+        while ([results next]) {
+            BKModel *model = [[BKModel alloc] init];
+            model.Id = [results intForColumn:@"Id"];
+            model.price = [results intForColumn:@"price"];
+            model.year = [results intForColumn:@"year"];
+            model.month = [results intForColumn:@"month"];
+            model.day = [results intForColumn:@"day"];
+            model.mark = [results stringForColumn:@"mark"];
+            model.category_id = [results intForColumn:@"category_id"];
+            // 你可以根据需要填充 `cmodel`
+
+            if ([predicate evaluateWithObject:model]) {
+                [models addObject:model];
+            }
+        }
+    } else {
+        // 没有谓词，返回所有数据
+        results = [self.db executeQuery:selectQuery];
+        while ([results next]) {
+            BKModel *model = [[BKModel alloc] init];
+            model.Id = [results intForColumn:@"Id"];
+            model.price = [results intForColumn:@"price"];
+            model.year = [results intForColumn:@"year"];
+            model.month = [results intForColumn:@"month"];
+            model.day = [results intForColumn:@"day"];
+            model.mark = [results stringForColumn:@"mark"];
+            model.category_id = [results intForColumn:@"category_id"];
+            // 你可以根据需要填充 `cmodel`
+            [models addObject:model];
+        }
+    }
+
+    [results close];
     return models;
 }
 

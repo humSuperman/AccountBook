@@ -11,7 +11,6 @@
 #import "ShareController.h"
 #import "AboutController.h"
 #import "InfoController.h"
-#import "LoginController.h"
 #import "MINE_EVENT_MANAGER.h"
 
 
@@ -35,58 +34,13 @@
     [self setupUI];
 }
 - (void)setupUI {
-    // 登录了
-    if ([UserInfo isLogin]) {
-        [self getInfoRequest];
-    }
-    // 未登录
-    else {
-        
-    }
+    
 }
 
 
 #pragma mark - 请求
 // 获取个人信息
 - (void)getInfoRequest {
-    UserModel *model = [UserInfo loadUserInfo];
-    NSString *key = model.openid ? @"openid" : @"account";
-    NSString *value = model.openid ? model.openid : model.account;
-    NSDictionary *param = [NSDictionary dictionaryWithObjectsAndKeys:value, key, nil];
-    @weakify(self)
-    [self.afn_request setAfn_useCache:false];
-    [AFNManager POST:InfoRequest params:param complete:^(APPResult *result) {
-        @strongify(self)
-        if (result.status == ServiceCodeSuccess) {
-            [UserInfo saveUserInfo:result.data];
-            [self.mine.table setModel:[UserInfo loadUserInfo]];
-        }
-    }];
-}
-// 打卡
-- (void)createPunchRequest {
-    // CreatePunchRequest
-    @weakify(self)
-    [self showProgressHUD];
-    [AFNManager POST:CreatePunchRequest params:nil complete:^(APPResult *result) {
-        @strongify(self)
-        [self hideHUD];
-        if (result.status == ServiceCodeSuccess) {
-            UserModel *model = [UserInfo loadUserInfo];
-            model.isPunch = true;
-            model.punchCount = result.data;
-            [UserInfo saveUserModel:model];
-            [self.mine.table setModel:model];
-            
-            KKPopup *popup = [KKPopup initNib:@"BookPunch"];
-            [popup show];
-            [popup setClick:^(id data, KKPopup *popup) {
-                [popup hide];
-            }];
-        } else {
-            [self showWindowTextHUD:result.message delay:1.f];
-        }
-    }];
 }
 // 声音
 - (void)soundChangeRequest:(NSNumber *)isOn {
@@ -150,53 +104,6 @@
 }
 // 头像
 - (void)headerIconClick:(id)data {
-    // 登录了
-    if ([UserInfo isLogin] == true) {
-        InfoController *vc = [[InfoController alloc] init];
-        [self.navigationController pushViewController:vc animated:YES];
-    }
-    // 没登录
-    else {
-        @weakify(self)
-        LoginController *vc = [[LoginController alloc] init];
-        [vc setComplete:^{
-            @strongify(self)
-            self.model = [UserInfo loadUserInfo];
-        }];
-        BaseNavigationController *nav = [[BaseNavigationController alloc] initWithRootViewController:vc];
-        [self.navigationController presentViewController:nav animated:YES completion:nil];
-    }
-}
-// 打卡
-- (void)punchClick:(id)data {
-    // 登录了
-    if ([UserInfo isLogin] == true) {
-        UserModel *model = [UserInfo loadUserInfo];
-        if (model.isPunch == false) {
-            [self createPunchRequest];
-        } else {
-            // 分享
-        }
-    }
-    // 没登录
-    else {
-        LoginController *vc = [[LoginController alloc] init];
-        BaseNavigationController *nav = [[BaseNavigationController alloc] initWithRootViewController:vc];
-        [self.navigationController presentViewController:nav animated:YES completion:nil];
-    }
-}
-// 连续打卡
-- (void)headerPunchClick:(id)data {
-    ShareController *vc = [[ShareController alloc] init];
-    BaseNavigationController *nav = [[BaseNavigationController alloc] initWithRootViewController:vc];
-    [self presentViewController:nav animated:YES completion:nil];
-}
-// 记账总天数
-- (void)headerDayClick:(id)data {
-    
-}
-// 记账总笔数
-- (void)headerNumberClick:(id)data {
     
 }
 // 切换声音
@@ -235,10 +142,6 @@
         _eventStrategy = @{
                            MINE_CELL_CLICK: [self createInvocationWithSelector:@selector(mineCellClick:)],
                            MINE_HEADER_ICON_CLICK: [self createInvocationWithSelector:@selector(headerIconClick:)],
-                           MINE_PUNCH_CLICK: [self createInvocationWithSelector:@selector(punchClick:)],
-                           MINE_HEADER_PUNCH_CLICK: [self createInvocationWithSelector:@selector(headerPunchClick:)],
-                           MINE_HEADER_DAY_CLICK: [self createInvocationWithSelector:@selector(headerDayClick:)],
-                           MINE_HEADER_NUMBER_CLICK: [self createInvocationWithSelector:@selector(headerNumberClick:)],
                            MINE_SOUND_CLICK: [self createInvocationWithSelector:@selector(soundClick:)],
                            MINE_DETAIL_CLICK: [self createInvocationWithSelector:@selector(detailClick:)]
                            };

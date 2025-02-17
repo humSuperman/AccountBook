@@ -149,8 +149,8 @@
     
     
     NSMutableArray *lines = [[NSMutableArray alloc] init];
-    CGFloat maxPrice = _model.max;
-    CGFloat avgPrice = _model.avg;
+    CGFloat maxPrice = [_model.max floatValue];
+    CGFloat avgPrice = [_model.avg floatValue];
     
     
     // 平均线

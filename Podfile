@@ -28,7 +28,7 @@ end
 
 target ‘BookMonth’ do
   pod 'MJExtension', '3.0.15'
-  
+  pod 'FMDB', '2.7.5'
 end
 
 
@@ -36,5 +36,5 @@ target ‘BookStart’ do
   pod 'SDWebImage', '4.4.3'
   pod 'MJExtension', '3.0.15'
   pod 'ReactiveObjC', '3.1.0'
-  
+  pod 'FMDB', '2.7.5'
 end

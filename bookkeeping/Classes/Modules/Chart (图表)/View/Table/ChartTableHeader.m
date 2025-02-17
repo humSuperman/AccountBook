@@ -41,22 +41,13 @@
     _model = model;
     _chart.model = model;
     
-    NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
-    [formatter setNumberStyle:NSNumberFormatterDecimalStyle];
-    [formatter setMinimumFractionDigits:2]; // 保留两位小数
-    [formatter setMaximumFractionDigits:2]; // 保留最多两位小数
-
-    NSString *formattedAvg = [formatter stringFromNumber:@(model.avg)];
-    
-    
-    _avgLab.text = [NSString stringWithFormat:@"平均值: %@", formattedAvg];
+    _avgLab.text = [NSString stringWithFormat:@"平均值: %@", model.avg];
     _maxLab.text = ({
         NSString *str;
-        NSString *formattedSum = [formatter stringFromNumber:@(model.sum)];
         if (model.is_income == false) {
-            str = [NSString stringWithFormat:@"总支出: %@", formattedSum];
+            str = [NSString stringWithFormat:@"总支出: %@", model.sum];
         } else {
-            str = [NSString stringWithFormat:@"总收入: %@", formattedSum];
+            str = [NSString stringWithFormat:@"总收入: %@", model.sum];
         }
         str;
     });

@@ -14,7 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, assign) NSInteger Id;
 @property (nonatomic, assign) NSInteger category_id;
-@property (nonatomic, assign) CGFloat price;
+@property (nonatomic, assign) NSInteger price;
 @property (nonatomic, assign) NSInteger year;
 @property (nonatomic, assign) NSInteger month;
 @property (nonatomic, assign) NSInteger day;
@@ -37,8 +37,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) NSDate *date;         // 日期
 @property (nonatomic, copy  ) NSString *dateStr;    // 日期(例: 01月03日 星期五)
 @property (nonatomic, copy  ) NSString *moneyStr;   // 支出收入(例: 收入: 23  支出: 165)
-@property (nonatomic, assign) CGFloat income;       // 收入
-@property (nonatomic, assign) CGFloat pay;          // 支出
+@property (nonatomic, assign) NSInteger income;       // 收入
+@property (nonatomic, assign) NSInteger pay;          // 支出
 @property (nonatomic, strong) NSMutableArray<BKModel *> *list;  // 数据
 
 // 统计数据
@@ -50,9 +50,9 @@ NS_ASSUME_NONNULL_BEGIN
 // 数据统计(图表)
 @interface BKChartModel : BaseModel<NSCoding>
 
-@property (nonatomic, assign) CGFloat sum;                          // 总值
-@property (nonatomic, assign) CGFloat max;                          // 最大值
-@property (nonatomic, assign) CGFloat avg;                          // 平均值
+@property (nonatomic, assign) NSString *sum;                          // 总值
+@property (nonatomic, assign) NSString *max;                          // 最大值
+@property (nonatomic, assign) NSString *avg;                          // 平均值
 @property (nonatomic, assign) BOOL is_income;                       // 是否是收入
 @property (nonatomic, strong) NSMutableArray<BKModel *> *groupArr;  // 排行榜
 @property (nonatomic, strong) NSMutableArray<BKModel *> *chartArr;  // 图表

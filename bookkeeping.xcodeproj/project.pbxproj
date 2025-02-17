@@ -345,6 +345,10 @@
 		AEA489C5440A548BEBD1304B /* libPods-BookMonth.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2513416B4CCC355FFD281675 /* libPods-BookMonth.a */; };
 		B53EC2872D62CD9700A44FC6 /* DatabaseManager.m in Sources */ = {isa = PBXBuildFile; fileRef = B53EC2862D62CD9700A44FC6 /* DatabaseManager.m */; };
 		B53EC2892D62DCF200A44FC6 /* MoneyConverter.m in Sources */ = {isa = PBXBuildFile; fileRef = B53EC2882D62DCF200A44FC6 /* MoneyConverter.m */; };
+		B5A25A662D63628500E0687F /* MoneyConverter.m in Sources */ = {isa = PBXBuildFile; fileRef = B53EC2882D62DCF200A44FC6 /* MoneyConverter.m */; };
+		B5A25A672D63628500E0687F /* MoneyConverter.m in Sources */ = {isa = PBXBuildFile; fileRef = B53EC2882D62DCF200A44FC6 /* MoneyConverter.m */; };
+		B5A25A682D63628B00E0687F /* DatabaseManager.m in Sources */ = {isa = PBXBuildFile; fileRef = B53EC2862D62CD9700A44FC6 /* DatabaseManager.m */; };
+		B5A25A692D63628B00E0687F /* DatabaseManager.m in Sources */ = {isa = PBXBuildFile; fileRef = B53EC2862D62CD9700A44FC6 /* DatabaseManager.m */; };
 		EFBA7719833AD39F78BFEC4E /* libPods-BookStart.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E3AD782884DC71E9F3EA4954 /* libPods-BookStart.a */; };
 		F5982707CC838EDD0692E0E0 /* libPods-bookkeeping.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A0876EDE7488D8385656CB1E /* libPods-bookkeeping.a */; };
 /* End PBXBuildFile section */
@@ -3265,6 +3269,8 @@
 				4B38C08021E4E6F000D28B34 /* BKCIncomeModel.m in Sources */,
 				4B38C07D21E4E65400D28B34 /* NSObject+NSCoding.m in Sources */,
 				4BFD381C21E4D84B00BAB0BB /* NSString+Extension.m in Sources */,
+				B5A25A682D63628B00E0687F /* DatabaseManager.m in Sources */,
+				B5A25A662D63628500E0687F /* MoneyConverter.m in Sources */,
 				4B38C07F21E4E6CB00D28B34 /* ACAListModel.m in Sources */,
 				4B47931621E9DF540062879D /* NSUserDefaults+Extension.m in Sources */,
 			);
@@ -3277,10 +3283,12 @@
 				3213181721E59A91000ADA9A /* BaseModel.m in Sources */,
 				326EB88C21E57C15007CD5C6 /* UIColor+HEX.m in Sources */,
 				326EB88821E57BF7007CD5C6 /* UIFont+Extension.m in Sources */,
+				B5A25A672D63628500E0687F /* MoneyConverter.m in Sources */,
 				3213182021E5CDB7000ADA9A /* NSString+Calculation.m in Sources */,
 				3213181F21E5C913000ADA9A /* UIView+BorderLine.m in Sources */,
 				326EB89021E57C72007CD5C6 /* UIView+Extension.m in Sources */,
 				3213181621E59A83000ADA9A /* ACAListModel.m in Sources */,
+				B5A25A692D63628B00E0687F /* DatabaseManager.m in Sources */,
 				32AF269A21ED6556004F46A2 /* NSMutableArray+Extension.m in Sources */,
 				4B47931721E9DF540062879D /* NSUserDefaults+Extension.m in Sources */,
 				3213180D21E59727000ADA9A /* StartScrollCell.m in Sources */,

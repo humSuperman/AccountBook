@@ -11,7 +11,7 @@
 #import "ChartHUD.h"
 #import "ChartTableCell.h"
 #import "CHART_EVENT.h"
-#import "LOGIN_NOTIFICATION.h"
+//#import "LOGIN_NOTIFICATION.h"
 #import "BDController.h"
 
 
@@ -51,7 +51,7 @@
     [self table];
     [self chud];
     [self setNavigationIndex:0];
-    
+
     [self updateDateRange];
     [self monitorNotification];
     [self setModel:[BKChartModel statisticalChart:self.segmentIndex isIncome:self.navigationIndex cmodel:self.cmodel date:self.date]];
@@ -68,13 +68,6 @@
     }];
     // 删除记账
     [[[[NSNotificationCenter defaultCenter] rac_addObserverForName:NOT_BOOK_DELETE object:nil] takeUntil:self.rac_willDeallocSignal] subscribeNext:^(id x) {
-        @strongify(self)
-        [self setDate:[NSDate date]];
-        [self setModel:[BKChartModel statisticalChart:self.segmentIndex isIncome:self.navigationIndex cmodel:self.cmodel date:self.date]];
-        [self updateDateRange];
-    }];
-    // 退出登录
-    [[[[NSNotificationCenter defaultCenter] rac_addObserverForName:LOPGIN_LOGOUT_COMPLETE object:nil] takeUntil:self.rac_willDeallocSignal] subscribeNext:^(id x) {
         @strongify(self)
         [self setDate:[NSDate date]];
         [self setModel:[BKChartModel statisticalChart:self.segmentIndex isIncome:self.navigationIndex cmodel:self.cmodel date:self.date]];
@@ -124,8 +117,8 @@
         }
         model;
     });
-    
-    
+
+
     _subdate.minModel = _minModel;
     _subdate.maxModel = _maxModel;
 }
