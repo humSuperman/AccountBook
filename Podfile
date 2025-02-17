@@ -1,6 +1,7 @@
 platform :ios, '9.0'
 
 target ‘bookkeeping’ do
+    pod 'FMDB', '2.7.5'
     pod 'pop', '1.0.12'
     pod 'SDWebImage', '4.4.3'
     pod 'JPush', '3.1.1.1'

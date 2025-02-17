@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -343,6 +343,8 @@
 		4BFD381B21E4D7C000BAB0BB /* NSDate+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BE8CC1621C93F21007935E2 /* NSDate+Extension.m */; };
 		4BFD381C21E4D84B00BAB0BB /* NSString+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 321983EB21C6460100311885 /* NSString+Extension.m */; };
 		AEA489C5440A548BEBD1304B /* libPods-BookMonth.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2513416B4CCC355FFD281675 /* libPods-BookMonth.a */; };
+		B53EC2872D62CD9700A44FC6 /* DatabaseManager.m in Sources */ = {isa = PBXBuildFile; fileRef = B53EC2862D62CD9700A44FC6 /* DatabaseManager.m */; };
+		B53EC2892D62DCF200A44FC6 /* MoneyConverter.m in Sources */ = {isa = PBXBuildFile; fileRef = B53EC2882D62DCF200A44FC6 /* MoneyConverter.m */; };
 		EFBA7719833AD39F78BFEC4E /* libPods-BookStart.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E3AD782884DC71E9F3EA4954 /* libPods-BookStart.a */; };
 		F5982707CC838EDD0692E0E0 /* libPods-bookkeeping.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A0876EDE7488D8385656CB1E /* libPods-bookkeeping.a */; };
 /* End PBXBuildFile section */
@@ -898,6 +900,10 @@
 		4BFD382221E4DD4B00BAB0BB /* BookStart.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = BookStart.entitlements; sourceTree = "<group>"; };
 		A0876EDE7488D8385656CB1E /* libPods-bookkeeping.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-bookkeeping.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		ADB606FFC3A28734EF5B4C6B /* Pods-bookkeeping.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-bookkeeping.debug.xcconfig"; path = "Target Support Files/Pods-bookkeeping/Pods-bookkeeping.debug.xcconfig"; sourceTree = "<group>"; };
+		B53EC2852D62CD7400A44FC6 /* DatabaseManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DatabaseManager.h; sourceTree = "<group>"; };
+		B53EC2862D62CD9700A44FC6 /* DatabaseManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DatabaseManager.m; sourceTree = "<group>"; };
+		B53EC2882D62DCF200A44FC6 /* MoneyConverter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MoneyConverter.m; sourceTree = "<group>"; };
+		B53EC28A2D62DD0100A44FC6 /* MoneyConverter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MoneyConverter.h; sourceTree = "<group>"; };
 		B851B6FB04282545CD2CBDE7 /* Pods-BookStart.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BookStart.release.xcconfig"; path = "Target Support Files/Pods-BookStart/Pods-BookStart.release.xcconfig"; sourceTree = "<group>"; };
 		E3AD782884DC71E9F3EA4954 /* libPods-BookStart.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-BookStart.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E76EBA2977C0FF96F8D76960 /* Pods-bookkeeping.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-bookkeeping.release.xcconfig"; path = "Target Support Files/Pods-bookkeeping/Pods-bookkeeping.release.xcconfig"; sourceTree = "<group>"; };
@@ -1014,6 +1020,7 @@
 		3219838B21C6436A00311885 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				B53EC2842D62CD4E00A44FC6 /* Database */,
 				3219839121C6436A00311885 /* Common */,
 				3219839221C6436A00311885 /* AppDelegate */,
 				3219839021C6436A00311885 /* Network */,
@@ -1033,6 +1040,8 @@
 				3219840E21C6466700311885 /* Single.h */,
 				32E2A27721EDBBF0009AD84C /* UIView+SyncedData.h */,
 				32E2A27821EDBBF0009AD84C /* UIView+SyncedData.m */,
+				B53EC2882D62DCF200A44FC6 /* MoneyConverter.m */,
+				B53EC28A2D62DD0100A44FC6 /* MoneyConverter.h */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -2701,6 +2710,15 @@
 			path = Pods;
 			sourceTree = "<group>";
 		};
+		B53EC2842D62CD4E00A44FC6 /* Database */ = {
+			isa = PBXGroup;
+			children = (
+				B53EC2852D62CD7400A44FC6 /* DatabaseManager.h */,
+				B53EC2862D62CD9700A44FC6 /* DatabaseManager.m */,
+			);
+			path = Database;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -3083,6 +3101,7 @@
 				3257AED421C8750800787A34 /* TIController.m in Sources */,
 				32A4C22721CB189100DF4327 /* BadgeReusableFooter.m in Sources */,
 				4B1E128621CA93C1001F5B36 /* CategorySectionHeader.m in Sources */,
+				B53EC2872D62CD9700A44FC6 /* DatabaseManager.m in Sources */,
 				4B35F1A221CCC641007271BE /* UIView+APPViewRequest.m in Sources */,
 				4B35F1C021CCC694007271BE /* KKEmptyNoNet.m in Sources */,
 				321983C021C6459B00311885 /* BaseCollectionCell.m in Sources */,
@@ -3194,6 +3213,7 @@
 				32A4C22421CB15B100DF4327 /* JHCollectionViewFlowLayout.m in Sources */,
 				321983BE21C6459B00311885 /* BaseCollectionView.m in Sources */,
 				32A4C23B21CB6ABD00DF4327 /* ShareShot.m in Sources */,
+				B53EC2892D62DCF200A44FC6 /* MoneyConverter.m in Sources */,
 				4BA68AE821C7EC890063A5C2 /* CategoryTable.m in Sources */,
 				32D0B2C221C77ACD0030F5B2 /* ChartSegmentControl.m in Sources */,
 				327CEC2821C88E45001D0086 /* ChartTableCell.m in Sources */,

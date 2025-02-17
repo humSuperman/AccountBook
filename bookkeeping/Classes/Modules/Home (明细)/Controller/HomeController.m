@@ -1,8 +1,3 @@
-/**
- * 首页
- * @author 郑业强 2018-12-16 创建文件
- */
-
 #import "HomeController.h"
 #import "HomeNavigation.h"
 #import "HomeHeader.h"
@@ -14,6 +9,8 @@
 #import "LoginController.h"
 #import "LOGIN_NOTIFICATION.h"
 #import "ACAListModel.h"
+#import "DatabaseManager.h"
+#import "MoneyConverter.h"
 
 
 #pragma mark - 声明
@@ -62,16 +59,6 @@
         @strongify(self)
         [self setModels:[BKMonthModel statisticalMonthWithYear:self.date.year month:self.date.month]];
     }];
-    // 登录成功
-    [[[[NSNotificationCenter defaultCenter] rac_addObserverForName:LOPGIN_LOGIN_COMPLETE object:nil] takeUntil:self.rac_willDeallocSignal] subscribeNext:^(id x) {
-        @strongify(self)
-        [self.view syncedDataRequest];
-    }];
-    // 退出登录
-    [[[[NSNotificationCenter defaultCenter] rac_addObserverForName:LOPGIN_LOGOUT_COMPLETE object:nil] takeUntil:self.rac_willDeallocSignal] subscribeNext:^(id x) {
-        @strongify(self)
-        [self setModels:[BKMonthModel statisticalMonthWithYear:self.date.year month:self.date.month]];
-    }];
     // 同步数据成功
     [[[[NSNotificationCenter defaultCenter] rac_addObserverForName:SYNCED_DATA_COMPLETE object:nil] takeUntil:self.rac_willDeallocSignal] subscribeNext:^(id x) {
         @strongify(self)
@@ -117,7 +104,7 @@
         [self setDate:[NSDate dateWithYM:selectValue]];
         [self setModels:[BKMonthModel statisticalMonthWithYear:self.date.year month:self.date.month]];
     }];
-    
+
 }
 // 下拉
 - (void)homeTablePull:(id)data {
@@ -132,15 +119,8 @@
 // 删除Cell
 - (void)homeTableCellRemove:(HomeListSubCell *)cell {
     NSLog(@"删除Cell");
-    // 删除
-    NSMutableArray<BKModel *> *bookArrm = [NSUserDefaults objectForKey:PIN_BOOK];
-    NSMutableArray<BKModel *> *bookSyncedArrm = [NSUserDefaults objectForKey:PIN_BOOK_SYNCED];
-    if ([bookSyncedArrm containsObject:cell.model]) {
-        [bookSyncedArrm removeObject:cell.model];
-    }
-    [bookArrm removeObject:cell.model];
-    [NSUserDefaults setObject:bookArrm forKey:PIN_BOOK];
-    [NSUserDefaults setObject:bookArrm forKey:PIN_BOOK_SYNCED];
+    // 删除数据
+    [[DatabaseManager sharedManager] deleteModelById:cell.model.Id];
 
     // 更新
     [[NSNotificationCenter defaultCenter] postNotificationName:NOT_BOOK_DELETE object:nil];

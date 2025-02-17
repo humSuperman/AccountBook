@@ -197,14 +197,18 @@
 
     // 周
     if (status == 0) {
-        NSDate *start = [date offsetDays:-[date weekday] + 1];
-        NSDate *end = [date offsetDays:7 - [date weekday]];
+        // 获取本周的起始和结束日期
+        NSDate *start = [date offsetDays:-[date weekday] + 1];  // 本周的第一天（周一）
+        NSDate *end = [date offsetDays:7 - [date weekday]];       // 本周的最后一天（周日）
+        
+        // 格式化为字符串比较
         NSDateFormatter *fora = [[NSDateFormatter alloc] init];
         [fora setDateFormat:@"yyyyMMdd"];
         [fora setTimeZone:[NSTimeZone localTimeZone]];
         NSInteger startStr = [[fora stringFromDate:start] integerValue];
         NSInteger endStr = [[fora stringFromDate:end] integerValue];
         
+        // 更新过滤条件
         [preStr appendFormat:@" AND dateNumber >= %ld AND dateNumber <= %ld", startStr, endStr];
     }
     // 月
@@ -222,7 +226,7 @@
     NSMutableArray<NSMutableArray<BKModel *> *> *chartHudArr = [NSMutableArray array];
     // 周
     if (status == 0) {
-        NSDate *first = [date offsetDays:-[date weekday] + 1];
+        NSDate *first = [date offsetDays:-[date weekday] + 1]; // 周一
         for (int i=0; i<7; i++) {
             NSDate *date = [first offsetDays:i];
             BKModel *model = [[BKModel alloc] init];
@@ -234,12 +238,15 @@
             [chartHudArr addObject:[NSMutableArray array]];
         }
         
+        // 计算每周的总和
         for (BKModel *model in models) {
-            NSDecimalNumber *number1 = [NSDecimalNumber decimalNumberWithString:[@(chartArr[7 - [model.date weekday]].price) description]];
+            // 根据日期星期几找到对应的 index
+            NSInteger index = 7 - [model.date weekday];  // 例如：周日索引是 0，周一是 1，...
+            NSDecimalNumber *number1 = [NSDecimalNumber decimalNumberWithString:[@(chartArr[index].price) description]];
             NSDecimalNumber *number2 = [NSDecimalNumber decimalNumberWithString:[@(model.price) description]];
             number1 = [number1 decimalNumberByAdding:number2];
-            chartArr[7 - [model.date weekday]].price += [number1 doubleValue];
-            [chartHudArr[[model.date weekday] - 1] addObject:model];
+            chartArr[index].price = [number1 doubleValue];
+            [chartHudArr[index] addObject:model];
         }
     }
     // 月
@@ -318,14 +325,18 @@
         return obj1.price < obj2.price;
     }];
     
+    CGFloat sum = 0;
+    for (BKModel *model in chartArr) {
+        sum += model.price;
+    }
     
     BKChartModel *model = [[BKChartModel alloc] init];
     model.groupArr = groupArr;
     model.chartArr = chartArr;
     model.chartHudArr = chartHudArr;
-    model.sum = [[chartArr valueForKeyPath:@"@sum.price.floatValue"] floatValue];
+    model.sum = sum;
     model.max = [[chartArr valueForKeyPath:@"@max.price.floatValue"] floatValue];
-    model.avg = [[NSString stringWithFormat:@"%.2f", model.sum / chartArr.count] floatValue];
+    model.avg = [[NSString stringWithFormat:@"%.2f", sum / chartArr.count] floatValue];
     model.is_income = isIncome;
     return model;
 }

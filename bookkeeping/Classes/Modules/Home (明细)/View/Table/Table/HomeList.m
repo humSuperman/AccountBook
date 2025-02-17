@@ -28,58 +28,6 @@
 
 
 #pragma mark - set
-//- (void)setModel:(BKModel *)model {
-//    _model = model;
-//    if (_status == HomeListStatusNormal) {
-//        // cell
-//        NSIndexPath *index = [NSIndexPath indexPathForRow:1 inSection:0];
-//        // cell
-//        HomeListCell *cell = [self.table cellForRowAtIndexPath:index];
-//        cell.model = model;
-//        // 移动
-//        [_table scrollToRowAtIndexPath:index atScrollPosition:UITableViewScrollPositionTop animated:false];
-//    } else if (_status == HomeListStatusPull) {
-//        // index
-//        NSIndexPath *index = [NSIndexPath indexPathForRow:0 inSection:0];
-//        NSIndexPath *center = [NSIndexPath indexPathForRow:1 inSection:0];
-//        // cell
-//        HomeListCell *cell = [self.table cellForRowAtIndexPath:index];
-//        HomeListCell *centerCell = [self.table cellForRowAtIndexPath:center];
-//        cell.model = model;
-//        // 移动
-//        [UIView animateWithDuration:0.3f delay:0.0f options:UIViewAnimationOptionAllowUserInteraction animations:^{
-//            [self.table scrollToRowAtIndexPath:index atScrollPosition:UITableViewScrollPositionTop animated:false];
-//        } completion:^(BOOL finished){
-//            [cell setModel:model];
-//            [centerCell setModel:model];
-//            [self.table scrollToRowAtIndexPath:center atScrollPosition:UITableViewScrollPositionTop animated:false];
-//        }];
-//    } else if (_status == HomeListStatusUp) {
-//        // index
-//        NSIndexPath *index = [NSIndexPath indexPathForRow:2 inSection:0];
-//        NSIndexPath *center = [NSIndexPath indexPathForRow:1 inSection:0];
-//        // cell
-//        HomeListCell *cell = [self.table cellForRowAtIndexPath:index];
-//        HomeListCell *centerCell = [self.table cellForRowAtIndexPath:center];
-//        cell.model = model;
-//        // 移动
-//        [UIView animateWithDuration:0.3f delay:0.0f options:UIViewAnimationOptionAllowUserInteraction animations:^{
-//            [self.table setContentOffset:CGPointMake(0, self.table.height + self.table.height - 1)];
-//        } completion:^(BOOL finished){
-//            [cell setModel:model];
-//            [centerCell setModel:model];
-//            [self.table scrollToRowAtIndexPath:center atScrollPosition:UITableViewScrollPositionTop animated:false];
-//        }];
-//    }
-//
-//    for (int i=0; i<3; i++) {
-//        NSIndexPath *index = [NSIndexPath indexPathForRow:i inSection:0];
-//        HomeListCell *cell = [self.table cellForRowAtIndexPath:index];
-//        [cell endRefresh];
-//    }
-//
-//    _status = HomeListStatusNormal;
-//}
 - (void)setModels:(NSMutableArray<BKMonthModel *> *)models {
     _models = models;
     if (_status == HomeListStatusNormal) {

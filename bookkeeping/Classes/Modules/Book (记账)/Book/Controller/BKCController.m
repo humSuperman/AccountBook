@@ -12,6 +12,8 @@
 #import "KKRefreshGifHeader.h"
 #import "BOOK_EVENT.h"
 #import "BKModel.h"
+#import "DatabaseManager.h"
+#import "MoneyConverter.h"
 
 
 #pragma mark - 声明
@@ -120,7 +122,7 @@
     BKModel *model = [[BKModel alloc] init];
     
     model.Id = [[BKModel getId] integerValue];
-    model.price = [[NSDecimalNumber decimalNumberWithString:price] doubleValue];
+    model.price = [MoneyConverter toIntMoney:price];
     model.year = date.year;
     model.month = date.month;
     model.day = date.day;
@@ -128,36 +130,31 @@
     model.category_id = cmodel.Id;
     model.cmodel = cmodel;
     
-    // 新增
     if (!_model) {
+        // 新增
+        BKModel *model = [[BKModel alloc] init];
+        model.price = [MoneyConverter toIntMoney:price];
+        model.year = date.year;
+        model.month = date.month;
+        model.day = date.day;
+        model.mark = mark;
+        model.category_id = cmodel.Id;
+        model.cmodel = cmodel;
+
+        [[DatabaseManager sharedManager] saveModel:model];
         
-        NSMutableArray *bookArr = [NSUserDefaults objectForKey:PIN_BOOK];
-        NSMutableArray *bookSyncedArr = [NSUserDefaults objectForKey:PIN_BOOK_SYNCED];
-        [bookArr addObject:model];
-        [bookSyncedArr addObject:model];
-        [NSUserDefaults setObject:bookArr forKey:PIN_BOOK];
-        [NSUserDefaults setObject:bookArr forKey:PIN_BOOK_SYNCED];
-    }
-    // 修改
-    else {
-        _model.price = [price floatValue];
+    } else {
+        // 修改
+        _model.price = [MoneyConverter toIntMoney:price];
         _model.year = date.year;
         _model.month = date.month;
         _model.day = date.day;
         _model.mark = mark;
         _model.category_id = cmodel.Id;
         _model.cmodel = cmodel;
-        model = _model;
         
-        NSMutableArray *bookArr = [NSUserDefaults objectForKey:PIN_BOOK];
-        NSMutableArray *bookSyncedArr = [NSUserDefaults objectForKey:PIN_BOOK_SYNCED];
-        NSInteger index = [bookArr indexOfObject:model];
-        [bookArr replaceObjectAtIndex:index withObject:model];
-        if ([bookSyncedArr containsObject:model]) {
-            [bookSyncedArr replaceObjectAtIndex:index withObject:model];
-        }
-        [NSUserDefaults setObject:bookArr forKey:PIN_BOOK];
-        [NSUserDefaults setObject:bookArr forKey:PIN_BOOK_SYNCED];
+        // 更新数据库中的数据
+        [[DatabaseManager sharedManager] updateModel:_model];
     }
     
     

@@ -53,11 +53,6 @@
     _nameLab.text = @"提醒时间";
     _detailLab.text = time;
 }
-//- (void)setModel:(TIModel *)model {
-//    _model = model;
-//    _nameLab.text = @"提醒时间";
-//    _detailLab.text = model.time;
-//}
 
 
 @end
