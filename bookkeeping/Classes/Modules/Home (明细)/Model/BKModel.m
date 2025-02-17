@@ -190,36 +190,38 @@
 
 // 统计数据(图表首页)
 + (BKChartModel *)statisticalChart:(NSInteger)status isIncome:(BOOL)isIncome cmodel:(BKModel *)cmodel date:(NSDate *)date {
+    
     NSLog(@"进入统计sql： statisticalChart");
-
     // 初始化
     BKChartModel *model = [[BKChartModel alloc] init];
     model.is_income = isIncome;
 
-    // 构建谓词
-    NSMutableArray *predicates = [NSMutableArray array];
-    [predicates addObject:[NSPredicate predicateWithFormat:@"cmodel.is_income == %d", isIncome]];
+    // 构建查询条件
+    NSMutableDictionary *conditions = [NSMutableDictionary dictionary];
+    // todo 查询收入、支出
+    //[conditions setObject:@(isIncome) forKey:@"cmodel.is_income"];
     if (cmodel) {
-        [predicates addObject:[NSPredicate predicateWithFormat:@"cmodel.Id == %ld", cmodel.cmodel.Id]];
+        [conditions setObject:@(cmodel.cmodel.Id) forKey:@"cmodel.Id"];
     }
-
     if (status == 0) { // 周
         NSDate *start = [date offsetDays:-[date weekday] + 1];
         NSDate *end = [date offsetDays:7 - [date weekday]];
-        [predicates addObject:[NSPredicate predicateWithBlock:^BOOL(BKModel *evaluatedObject, NSDictionary<NSString *, id> * _Nullable bindings) {
-            return [evaluatedObject.date compare:start] != NSOrderedAscending && [evaluatedObject.date compare:end] != NSOrderedDescending;
-        }]];
+        [conditions setObject:@(start.year) forKey:@"year >= "];
+        [conditions setObject:@(start.month) forKey:@"month >= "];
+        [conditions setObject:@(start.day) forKey:@"day >= "];
+        [conditions setObject:@(end.year) forKey:@"year <= "];
+        [conditions setObject:@(end.month) forKey:@"month <= "];
+        [conditions setObject:@(end.day) forKey:@"day <= "];
     } else if (status == 1) { // 月
-        [predicates addObject:[NSPredicate predicateWithFormat:@"year == %ld AND month == %ld", date.year, date.month]];
+        [conditions setObject:@(date.year) forKey:@"year ="];
+        [conditions setObject:@(date.month) forKey:@"month ="];
     } else if (status == 2) { // 年
-        [predicates addObject:[NSPredicate predicateWithFormat:@"year == %ld", date.year]];
+        [conditions setObject:@(date.year) forKey:@"year ="];
     }
 
-    // 图表数据
-    NSPredicate *finalPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:predicates];
-    NSMutableArray<BKModel *> *filteredModels = [[[DatabaseManager sharedManager] getAllModelsWithPredicate:finalPredicate] mutableCopy];
-    NSLog(@"查询结果");
-    NSLog(@"%@",filteredModels);
+    // 使用 DatabaseManager 和查询条件获取数据
+    NSMutableArray<BKModel *> *filteredModels = [[[DatabaseManager sharedManager] getAllModelsWithConditions:conditions] mutableCopy];
+    
     // 在这里声明并初始化 chartArr 和 chartHudArr
     NSMutableArray<BKModel *> *chartArr = [NSMutableArray array];
     NSMutableArray<NSMutableArray<BKModel *> *> *chartHudArr = [NSMutableArray array];
@@ -276,9 +278,6 @@
         }
     }
     
-    NSLog(@"pring chartArr chartHudArr");
-    NSLog(@"%@", chartArr);
-    NSLog(@"%@", chartHudArr);
     // 排序
     [chartHudArr enumerateObjectsUsingBlock:^(NSMutableArray * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         [obj sortUsingComparator:^NSComparisonResult(BKModel *obj1, BKModel *obj2) {
@@ -321,7 +320,9 @@
     model.sum = [MoneyConverter toRealMoney:sum]; // 转换为实际金额
     model.max = [[chartArr valueForKeyPath:@"@max.price.floatValue"] stringValue];
     model.avg = [MoneyConverter toRealMoney:[[NSString stringWithFormat:@"%.2lu", sum / chartArr.count] intValue]];
-
+    
+    NSLog(@"%@",model);
+    
     return model;
 }
 

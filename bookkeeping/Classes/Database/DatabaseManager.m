@@ -118,47 +118,44 @@
     return models;
 }
 
-- (NSArray<BKModel *> *)getAllModelsWithPredicate:(NSPredicate *)predicate {
+- (NSArray<BKModel *> *)getAllModelsWithConditions:(NSDictionary<NSString *,id> *)conditions {
     NSMutableArray *models = [NSMutableArray array];
-    NSString *selectQuery = @"SELECT * FROM BKModel";
-    FMResultSet *results;
-
-    if (predicate) {
-        // 使用谓词进行筛选
-        results = [self.db executeQuery:selectQuery];
-        while ([results next]) {
-            BKModel *model = [[BKModel alloc] init];
-            model.Id = [results intForColumn:@"Id"];
-            model.price = [results intForColumn:@"price"];
-            model.year = [results intForColumn:@"year"];
-            model.month = [results intForColumn:@"month"];
-            model.day = [results intForColumn:@"day"];
-            model.mark = [results stringForColumn:@"mark"];
-            model.category_id = [results intForColumn:@"category_id"];
-            // 你可以根据需要填充 `cmodel`
-
-            if ([predicate evaluateWithObject:model]) {
-                [models addObject:model];
+    
+    // 构建 SQL 查询语句
+    NSMutableString *selectQuery = [NSMutableString stringWithString:@"SELECT * FROM BKModel"];
+    NSMutableArray *arguments = [NSMutableArray array];
+    
+    if (conditions.count > 0) {
+        [selectQuery appendString:@" WHERE "];
+        __block int i = 0;
+        [conditions enumerateKeysAndObjectsUsingBlock:^(NSString * _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
+            if (i > 0) {
+                [selectQuery appendString:@" AND "];
             }
-        }
-    } else {
-        // 没有谓词，返回所有数据
-        results = [self.db executeQuery:selectQuery];
-        while ([results next]) {
-            BKModel *model = [[BKModel alloc] init];
-            model.Id = [results intForColumn:@"Id"];
-            model.price = [results intForColumn:@"price"];
-            model.year = [results intForColumn:@"year"];
-            model.month = [results intForColumn:@"month"];
-            model.day = [results intForColumn:@"day"];
-            model.mark = [results stringForColumn:@"mark"];
-            model.category_id = [results intForColumn:@"category_id"];
-            // 你可以根据需要填充 `cmodel`
-            [models addObject:model];
-        }
+            [selectQuery appendFormat:@"%@ ?", key];
+            [arguments addObject:obj];
+            i++;
+        }];
     }
-
+    NSLog(@"查询sql及条件");
+    NSLog(@"%@",selectQuery);
+    NSLog(@"%@",arguments);
+    // 执行查询
+    FMResultSet *results = [self.db executeQuery:selectQuery withArgumentsInArray:arguments];
+    while ([results next]) {
+        BKModel *model = [[BKModel alloc] init];
+        model.Id = [results intForColumn:@"Id"];
+        model.price = [results intForColumn:@"price"];
+        model.year = [results intForColumn:@"year"];
+        model.month = [results intForColumn:@"month"];
+        model.day = [results intForColumn:@"day"];
+        model.mark = [results stringForColumn:@"mark"];
+        model.category_id = [results intForColumn:@"category_id"];
+        // 你可以根据需要填充 `cmodel`
+        [models addObject:model];
+    }
     [results close];
+    
     return models;
 }
 

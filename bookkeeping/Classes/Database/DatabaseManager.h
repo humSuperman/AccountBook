@@ -13,7 +13,7 @@
 - (void)createTable;
 - (void)saveModel:(BKModel *)model;
 - (NSArray<BKModel *> *)getAllModels;
-- (NSArray<BKModel *> *)getAllModelsWithPredicate:(NSPredicate *)predicate;
+- (NSArray<BKModel *> *)getAllModelsWithConditions:(NSDictionary<NSString *,id> *)conditions;
 - (void)updateModel:(BKModel *)model;
 - (BKModel *)getModelById:(NSInteger)modelId;
 - (void)deleteModelById:(NSInteger)modelId;
