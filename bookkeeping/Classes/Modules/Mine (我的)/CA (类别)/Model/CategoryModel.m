@@ -58,7 +58,7 @@
 
 
 // 获取分类
-+ (CategoryModel *)getCategorieById :(NSInteger)Id {
++ (CategoryModel *)getCategoryById :(NSInteger)Id {
     NSString *selectSQL = @"SELECT * FROM Category where id = ?";
     
     // 获取查询结果
@@ -79,7 +79,7 @@
 }
 
 // 删除分类
-+ (void)deleteCategorieById :(NSInteger)Id {
++ (void)deleteCategoryById :(NSInteger)Id {
     NSString *deleteSQL = @"UPDATE Category SET status=1 where id = ?";
     [[DatabaseManager sharedManager].db executeQuery:deleteSQL, @(Id)];
 }

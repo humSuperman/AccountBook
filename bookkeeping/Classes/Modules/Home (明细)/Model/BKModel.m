@@ -18,6 +18,10 @@
     }];
 }
 
+- (CategoryModel *)categoryModel {
+    return [CategoryModel getCategoryById:self.category_id];
+}
+
 - (instancetype)initWithCoder:(NSCoder *)aDecoder {
     self = [super init];
     if (!self) {
@@ -103,6 +107,7 @@
         model.day = [results intForColumn:@"day"];
         model.mark = [results stringForColumn:@"mark"];
         model.category_id = [results intForColumn:@"category_id"];
+        model.type = [results intForColumn:@"type"];
         // 你可以根据需要填充 `cmodel`
         [models addObject:model];
     }
@@ -142,7 +147,9 @@
         model.day = [results intForColumn:@"day"];
         model.mark = [results stringForColumn:@"mark"];
         model.category_id = [results intForColumn:@"category_id"];
-        // 你可以根据需要填充 `cmodel`
+        model.type = [results intForColumn:@"type"];
+        CategoryModel *category = [CategoryModel getCategoryById:model.category_id];
+        model.category = category;
         [models addObject:model];
     }
     [results close];
@@ -151,7 +158,7 @@
 }
 
 + (void)saveAccount:(BKModel *)model {
-    CategoryModel *category = [[CategoryModel getCategorieById:model.category_id] copy];
+    CategoryModel *category = [[CategoryModel getCategoryById:model.category_id] copy];
     if(category == nil){
         NSLog(@"分类不存在，更新失败");
         return;
@@ -163,7 +170,7 @@
 }
 
 + (void)updateAccount:(BKModel *)model {
-    CategoryModel *category = [[CategoryModel getCategorieById:model.category_id] copy];
+    CategoryModel *category = [[CategoryModel getCategoryById:model.category_id] copy];
     if(category == nil){
         NSLog(@"分类不存在，更新失败");
         return;
@@ -225,13 +232,13 @@
 - (NSString *)moneyStr {
     NSMutableString *strm = [NSMutableString string];
     if (_income != 0) {
-        [strm appendFormat:@"收入: %@", [@(_income) description]];
+        [strm appendFormat:@"收入: %@", [MoneyConverter toRealMoney:_income]];
     }
     if (_income != 0 && _pay != 0) {
         [strm appendString:@"    "];
     }
     if (_pay != 0) {
-        [strm appendFormat:@"支出: %@", [@(_pay) description]];
+        [strm appendFormat:@"支出: %@", [MoneyConverter toRealMoney:_pay]];
     }
     return strm;
 }

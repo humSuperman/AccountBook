@@ -15,6 +15,6 @@
 + (void)addCategory:(CategoryModel *)model;
 + (void)updateCategory:(CategoryModel *)model;
 + (NSArray<CategoryModel *> *)getAllCategories;
-+ (CategoryModel *)getCategorieById:(NSInteger)Id;
-+ (void)deleteCategorieById :(NSInteger)Id;
++ (CategoryModel *)getCategoryById:(NSInteger)Id;
++ (void)deleteCategoryById :(NSInteger)Id;
 @end

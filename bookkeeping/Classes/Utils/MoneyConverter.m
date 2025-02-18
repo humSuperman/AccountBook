@@ -7,7 +7,14 @@
     NSDecimalNumber *fenDecimal = [NSDecimalNumber decimalNumberWithString:[NSString stringWithFormat:@"%ld", money]];
     NSDecimalNumber *divisor = [NSDecimalNumber decimalNumberWithString:@"100"];
     NSDecimalNumber *result = [fenDecimal decimalNumberByDividingBy:divisor];
-    return [result stringValue];
+
+    NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
+    [formatter setNumberStyle:NSNumberFormatterDecimalStyle];
+    [formatter setMaximumFractionDigits:2];
+    [formatter setMinimumFractionDigits:2];
+    [formatter setGroupingSeparator:@","];
+
+    return [formatter stringFromNumber:result];
 }
 
 

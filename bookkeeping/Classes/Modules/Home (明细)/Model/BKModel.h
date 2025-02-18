@@ -4,6 +4,7 @@
  */
 
 #import "BaseModel.h"
+#import "CategoryModel.h"
 #import "BKCIncomeModel.h"
 
 
@@ -25,6 +26,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) NSDate *date;         // 日期
 @property (nonatomic, assign) NSInteger dateNumber; // 日期数字
 @property (nonatomic, strong) BKCModel *cmodel;
+@property (nonatomic, strong) CategoryModel *category;
+
+- (CategoryModel *)categoryModel;
 
 // 获取Id
 + (NSNumber *)getId;

@@ -4,6 +4,7 @@
  */
 
 #import "HomeListSubCell.h"
+#import "MoneyConverter.h"
 #import "HOME_EVENT.h"
 
 #pragma mark - 声明
@@ -57,9 +58,10 @@
 #pragma mark - set
 - (void)setModel:(BKModel *)model {
     _model = model;
-    [_icon setImage:[UIImage imageNamed:model.cmodel.icon_l]];
-    [_nameLab setText:model.cmodel.name];
-    [_detailLab setText:model.cmodel.is_income == 0 ? [@(-model.price) description] : [@(model.price) description]];
+    //icon 不保存后缀 e_catering,e_catering_l,e_catering_s
+    [_icon setImage:[UIImage imageNamed:[model.category.icon stringByAppendingString:@"_l"]]];
+    [_nameLab setText:model.category.name];
+    [_detailLab setText:model.type == 0 ? [MoneyConverter toRealMoney:model.price*-1] : [MoneyConverter toRealMoney:model.price]];
 }
 
 
