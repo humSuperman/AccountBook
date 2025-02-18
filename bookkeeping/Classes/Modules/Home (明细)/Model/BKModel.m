@@ -126,19 +126,21 @@
 }
 
 + (NSMutableArray<BKMonthModel *> *)statisticalMonthWithYear:(NSInteger)year month:(NSInteger)month {
-    // 根据时间过滤
-    NSMutableArray<BKModel *> *bookArr = [NSUserDefaults objectForKey:PIN_BOOK];
-    NSString *preStr = [NSString stringWithFormat:@"year == %ld AND month == %ld", year, month];
-//    NSPredicate *pre = [NSPredicate predicateWithFormat:preStr];
-//    NSMutableArray<BKModel *> *models = [NSMutableArray arrayWithArray:[bookArr filteredArrayUsingPredicate:pre]];
-    NSMutableArray<BKModel *> *models = [NSMutableArray kk_filteredArrayUsingPredicate:preStr array:bookArr];
+    NSLog(@"数据查询");
+    // 获取数据库中的数据
+    NSMutableDictionary *conditions = [NSMutableDictionary dictionary];
+    [conditions setObject:@(year) forKey:@"year ="];
+    [conditions setObject:@(month) forKey:@"month ="];
+    NSMutableArray<BKModel *> *models = [[[DatabaseManager sharedManager] getAllModelsWithConditions:conditions] mutableCopy];
     
     // 统计数据
     NSMutableDictionary *dictm = [NSMutableDictionary dictionary];
+    
     for (BKModel *model in models) {
         NSString *key = [NSString stringWithFormat:@"%ld-%02ld-%02ld", model.year, model.month, model.day];
-        // 初始化
-        if (![[dictm allKeys] containsObject:key]) {
+        
+        // 初始化字典中的值
+        if (![dictm objectForKey:key]) {
             BKMonthModel *submodel = [[BKMonthModel alloc] init];
             submodel.list = [NSMutableArray array];
             submodel.income = 0;
@@ -146,25 +148,25 @@
             submodel.date = [NSDate dateWithYMD:key];
             [dictm setObject:submodel forKey:key];
         }
-        // 添加数据
+        
+        // 更新数据
         BKMonthModel *submodel = dictm[key];
         [submodel.list addObject:model];
-        // 收入
+        
+        // 收入或支出
         if (model.cmodel.is_income == true) {
-            [submodel setIncome:submodel.income + model.price];
+            submodel.income += model.price;
+        } else {
+            submodel.pay += model.price;
         }
-        // 支出
-        else {
-            [submodel setPay:submodel.pay + model.price];
-        }
-        [dictm setObject:submodel forKey:key];
     }
     
-    // 排序
+    // 将字典中的所有值转换为数组，并按照日期进行排序
     NSMutableArray<BKMonthModel *> *arrm = [NSMutableArray arrayWithArray:[dictm allValues]];
-    arrm = [NSMutableArray arrayWithArray:[arrm sortedArrayUsingComparator:^NSComparisonResult(BKMonthModel *obj1, BKMonthModel *obj2) {
+    [arrm sortUsingComparator:^NSComparisonResult(BKMonthModel *obj1, BKMonthModel *obj2) {
         return [obj1.dateStr compare:obj2.dateStr];
-    }]];
+    }];
+    
     return arrm;
 }
 
