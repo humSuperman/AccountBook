@@ -272,10 +272,10 @@
         [submodel.list addObject:model];
         
         // 收入或支出
-        if (model.cmodel.is_income == true) {
-            submodel.income += model.price;
-        } else {
+        if (model.type == 0) {
             submodel.pay += model.price;
+        } else {
+            submodel.income += model.price;
         }
     }
     

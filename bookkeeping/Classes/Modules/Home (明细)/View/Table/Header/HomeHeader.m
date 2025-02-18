@@ -4,6 +4,7 @@
  */
 
 #import "HomeHeader.h"
+#import "MoneyConverter.h"
 #import "HOME_EVENT.h"
 
 
@@ -65,19 +66,16 @@
     _models = models;
     UIFont *integer = [UIFont systemFontOfSize:AdjustFont(14)];
     UIFont *decimal = [UIFont systemFontOfSize:AdjustFont(12)];
-    NSString *pay = [NSString stringWithFormat:@"%.2f", [[models valueForKeyPath:@"@sum.pay.floatValue"] floatValue]];
-    NSString *income = [NSString stringWithFormat:@"%.2f", [[models valueForKeyPath:@"@sum.income.floatValue"] floatValue]];
+    NSInteger totalIncome = 0;
+    NSInteger totalPay = 0;
+    for (BKMonthModel *model in models) {
+        totalIncome += model.income;
+        totalPay += model.pay;
+    }
+    NSString *pay = [MoneyConverter toRealMoney:totalPay];
+    NSString *income = [MoneyConverter toRealMoney:totalIncome];
     [_payLab setAttributedText:[NSAttributedString createMath:pay integer:integer decimal:decimal]];
     [_incomeLab setAttributedText:[NSAttributedString createMath:income integer:integer decimal:decimal]];
 }
-
-//- (void)setModel:(BKModel *)model {
-//    _model = model;
-//    NSString *pay = [NSString stringWithFormat:@"%.2f", model.pay];
-//    NSString *income = [NSString stringWithFormat:@"%.2f", model.income];
-//    [_payLab setAttributedText:[NSAttributedString createMath:pay integer:[UIFont systemFontOfSize:AdjustFont(14)] decimal:[UIFont systemFontOfSize:AdjustFont(12)]]];
-//    [_incomeLab setAttributedText:[NSAttributedString createMath:income integer:[UIFont systemFontOfSize:AdjustFont(14)] decimal:[UIFont systemFontOfSize:AdjustFont(12)]]];
-//}
-
 
 @end
