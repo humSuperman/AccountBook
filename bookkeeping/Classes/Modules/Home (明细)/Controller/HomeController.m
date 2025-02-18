@@ -124,24 +124,11 @@
 }
 // 点击Cell
 - (void)homeTableCellClick:(BKModel *)model {
-    NSNumber *detail = [NSUserDefaults objectForKey:PIN_SETTING_DETAIL];
     // 详情
-    if ([detail boolValue] == true) {
-        @weakify(self)
-        BDController *vc = [[BDController alloc] init];
-        vc.model = model;
-        vc.complete = ^{
-            @strongify(self)
-            [self setModels:[BKMonthModel statisticalMonthWithYear:self.date.year month:self.date.month]];
-        };
-        [self.navigationController pushViewController:vc animated:true];
-    }
-    // 修改
-    else {
-        BKCController *vc = [[BKCController alloc] init];
-        vc.model = model;
-        [self.navigationController pushViewController:vc animated:true];
-    }
+    NSLog(@"homeTableCellClick %ld",model.Id);
+    BKCController *vc = [[BKCController alloc] init];
+    vc.model = model;
+    [self.navigationController pushViewController:vc animated:true];
 }
 
 

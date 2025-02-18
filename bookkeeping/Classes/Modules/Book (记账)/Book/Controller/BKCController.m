@@ -50,7 +50,7 @@
     
     if (_model) {
         dispatch_async(dispatch_get_main_queue(), ^{        
-            BOOL is_income = self.model.cmodel.is_income;
+            BOOL is_income = (self.model.type == 0);
             [self.scroll setContentOffset:CGPointMake(SCREEN_WIDTH * is_income, 0) animated:false];
             [self.navigation setOffsetX:self.scroll.contentOffset.x];
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{

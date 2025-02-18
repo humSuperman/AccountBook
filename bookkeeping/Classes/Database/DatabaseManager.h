@@ -8,6 +8,7 @@
 @property (nonatomic, assign) NSInteger currentVersion;
 
 + (instancetype)sharedManager;
+- (void)closeDatabase;
 - (void)openDatabase;
 - (void)checkAndMigrateDatabase;
 

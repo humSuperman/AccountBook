@@ -7,10 +7,16 @@
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         sharedInstance = [[self alloc] init];
-        [sharedInstance openDatabase];
-        [sharedInstance checkAndMigrateDatabase];
     });
     return sharedInstance;
+}
+
+- (void)closeDatabase {
+    if (self.db) {
+        [self.db close];
+        self.db = nil;
+        NSLog(@"Database connection closed.");
+    }
 }
 
 - (void)openDatabase {

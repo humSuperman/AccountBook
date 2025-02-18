@@ -4,6 +4,7 @@
  */
 
 #import "AppDelegate.h"
+#import "DatabaseManager.h"
 #import "AppDelegate+UMeng.h"
 
 
@@ -23,9 +24,9 @@
     // 系统配置
     [self systemConfig];
     // 友盟
-    [self shareUMengConfig];
-    
-    
+    //[self shareUMengConfig];
+    // 数据库
+    [[DatabaseManager sharedManager] openDatabase];
 //    // 注册通知
 //    if (@available(iOS 10.0, *)) {
 //        UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
@@ -89,11 +90,22 @@
 
 // 去后台
 - (void)applicationWillResignActive:(UIApplication *)application {
+    [[DatabaseManager sharedManager] closeDatabase];
     [ScreenBlurry addBlurryScreenImage];
 }
 // 回前台
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     [ScreenBlurry removeBlurryScreenImage];
+}
+
+- (void)applicationWillTerminate:(UIApplication *)application {
+    [[DatabaseManager sharedManager] closeDatabase];
+    NSLog(@"Application will terminate.");
+}
+
+- (void)applicationDidEnterBackground:(UIApplication *)application {
+    // 应用进入后台时可以选择关闭数据库，或者仅释放资源
+    [[DatabaseManager sharedManager] closeDatabase];
 }
 
 

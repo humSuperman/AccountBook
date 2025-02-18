@@ -406,23 +406,17 @@
     }];
 
     NSMutableArray<BKModel *> *groupArr = [NSMutableArray array];
-    if (!cmodel) {
-        for (BKModel *model in filteredModels) {
-            NSInteger index = [groupArr indexOfObjectPassingTest:^BOOL(BKModel * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-                return obj.category_id == model.category_id;
-            }];
-            if (index == NSNotFound) {
-                BKModel *submodel = [model copy];
-                [groupArr addObject:submodel];
-            } else {
-                groupArr[index].price += model.price;
-            }
-        }
-    } else {
-        [filteredModels enumerateObjectsUsingBlock:^(BKModel * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-            BKModel *submodel = [obj copy];
-            [groupArr addObject:submodel];
+    for (BKModel *model in filteredModels) {
+        NSInteger index = [groupArr indexOfObjectPassingTest:^BOOL(BKModel * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            return obj.category_id == model.category_id;
         }];
+        if (index == NSNotFound) {
+            BKModel *submodel = [model copy];
+            submodel.category = model.category;
+            [groupArr addObject:submodel];
+        } else {
+            groupArr[index].price += model.price;
+        }
     }
 
     [groupArr sortUsingComparator:^NSComparisonResult(BKModel *obj1, BKModel *obj2) {

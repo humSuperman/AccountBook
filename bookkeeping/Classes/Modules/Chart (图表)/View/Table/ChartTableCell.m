@@ -49,8 +49,8 @@
 #pragma mark - set
 - (void)setModel:(BKModel *)model {
     _model = model;
-    [_icon setImage:[UIImage imageNamed:model.cmodel.icon_l]];
-    [_nameLab setText:model.cmodel.name];
+    [_icon setImage:[UIImage imageNamed:[model.category.icon stringByAppendingString:@"_l"]]];
+    [_nameLab setText:model.category.name];
     [_detailLab setText:[MoneyConverter toRealMoney:model.price]];
     
     CGFloat width = SCREEN_WIDTH - OUT_PADDING * 2 - ICON_W - LINE_L;

@@ -4,6 +4,7 @@
  */
 
 #import "BCHUDContentCell.h"
+#import "MoneyConverter.h"
 
 #pragma mark - 声明
 @interface BCHUDContentCell()
@@ -31,10 +32,10 @@
 #pragma mark - set
 - (void)setModel:(BKModel *)model {
     _model = model;
-    [_icon setImage:[UIImage imageNamed:model.cmodel.icon_l]];
+    [_icon setImage:[UIImage imageNamed:[model.category.icon stringByAppendingString:@"_l"]]];
     [_nameLab setText:[NSString stringWithFormat:@"%ld/%02ld/%02ld", model.year, model.month, model.day]];
-    [_detailLab setText:model.cmodel.name];
-    [_priceLab setText:[@(model.price) description]];
+    [_detailLab setText:model.category.name];
+    [_priceLab setText:[MoneyConverter toRealMoney:model.price]];
 }
 
 @end
