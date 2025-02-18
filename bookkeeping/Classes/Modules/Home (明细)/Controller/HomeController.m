@@ -7,7 +7,6 @@
 #import "BKModel.h"
 #import "BDController.h"
 #import "ACAListModel.h"
-#import "DatabaseManager.h"
 #import "MoneyConverter.h"
 
 
@@ -118,7 +117,7 @@
 - (void)homeTableCellRemove:(HomeListSubCell *)cell {
     NSLog(@"删除Cell");
     // 删除数据
-    [[DatabaseManager sharedManager] deleteModelById:cell.model.Id];
+    [BKModel deleteModelById:cell.model.Id];
 
     // 更新
     [[NSNotificationCenter defaultCenter] postNotificationName:NOT_BOOK_DELETE object:nil];

@@ -87,6 +87,104 @@
     return Id;
 }
 
++ (void)saveModel:(BKModel *)model {
+    // 插入数据的 SQL 语句
+    NSString *insertQuery = @"INSERT INTO BKModel (price, year, month, day, mark, category_id, cmodelId) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    [[DatabaseManager sharedManager].db executeUpdate:insertQuery, @(model.price), @(model.year), @(model.month), @(model.day), model.mark, @(model.category_id), @(model.cmodel.Id)];
+    NSLog(@"Success to save BKModel");
+}
+
++ (NSArray<BKModel *> *)getAllModels {
+    NSMutableArray *models = [NSMutableArray array];
+    NSString *selectQuery = @"SELECT * FROM BKModel";
+    FMResultSet *results = [[DatabaseManager sharedManager].db executeQuery:selectQuery];
+
+    while ([results next]) {
+        BKModel *model = [[BKModel alloc] init];
+        model.Id = [results intForColumn:@"Id"];
+        model.price = [results intForColumn:@"price"];
+        model.year = [results intForColumn:@"year"];
+        model.month = [results intForColumn:@"month"];
+        model.day = [results intForColumn:@"day"];
+        model.mark = [results stringForColumn:@"mark"];
+        model.category_id = [results intForColumn:@"category_id"];
+        // 你可以根据需要填充 `cmodel`
+        [models addObject:model];
+    }
+    return models;
+}
+
++ (NSArray<BKModel *> *)getAllModelsWithConditions:(NSDictionary<NSString *,id> *)conditions {
+    NSMutableArray *models = [NSMutableArray array];
+    
+    // 构建 SQL 查询语句
+    NSMutableString *selectQuery = [NSMutableString stringWithString:@"SELECT * FROM BKModel"];
+    NSMutableArray *arguments = [NSMutableArray array];
+    
+    if (conditions.count > 0) {
+        [selectQuery appendString:@" WHERE "];
+        __block int i = 0;
+        [conditions enumerateKeysAndObjectsUsingBlock:^(NSString * _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
+            if (i > 0) {
+                [selectQuery appendString:@" AND "];
+            }
+            [selectQuery appendFormat:@"%@ ?", key];
+            [arguments addObject:obj];
+            i++;
+        }];
+    }
+    NSLog(@"查询sql及条件");
+    NSLog(@"%@",selectQuery);
+    NSLog(@"%@",arguments);
+    // 执行查询
+    FMResultSet *results = [[DatabaseManager sharedManager].db executeQuery:selectQuery withArgumentsInArray:arguments];
+    while ([results next]) {
+        BKModel *model = [[BKModel alloc] init];
+        model.Id = [results intForColumn:@"Id"];
+        model.price = [results intForColumn:@"price"];
+        model.year = [results intForColumn:@"year"];
+        model.month = [results intForColumn:@"month"];
+        model.day = [results intForColumn:@"day"];
+        model.mark = [results stringForColumn:@"mark"];
+        model.category_id = [results intForColumn:@"category_id"];
+        // 你可以根据需要填充 `cmodel`
+        [models addObject:model];
+    }
+    [results close];
+    
+    return models;
+}
+
++ (void)updateModel:(BKModel *)model {
+    NSString *updateQuery = @"UPDATE BKModel SET price = ?, year = ?, month = ?, day = ?, mark = ?, category_id = ?,updated_at = DATETIME('now', 'localtime') WHERE Id = ?";
+    [[DatabaseManager sharedManager].db executeUpdate:updateQuery, @(model.price), @(model.year), @(model.month), @(model.day), model.mark, @(model.category_id), @(model.Id)];
+    NSLog(@"Success to update BKModel");
+}
+
++ (BKModel *)getModelById:(NSInteger)modelId{
+    NSString *selectQuery = @"SELECT * FROM BKModel WHERE Id = ?";
+    FMResultSet *results = [[DatabaseManager sharedManager].db executeQuery:selectQuery, @(modelId)];
+
+    if ([results next]) {
+        BKModel *model = [[BKModel alloc] init];
+        model.Id = [results intForColumn:@"Id"];
+        model.price = [results doubleForColumn:@"price"];
+        model.year = [results intForColumn:@"year"];
+        model.month = [results intForColumn:@"month"];
+        model.day = [results intForColumn:@"day"];
+        model.mark = [results stringForColumn:@"mark"];
+        model.category_id = [results intForColumn:@"category_id"];
+        // 设置 cmodel，如果需要的话
+        return model;
+    }
+    return nil;  // 如果找不到，返回 nil
+}
+
++ (void)deleteModelById:(NSInteger)modelId {
+    NSString *deleteQuery = @"DELETE FROM BKModel WHERE Id = ?";
+    [[DatabaseManager sharedManager].db executeUpdate:deleteQuery, @(modelId)];
+    NSLog(@"Success to delete BKModel");
+}
 
 @end
 
@@ -131,7 +229,7 @@
     NSMutableDictionary *conditions = [NSMutableDictionary dictionary];
     [conditions setObject:@(year) forKey:@"year ="];
     [conditions setObject:@(month) forKey:@"month ="];
-    NSMutableArray<BKModel *> *models = [[[DatabaseManager sharedManager] getAllModelsWithConditions:conditions] mutableCopy];
+    NSMutableArray<BKModel *> *models = [[BKModel getAllModelsWithConditions:conditions] mutableCopy];
     
     // 统计数据
     NSMutableDictionary *dictm = [NSMutableDictionary dictionary];
@@ -222,7 +320,7 @@
     }
 
     // 使用 DatabaseManager 和查询条件获取数据
-    NSMutableArray<BKModel *> *filteredModels = [[[DatabaseManager sharedManager] getAllModelsWithConditions:conditions] mutableCopy];
+    NSMutableArray<BKModel *> *filteredModels = [[BKModel getAllModelsWithConditions:conditions] mutableCopy];
     
     // 在这里声明并初始化 chartArr 和 chartHudArr
     NSMutableArray<BKModel *> *chartArr = [NSMutableArray array];

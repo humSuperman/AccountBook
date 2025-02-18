@@ -1,5 +1,4 @@
 #import "DatabaseManager.h"
-#import "BKModel.h"
 
 @implementation DatabaseManager
 
@@ -70,19 +69,22 @@
 - (void)migrateDatabaseFromVersion:(NSInteger)fromVersion  {
     // 执行迁移逻辑
     if (fromVersion < 1) {
-        [self createTable];
+        [self createBKModel];
         [self updateDatabaseVersion:1];
+        fromVersion = 1;
     }
 
     if (fromVersion < 2) {
-    // 可以继续添加其他版本的迁移操作
+        [self createCategoryModel];
+        [self updateDatabaseVersion:2];
+        fromVersion = 2;
     }
 
 }
 
 
 
-- (void)createTable {
+- (void)createBKModel {
     // 创建表格的 SQL 语句
     NSString *createTableQuery = @"CREATE TABLE IF NOT EXISTS BKModel (Id INTEGER PRIMARY KEY autoincrement, price INTEGER, year INTEGER, month INTEGER, day INTEGER, mark TEXT, category_id INTEGER, cmodelId INTEGER,created_at datetime default (datetime('now', 'localtime')),updated_at datetime default (datetime('now', 'localtime')))";
     if (![self.db executeUpdate:createTableQuery]) {
@@ -91,103 +93,61 @@
     NSLog(@"Success to create table");
 }
 
-- (void)saveModel:(BKModel *)model {
-    // 插入数据的 SQL 语句
-    NSString *insertQuery = @"INSERT INTO BKModel (price, year, month, day, mark, category_id, cmodelId) VALUES (?, ?, ?, ?, ?, ?, ?)";
-    [self.db executeUpdate:insertQuery, @(model.price), @(model.year), @(model.month), @(model.day), model.mark, @(model.category_id), @(model.cmodel.Id)];
-    NSLog(@"Success to save BKModel");
-}
 
-- (NSArray<BKModel *> *)getAllModels {
-    NSMutableArray *models = [NSMutableArray array];
-    NSString *selectQuery = @"SELECT * FROM BKModel";
-    FMResultSet *results = [self.db executeQuery:selectQuery];
-
-    while ([results next]) {
-        BKModel *model = [[BKModel alloc] init];
-        model.Id = [results intForColumn:@"Id"];
-        model.price = [results intForColumn:@"price"];
-        model.year = [results intForColumn:@"year"];
-        model.month = [results intForColumn:@"month"];
-        model.day = [results intForColumn:@"day"];
-        model.mark = [results stringForColumn:@"mark"];
-        model.category_id = [results intForColumn:@"category_id"];
-        // 你可以根据需要填充 `cmodel`
-        [models addObject:model];
-    }
-    return models;
-}
-
-- (NSArray<BKModel *> *)getAllModelsWithConditions:(NSDictionary<NSString *,id> *)conditions {
-    NSMutableArray *models = [NSMutableArray array];
+- (void)createCategoryModel {
+    // 创建表格的 SQL 语句
+    NSString *sql = @"CREATE TABLE IF NOT EXISTS Category (id INTEGER PRIMARY KEY AUTOINCREMENT,name TEXT NOT NULL default '',type INTEGER NOT NULL default 0,status INTEGER DEFAULT 0,icon TEXT default '',created_at datetime default (datetime('now', 'localtime')),updated_at datetime default (datetime('now', 'localtime')))";
     
-    // 构建 SQL 查询语句
-    NSMutableString *selectQuery = [NSMutableString stringWithString:@"SELECT * FROM BKModel"];
-    NSMutableArray *arguments = [NSMutableArray array];
+    NSString *dataSql = @"INSERT INTO Category (id, name, type, icon)"
+    "VALUES"
+    "(1, '餐饮', 0, 'e_catering'),"
+    "(2, '零食', 0, 'e_snack'),"
+    "(3, '购物', 0, 'e_shopping'),"
+    "(4, '交通', 0, 'e_traffic'),"
+    "(5, '运动', 0, 'e_sport'),"
+    "(6, '汽车', 0, 'e_car'),"
+    "(7, '医疗', 0, 'e_medical'),"
+    "(8, '宠物', 0, 'e_pet'),"
+    "(9, '书籍', 0, 'e_books'),"
+    "(10, '学习', 0, 'e_study'),"
+    "(11, '礼物', 0, 'e_gift'),"
+    "(12, '办公', 0, 'e_office'),"
+    "(13, '维修', 0, 'e_repair'),"
+    "(14, '捐赠', 0, 'e_donate'),"
+    "(15, '彩票', 0, 'e_lottery'),"
+    "(16, '快递', 0, 'e_express'),"
+    "(17, '社交', 0, 'e_social'),"
+    "(18, '美容', 0, 'e_beauty'),"
+    "(19, '水果', 0, 'e_fruite'),"
+    "(20, '旅行', 0, 'e_travel'),"
+    "(21, '娱乐', 0, 'e_entertainmente'),"
+    "(22, '礼金', 0, 'e_money'),"
+    "(23, '蔬菜', 0, 'e_vegetable'),"
+    "(24, '长辈', 0, 'e_elder'),"
+    "(25, '住房', 0, 'e_house'),"
+    "(26, '孩子', 0, 'e_child'),"
+    "(27, '通讯', 0, 'e_communicate'),"
+    "(28, '服饰', 0, 'e_dress'),"
+    "(29, '日用', 0, 'e_commodity'),"
+    "(30, '烟酒', 0, 'e_smoke'),"
+    "(31, '亲友', 0, 'e_friend'),"
+    "(32, '数码', 0, 'e_digital'),"
+    "(33, '居家', 0, 'e_home'),"
+    "(34, '工资', 1, 'i_wage'),"
+    "(35, '兼职', 1, 'i_parttimework'),"
+    "(36, '理财', 1, 'i_finance'),"
+    "(37, '礼金', 1, 'i_money'),"
+    "(38, '兼职', 1, 'i_parttimework'),"
+    "(39, '其它', 1, 'i_other');";
+
+    if (![self.db executeUpdate:sql]) {
+        NSLog(@"Failed to create Category table: %@", [self.db lastErrorMessage]);
+    }
     
-    if (conditions.count > 0) {
-        [selectQuery appendString:@" WHERE "];
-        __block int i = 0;
-        [conditions enumerateKeysAndObjectsUsingBlock:^(NSString * _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
-            if (i > 0) {
-                [selectQuery appendString:@" AND "];
-            }
-            [selectQuery appendFormat:@"%@ ?", key];
-            [arguments addObject:obj];
-            i++;
-        }];
+    if (![self.db executeUpdate:dataSql]) {
+        NSLog(@"Failed to create Category table: %@", [self.db lastErrorMessage]);
     }
-    NSLog(@"查询sql及条件");
-    NSLog(@"%@",selectQuery);
-    NSLog(@"%@",arguments);
-    // 执行查询
-    FMResultSet *results = [self.db executeQuery:selectQuery withArgumentsInArray:arguments];
-    while ([results next]) {
-        BKModel *model = [[BKModel alloc] init];
-        model.Id = [results intForColumn:@"Id"];
-        model.price = [results intForColumn:@"price"];
-        model.year = [results intForColumn:@"year"];
-        model.month = [results intForColumn:@"month"];
-        model.day = [results intForColumn:@"day"];
-        model.mark = [results stringForColumn:@"mark"];
-        model.category_id = [results intForColumn:@"category_id"];
-        // 你可以根据需要填充 `cmodel`
-        [models addObject:model];
-    }
-    [results close];
-    
-    return models;
-}
-
-- (void)updateModel:(BKModel *)model {
-    NSString *updateQuery = @"UPDATE BKModel SET price = ?, year = ?, month = ?, day = ?, mark = ?, category_id = ?,updated_at = DATETIME('now', 'localtime') WHERE Id = ?";
-    [self.db executeUpdate:updateQuery, @(model.price), @(model.year), @(model.month), @(model.day), model.mark, @(model.category_id), @(model.Id)];
-    NSLog(@"Success to update BKModel");
-}
-
-- (BKModel *)getModelById:(NSInteger)modelId{
-    NSString *selectQuery = @"SELECT * FROM BKModel WHERE Id = ?";
-    FMResultSet *results = [self.db executeQuery:selectQuery, @(modelId)];
-
-    if ([results next]) {
-        BKModel *model = [[BKModel alloc] init];
-        model.Id = [results intForColumn:@"Id"];
-        model.price = [results doubleForColumn:@"price"];
-        model.year = [results intForColumn:@"year"];
-        model.month = [results intForColumn:@"month"];
-        model.day = [results intForColumn:@"day"];
-        model.mark = [results stringForColumn:@"mark"];
-        model.category_id = [results intForColumn:@"category_id"];
-        // 设置 cmodel，如果需要的话
-        return model;
-    }
-    return nil;  // 如果找不到，返回 nil
-}
-
-- (void)deleteModelById:(NSInteger)modelId {
-    NSString *deleteQuery = @"DELETE FROM BKModel WHERE Id = ?";
-    [self.db executeUpdate:deleteQuery, @(modelId)];
-    NSLog(@"Success to delete BKModel");
+    NSLog(@"Success to create Category table");
 }
 
 - (void)updateDatabaseVersion:(NSInteger)version {

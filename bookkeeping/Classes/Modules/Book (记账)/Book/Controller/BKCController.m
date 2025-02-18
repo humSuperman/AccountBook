@@ -141,7 +141,7 @@
         model.category_id = cmodel.Id;
         model.cmodel = cmodel;
 
-        [[DatabaseManager sharedManager] saveModel:model];
+        [BKModel saveModel:model];
         
     } else {
         // 修改
@@ -154,7 +154,7 @@
         _model.cmodel = cmodel;
         
         // 更新数据库中的数据
-        [[DatabaseManager sharedManager] updateModel:_model];
+        [BKModel updateModel:_model];
     }
     
     

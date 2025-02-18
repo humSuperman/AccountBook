@@ -27,7 +27,12 @@ NS_ASSUME_NONNULL_BEGIN
 
 // 获取Id
 + (NSNumber *)getId;
-
++ (void)saveModel:(BKModel *)model;
++ (NSArray<BKModel *> *)getAllModels;
++ (NSArray<BKModel *> *)getAllModelsWithConditions:(NSDictionary<NSString *,id> *)conditions;
++ (void)updateModel:(BKModel *)model;
++ (BKModel *)getModelById:(NSInteger)modelId;
++ (void)deleteModelById:(NSInteger)modelId;
 @end
 
 
