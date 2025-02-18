@@ -22,28 +22,39 @@
     }else{
         NSLog(@"Success to open database...");
     }
-    [self createDBVersionTable];
+    [self createConfigTable];
     [self checkAndMigrateDatabase];
 
 }
 
-- (void)createDBVersionTable {
+- (void)createConfigTable {
 
-    NSString *checkTableQuery = @"SELECT name FROM sqlite_master WHERE type='table' AND name='DBVersion'";
+    NSString *checkTableQuery = @"SELECT name FROM sqlite_master WHERE type='table' AND name='Config'";
     FMResultSet *results = [self.db executeQuery:checkTableQuery];
 
     if (![results next]) {
-        // 如果没有找到表，创建它
-        NSString *createTableQuery = @"CREATE TABLE IF NOT EXISTS DBVersion (id INTEGER PRIMARY KEY, version INTEGER)";
-        if (![self.db executeUpdate:createTableQuery]) {
-            NSLog(@"Failed to create DBVersion table: %@", [self.db lastErrorMessage]);
+        NSString *tableSql = @"CREATE TABLE IF NOT EXISTS Config (`id` INTEGER PRIMARY KEY autoincrement,`key` VARCHAR(50) not null default '',`value` VARCHAR(255)  not null default '')";
+        if (![self.db executeUpdate:tableSql]) {
+            NSLog(@"Failed to create Config table: %@", [self.db lastErrorMessage]);
+        }
+        NSString *idxSql =  @"CREATE INDEX IF NOT EXISTS idx_config_key ON Config (key);";
+        if (![self.db executeUpdate:idxSql]) {
+            NSLog(@"Failed to create Config index: %@", [self.db lastErrorMessage]);
         }
 
-        // 设置初始版本为 0
-        NSString *insertVersionQuery = @"INSERT INTO DBVersion (id, version) VALUES (1, 0)";
-        if (![self.db executeUpdate:insertVersionQuery]) {
+        NSString *versionQuery = @"INSERT INTO Config (`key`, `value`) VALUES ('db_version', 0)";
+        if (![self.db executeUpdate:versionQuery]) {
             NSLog(@"Failed to insert initial version: %@", [self.db lastErrorMessage]);
         }
+    }
+}
+
+
+- (void)updateDatabaseVersion:(NSInteger)version {
+    // 更新数据库版本号
+    NSString *updateVersionQuery = @"UPDATE Config SET `value` = ? WHERE `key` = 'db_version'";
+    if (![self.db executeUpdate:updateVersionQuery, @(version)]) {
+        NSLog(@"Failed to update database version: %@", [self.db lastErrorMessage]);
     }
 }
 
@@ -55,12 +66,12 @@
 
 - (NSInteger)getSavedDatabaseVersion {
     // 从数据库中读取当前存储的版本号
-    NSString *versionQuery = @"SELECT version FROM DBVersion WHERE id = 1";
+    NSString *versionQuery = @"SELECT `value` FROM Config WHERE `key` = 'db_version'";
     FMResultSet *results = [self.db executeQuery:versionQuery];
 
     NSInteger savedVersion = 0;
     if ([results next]) {
-        savedVersion = [results intForColumn:@"version"];
+        savedVersion = [results intForColumn:@"value"];
     }
 
     return savedVersion;
@@ -86,19 +97,36 @@
 
 - (void)createBKModel {
     // 创建表格的 SQL 语句
-    NSString *createTableQuery = @"CREATE TABLE IF NOT EXISTS BKModel (Id INTEGER PRIMARY KEY autoincrement, price INTEGER, year INTEGER, month INTEGER, day INTEGER, mark TEXT, category_id INTEGER, cmodelId INTEGER,created_at datetime default (datetime('now', 'localtime')),updated_at datetime default (datetime('now', 'localtime')))";
-    if (![self.db executeUpdate:createTableQuery]) {
-        NSLog(@"Failed to create table: %@", [self.db lastErrorMessage]);
+    NSString *tableSql = @"CREATE TABLE IF NOT EXISTS `AccountBook` (`id` INTEGER PRIMARY KEY autoincrement, `price` INTEGER not null default 0, `year` INTEGER not null default 0, `month` INTEGER not null default 0, `day` INTEGER not null default 0, `mark` varchar(50) not null default '', `category_id` INTEGER not null default 0, `type` INTEGER not null default 0,`created_at` datetime default (datetime('now', 'localtime')),`updated_at` datetime default (datetime('now', 'localtime')))";
+
+    if (![self.db executeUpdate:tableSql]) {
+        NSLog(@"Failed to create Config index: %@", [self.db lastErrorMessage]);
     }
-    NSLog(@"Success to create table");
+    NSString *idxSql = @"CREATE INDEX IF NOT EXISTS idx_date ON AccountBook (year,month,day);";
+    if (![self.db executeUpdate:idxSql]) {
+        NSLog(@"Failed to create AccountBook index: %@", [self.db lastErrorMessage]);
+    }
+    idxSql = @"CREATE INDEX IF NOT EXISTS idx_month ON AccountBook (month,day);";
+    if (![self.db executeUpdate:idxSql]) {
+        NSLog(@"Failed to create AccountBook index: %@", [self.db lastErrorMessage]);
+    }
+    idxSql = @"CREATE INDEX IF NOT EXISTS idx_day ON AccountBook (day);";
+    if (![self.db executeUpdate:idxSql]) {
+        NSLog(@"Failed to create AccountBook index: %@", [self.db lastErrorMessage]);
+    }
+    idxSql = @"CREATE INDEX IF NOT EXISTS idx_type ON AccountBook (type);";
+    if (![self.db executeUpdate:idxSql]) {
+        NSLog(@"Failed to create AccountBook index: %@", [self.db lastErrorMessage]);
+    }
+    NSLog(@"Success to create AccountBook table");
 }
 
 
 - (void)createCategoryModel {
     // 创建表格的 SQL 语句
-    NSString *sql = @"CREATE TABLE IF NOT EXISTS Category (id INTEGER PRIMARY KEY AUTOINCREMENT,name TEXT NOT NULL default '',type INTEGER NOT NULL default 0,status INTEGER DEFAULT 0,icon TEXT default '',created_at datetime default (datetime('now', 'localtime')),updated_at datetime default (datetime('now', 'localtime')))";
+    NSString *tableSql = @"CREATE TABLE IF NOT EXISTS `Category` (`id` INTEGER PRIMARY KEY AUTOINCREMENT,`name` varchar(50) NOT NULL default '',`type` INTEGER NOT NULL default 0,`status` INTEGER DEFAULT 0,`icon` varchar(100) default '',`created_at` datetime default (datetime('now', 'localtime')),`updated_at` datetime default (datetime('now', 'localtime')))";
     
-    NSString *dataSql = @"INSERT INTO Category (id, name, type, icon)"
+    NSString *dataSql = @"INSERT INTO `Category` (`id`, `name`, `type`, `icon`)"
     "VALUES"
     "(1, '餐饮', 0, 'e_catering'),"
     "(2, '零食', 0, 'e_snack'),"
@@ -140,22 +168,18 @@
     "(38, '兼职', 1, 'i_parttimework'),"
     "(39, '其它', 1, 'i_other');";
 
-    if (![self.db executeUpdate:sql]) {
+    if (![self.db executeUpdate:tableSql]) {
         NSLog(@"Failed to create Category table: %@", [self.db lastErrorMessage]);
     }
     
     if (![self.db executeUpdate:dataSql]) {
-        NSLog(@"Failed to create Category table: %@", [self.db lastErrorMessage]);
+        NSLog(@"Failed to insert Category data: %@", [self.db lastErrorMessage]);
+    }
+    NSString *idxSql = @"CREATE INDEX IF NOT EXISTS idx_type ON Category (type);";
+    if (![self.db executeUpdate:idxSql]) {
+        NSLog(@"Failed to insert Category index: %@", [self.db lastErrorMessage]);
     }
     NSLog(@"Success to create Category table");
-}
-
-- (void)updateDatabaseVersion:(NSInteger)version {
-    // 更新数据库版本号
-    NSString *updateVersionQuery = @"REPLACE INTO DBVersion (id, version) VALUES (1, ?)";
-    if (![self.db executeUpdate:updateVersionQuery, @(version)]) {
-        NSLog(@"Failed to update database version: %@", [self.db lastErrorMessage]);
-    }
 }
 
 @end

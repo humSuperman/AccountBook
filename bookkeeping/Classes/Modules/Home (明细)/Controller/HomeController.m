@@ -117,7 +117,7 @@
 - (void)homeTableCellRemove:(HomeListSubCell *)cell {
     NSLog(@"删除Cell");
     // 删除数据
-    [BKModel deleteModelById:cell.model.Id];
+    [BKModel deleteAccountById:cell.model.Id];
 
     // 更新
     [[NSNotificationCenter defaultCenter] postNotificationName:NOT_BOOK_DELETE object:nil];

@@ -139,9 +139,8 @@
         model.day = date.day;
         model.mark = mark;
         model.category_id = cmodel.Id;
-        model.cmodel = cmodel;
 
-        [BKModel saveModel:model];
+        [BKModel saveAccount:model];
         
     } else {
         // 修改
@@ -154,7 +153,7 @@
         _model.cmodel = cmodel;
         
         // 更新数据库中的数据
-        [BKModel updateModel:_model];
+        [BKModel updateAccount:_model];
     }
     
     

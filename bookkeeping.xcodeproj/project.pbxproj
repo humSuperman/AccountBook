@@ -349,6 +349,9 @@
 		B5A25A672D63628500E0687F /* MoneyConverter.m in Sources */ = {isa = PBXBuildFile; fileRef = B53EC2882D62DCF200A44FC6 /* MoneyConverter.m */; };
 		B5A25A682D63628B00E0687F /* DatabaseManager.m in Sources */ = {isa = PBXBuildFile; fileRef = B53EC2862D62CD9700A44FC6 /* DatabaseManager.m */; };
 		B5A25A692D63628B00E0687F /* DatabaseManager.m in Sources */ = {isa = PBXBuildFile; fileRef = B53EC2862D62CD9700A44FC6 /* DatabaseManager.m */; };
+		B5A6BCEC2D645C750089257B /* CategoryModel.m in Sources */ = {isa = PBXBuildFile; fileRef = B5A6BCEB2D645C750089257B /* CategoryModel.m */; };
+		B5A6BCED2D6475010089257B /* CategoryModel.m in Sources */ = {isa = PBXBuildFile; fileRef = B5A6BCEB2D645C750089257B /* CategoryModel.m */; };
+		B5A6BCEE2D6475010089257B /* CategoryModel.m in Sources */ = {isa = PBXBuildFile; fileRef = B5A6BCEB2D645C750089257B /* CategoryModel.m */; };
 		EFBA7719833AD39F78BFEC4E /* libPods-BookStart.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E3AD782884DC71E9F3EA4954 /* libPods-BookStart.a */; };
 		F5982707CC838EDD0692E0E0 /* libPods-bookkeeping.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A0876EDE7488D8385656CB1E /* libPods-bookkeeping.a */; };
 /* End PBXBuildFile section */
@@ -908,6 +911,8 @@
 		B53EC2862D62CD9700A44FC6 /* DatabaseManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DatabaseManager.m; sourceTree = "<group>"; };
 		B53EC2882D62DCF200A44FC6 /* MoneyConverter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MoneyConverter.m; sourceTree = "<group>"; };
 		B53EC28A2D62DD0100A44FC6 /* MoneyConverter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MoneyConverter.h; sourceTree = "<group>"; };
+		B5A6BCEA2D645C620089257B /* CategoryModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CategoryModel.h; sourceTree = "<group>"; };
+		B5A6BCEB2D645C750089257B /* CategoryModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CategoryModel.m; sourceTree = "<group>"; };
 		B851B6FB04282545CD2CBDE7 /* Pods-BookStart.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BookStart.release.xcconfig"; path = "Target Support Files/Pods-BookStart/Pods-BookStart.release.xcconfig"; sourceTree = "<group>"; };
 		E3AD782884DC71E9F3EA4954 /* libPods-BookStart.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-BookStart.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E76EBA2977C0FF96F8D76960 /* Pods-bookkeeping.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-bookkeeping.release.xcconfig"; path = "Target Support Files/Pods-bookkeeping/Pods-bookkeeping.release.xcconfig"; sourceTree = "<group>"; };
@@ -2061,6 +2066,8 @@
 			children = (
 				4B1917B121CD391000137215 /* CategoryListModel.h */,
 				4B1917B221CD391000137215 /* CategoryListModel.m */,
+				B5A6BCEA2D645C620089257B /* CategoryModel.h */,
+				B5A6BCEB2D645C750089257B /* CategoryModel.m */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -3237,6 +3244,7 @@
 				32D0B2CB21C782270030F5B2 /* ChartDateCell.m in Sources */,
 				4B9798F821CE69DB0020B207 /* RE2Controller.m in Sources */,
 				4B132AA521C68DE500D5B489 /* BKCCollection.m in Sources */,
+				B5A6BCEC2D645C750089257B /* CategoryModel.m in Sources */,
 				4B1917D021CD45C900137215 /* NSObject+JGRuntime.m in Sources */,
 				32D0B2BD21C778C20030F5B2 /* ChartNavigation.m in Sources */,
 				4B48530B21C69F2800891096 /* MineHeader.m in Sources */,
@@ -3266,6 +3274,7 @@
 				32BFA80B21E4A0FD00B926F3 /* BaseView.m in Sources */,
 				4BFD381021E4C6C700BAB0BB /* UIColor+HEX.m in Sources */,
 				4B38C07B21E4E59600D28B34 /* BKModel.m in Sources */,
+				B5A6BCED2D6475010089257B /* CategoryModel.m in Sources */,
 				4B38C08021E4E6F000D28B34 /* BKCIncomeModel.m in Sources */,
 				4B38C07D21E4E65400D28B34 /* NSObject+NSCoding.m in Sources */,
 				4BFD381C21E4D84B00BAB0BB /* NSString+Extension.m in Sources */,
@@ -3297,6 +3306,7 @@
 				3213181821E5BAF4000ADA9A /* UIResponder+QFEventHandle.m in Sources */,
 				3213181521E59A77000ADA9A /* BKCIncomeModel.m in Sources */,
 				326EB88A21E57C05007CD5C6 /* NSString+Extension.m in Sources */,
+				B5A6BCEE2D6475010089257B /* CategoryModel.m in Sources */,
 				3213182421E5E43C000ADA9A /* BKModel.m in Sources */,
 				326EB88B21E57C0D007CD5C6 /* NSObject+NSCoding.m in Sources */,
 				3233D7C621E57A50009342D7 /* BaseView.m in Sources */,

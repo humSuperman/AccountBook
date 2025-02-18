@@ -19,6 +19,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) NSInteger month;
 @property (nonatomic, assign) NSInteger day;
 @property (nonatomic, assign) NSInteger week;
+@property (nonatomic, assign) NSInteger type;
 @property (nonatomic, copy  ) NSString *mark;
 @property (nonatomic, copy  ) NSString *dateStr;    // 日期(例: 01月03日 星期五)
 @property (nonatomic, strong) NSDate *date;         // 日期
@@ -27,12 +28,12 @@ NS_ASSUME_NONNULL_BEGIN
 
 // 获取Id
 + (NSNumber *)getId;
-+ (void)saveModel:(BKModel *)model;
++ (void)saveAccount:(BKModel *)model;
 + (NSArray<BKModel *> *)getAllModels;
 + (NSArray<BKModel *> *)getAllModelsWithConditions:(NSDictionary<NSString *,id> *)conditions;
-+ (void)updateModel:(BKModel *)model;
-+ (BKModel *)getModelById:(NSInteger)modelId;
-+ (void)deleteModelById:(NSInteger)modelId;
++ (void)updateAccount:(BKModel *)model;
++ (BKModel *)getAccountById:(NSInteger)modelId;
++ (void)deleteAccountById:(NSInteger)modelId;
 @end
 
 

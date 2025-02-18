@@ -4,6 +4,7 @@
  */
 
 #import "BKModel.h"
+#import "CategoryModel.h"
 #import "DatabaseManager.h"
 #import "MoneyConverter.h"
 
@@ -78,30 +79,24 @@
 
 // 获取Id
 + (NSNumber *)getId {
-    NSNumber *Id = [NSUserDefaults objectForKey:BKModelId];
-    if (!Id) {
-        Id = @(0);
+    __block NSInteger lastId = 0;
+    NSString *query = @"SELECT MAX(id) FROM AccountBook";
+    FMResultSet *result = [[DatabaseManager sharedManager].db executeQuery:query];
+    if ([result next]) {
+        lastId = [result intForColumnIndex:0];
     }
-    Id = @([Id integerValue] + 1);
-    [NSUserDefaults setObject:Id forKey:BKModelId];
-    return Id;
-}
-
-+ (void)saveModel:(BKModel *)model {
-    // 插入数据的 SQL 语句
-    NSString *insertQuery = @"INSERT INTO BKModel (price, year, month, day, mark, category_id, cmodelId) VALUES (?, ?, ?, ?, ?, ?, ?)";
-    [[DatabaseManager sharedManager].db executeUpdate:insertQuery, @(model.price), @(model.year), @(model.month), @(model.day), model.mark, @(model.category_id), @(model.cmodel.Id)];
-    NSLog(@"Success to save BKModel");
+    [result close];
+    return @(lastId + 1);
 }
 
 + (NSArray<BKModel *> *)getAllModels {
     NSMutableArray *models = [NSMutableArray array];
-    NSString *selectQuery = @"SELECT * FROM BKModel";
+    NSString *selectQuery = @"SELECT * FROM AccountBook";
     FMResultSet *results = [[DatabaseManager sharedManager].db executeQuery:selectQuery];
 
     while ([results next]) {
         BKModel *model = [[BKModel alloc] init];
-        model.Id = [results intForColumn:@"Id"];
+        model.Id = [results intForColumn:@"id"];
         model.price = [results intForColumn:@"price"];
         model.year = [results intForColumn:@"year"];
         model.month = [results intForColumn:@"month"];
@@ -118,7 +113,7 @@
     NSMutableArray *models = [NSMutableArray array];
     
     // 构建 SQL 查询语句
-    NSMutableString *selectQuery = [NSMutableString stringWithString:@"SELECT * FROM BKModel"];
+    NSMutableString *selectQuery = [NSMutableString stringWithString:@"SELECT * FROM AccountBook"];
     NSMutableArray *arguments = [NSMutableArray array];
     
     if (conditions.count > 0) {
@@ -140,7 +135,7 @@
     FMResultSet *results = [[DatabaseManager sharedManager].db executeQuery:selectQuery withArgumentsInArray:arguments];
     while ([results next]) {
         BKModel *model = [[BKModel alloc] init];
-        model.Id = [results intForColumn:@"Id"];
+        model.Id = [results intForColumn:@"id"];
         model.price = [results intForColumn:@"price"];
         model.year = [results intForColumn:@"year"];
         model.month = [results intForColumn:@"month"];
@@ -155,34 +150,52 @@
     return models;
 }
 
-+ (void)updateModel:(BKModel *)model {
-    NSString *updateQuery = @"UPDATE BKModel SET price = ?, year = ?, month = ?, day = ?, mark = ?, category_id = ?,updated_at = DATETIME('now', 'localtime') WHERE Id = ?";
-    [[DatabaseManager sharedManager].db executeUpdate:updateQuery, @(model.price), @(model.year), @(model.month), @(model.day), model.mark, @(model.category_id), @(model.Id)];
-    NSLog(@"Success to update BKModel");
++ (void)saveAccount:(BKModel *)model {
+    CategoryModel *category = [[CategoryModel getCategorieById:model.category_id] copy];
+    if(category == nil){
+        NSLog(@"分类不存在，更新失败");
+        return;
+    }
+    // 插入数据的 SQL 语句
+    NSString *insertQuery = @"INSERT INTO AccountBook (price, year, month, day, mark, category_id, type) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    [[DatabaseManager sharedManager].db executeUpdate:insertQuery, @(model.price), @(model.year), @(model.month), @(model.day), model.mark, @(model.category_id), @(category.type)];
+    NSLog(@"Success to save AccountBook");
 }
 
-+ (BKModel *)getModelById:(NSInteger)modelId{
-    NSString *selectQuery = @"SELECT * FROM BKModel WHERE Id = ?";
++ (void)updateAccount:(BKModel *)model {
+    CategoryModel *category = [[CategoryModel getCategorieById:model.category_id] copy];
+    if(category == nil){
+        NSLog(@"分类不存在，更新失败");
+        return;
+    }
+    NSString *updateQuery = @"UPDATE AccountBook SET price = ?, year = ?, month = ?, day = ?, mark = ?, category_id = ?, type = ?, updated_at = DATETIME('now', 'localtime') WHERE id = ?";
+    [[DatabaseManager sharedManager].db executeUpdate:updateQuery, @(model.price), @(model.year), @(model.month), @(model.day), model.mark, @(model.category_id), @(category.type), @(model.Id)];
+    NSLog(@"Success to update AccountBook");
+}
+
++ (BKModel *)getAccountById:(NSInteger)modelId{
+    NSString *selectQuery = @"SELECT * FROM AccountBook WHERE Id = ?";
     FMResultSet *results = [[DatabaseManager sharedManager].db executeQuery:selectQuery, @(modelId)];
 
     if ([results next]) {
         BKModel *model = [[BKModel alloc] init];
-        model.Id = [results intForColumn:@"Id"];
+        model.Id = [results intForColumn:@"id"];
         model.price = [results doubleForColumn:@"price"];
         model.year = [results intForColumn:@"year"];
         model.month = [results intForColumn:@"month"];
         model.day = [results intForColumn:@"day"];
         model.mark = [results stringForColumn:@"mark"];
         model.category_id = [results intForColumn:@"category_id"];
-        // 设置 cmodel，如果需要的话
+        model.type = [results intForColumn:@"type"];
+
         return model;
     }
     return nil;  // 如果找不到，返回 nil
 }
 
-+ (void)deleteModelById:(NSInteger)modelId {
-    NSString *deleteQuery = @"DELETE FROM BKModel WHERE Id = ?";
-    [[DatabaseManager sharedManager].db executeUpdate:deleteQuery, @(modelId)];
++ (void)deleteAccountById:(NSInteger)id {
+    NSString *deleteQuery = @"DELETE FROM AccountBook WHERE id = ?";
+    [[DatabaseManager sharedManager].db executeUpdate:deleteQuery, @(id)];
     NSLog(@"Success to delete BKModel");
 }
 
@@ -300,9 +313,9 @@
     NSMutableDictionary *conditions = [NSMutableDictionary dictionary];
     // todo 查询收入、支出
     //[conditions setObject:@(isIncome) forKey:@"cmodel.is_income"];
-    if (cmodel) {
-        [conditions setObject:@(cmodel.cmodel.Id) forKey:@"cmodel.Id"];
-    }
+//    if (cmodel) {
+//        [conditions setObject:@(cmodel.cmodel.Id) forKey:@"cmodel.Id"];
+//    }
     if (status == 0) { // 周
         NSDate *start = [date offsetDays:-[date weekday] + 1];
         NSDate *end = [date offsetDays:7 - [date weekday]];
