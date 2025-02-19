@@ -314,15 +314,11 @@
     NSLog(@"进入统计sql： statisticalChart");
     // 初始化
     BKChartModel *model = [[BKChartModel alloc] init];
-    model.is_income = isIncome;
 
     // 构建查询条件
     NSMutableDictionary *conditions = [NSMutableDictionary dictionary];
-    // todo 查询收入、支出
-    //[conditions setObject:@(isIncome) forKey:@"cmodel.is_income"];
-//    if (cmodel) {
-//        [conditions setObject:@(cmodel.cmodel.Id) forKey:@"cmodel.Id"];
-//    }
+    // 查询收入、支出
+    [conditions setObject:isIncome ? @(1) : @(0) forKey:@"type = "];
     if (status == 0) { // 周
         NSDate *start = [date offsetDays:-[date weekday] + 1];
         NSDate *end = [date offsetDays:7 - [date weekday]];
@@ -431,11 +427,11 @@
     model.groupArr = groupArr;
     model.chartArr = chartArr;
     model.chartHudArr = chartHudArr;
+    model.is_income = isIncome;
     model.sum = [MoneyConverter toRealMoney:sum]; // 转换为实际金额
     model.max = [[chartArr valueForKeyPath:@"@max.price.floatValue"] stringValue];
     model.avg = [MoneyConverter toRealMoney:[[NSString stringWithFormat:@"%.2lu", sum / chartArr.count] intValue]];
-    
-    NSLog(@"%@",model);
+
     
     return model;
 }
