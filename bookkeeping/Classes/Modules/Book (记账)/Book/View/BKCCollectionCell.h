@@ -5,12 +5,13 @@
 
 #import "BaseCollectionCell.h"
 #import "BKCIncomeModel.h"
+#import "CategoryModel.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface BKCCollectionCell : BaseCollectionCell
 
-@property (nonatomic, strong) BKCModel *model;
+@property (nonatomic, strong) CategoryModel *model;
 @property (nonatomic, assign, getter=isChoose) BOOL choose;
 
 @end

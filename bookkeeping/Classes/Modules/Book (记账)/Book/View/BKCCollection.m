@@ -7,6 +7,7 @@
 #import "BKCCollectionCell.h"
 #import "BKCRefreshHeader.h"
 #import "CAController.h"
+#import "CategoryModel.h"
 #import "BOOK_EVENT.h"
 
 
@@ -50,8 +51,8 @@
 
 #pragma mark - set
 - (void)setModel:(BKCIncomeModel *)model {
-    BKCModel *set = [BKCModel createSetModel];
-    NSMutableArray<BKCModel *> *list = model.list;
+    CategoryModel *set = [CategoryModel createSetModel];
+    NSMutableArray<CategoryModel *> *list = model.list;
     [list addObject:set];
     
     _model = model;

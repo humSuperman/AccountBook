@@ -33,6 +33,14 @@
     return model;
 }
 
++ (CategoryModel *)createSetModel{
+    CategoryModel *set = [[CategoryModel alloc] init];
+    set.Id = 0;
+    set.name = @"设置";
+    set.icon = @"cc_home_tools.png";
+    return set;
+}
+
 - (NSString *)getIconForSuffix:(NSString *)suffix {
     return [self.icon stringByAppendingString:suffix];
 }
@@ -52,12 +60,23 @@
 }
 
 // 获取所有分类
-+ (NSArray<CategoryModel *> *)getAllCategories {
-    NSString *selectSQL = @"SELECT * FROM Category";
-    
++ (NSArray<CategoryModel *> *)getAllCategories:(NSDictionary<NSString *,id> *)conditions {
+    NSMutableString *selectQuery = [NSMutableString stringWithString:@"SELECT * FROM Category"];
+    NSMutableArray *arguments = [NSMutableArray array];
+    if (conditions.count > 0) {
+        [selectQuery appendString:@" WHERE "];
+        __block int i = 0;
+        [conditions enumerateKeysAndObjectsUsingBlock:^(NSString * _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
+            if (i > 0) {
+                [selectQuery appendString:@" AND "];
+            }
+            [selectQuery appendFormat:@"%@ ?", key];
+            [arguments addObject:obj];
+            i++;
+        }];
+    }
     // 获取查询结果
-    FMResultSet *results = [[DatabaseManager sharedManager].db executeQuery:selectSQL];
-    
+    FMResultSet *results = [[DatabaseManager sharedManager].db executeQuery:selectQuery withArgumentsInArray:arguments];
     NSMutableArray *categories = [NSMutableArray array];
     while ([results next]) {
         CategoryModel *category = [[CategoryModel alloc] init];

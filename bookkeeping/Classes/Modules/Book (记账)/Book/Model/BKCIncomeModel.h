@@ -4,6 +4,7 @@
  */
 
 #import "BaseModel.h"
+#import "CategoryModel.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -27,7 +28,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface BKCIncomeModel : BaseModel<NSCoding>
 
 @property (nonatomic, assign) BOOL is_income;
-@property (nonatomic, strong) NSMutableArray<BKCModel *> *list;
+@property (nonatomic, strong) NSMutableArray<CategoryModel *> *list;
 
 @end
 

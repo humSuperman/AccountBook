@@ -158,25 +158,15 @@
 }
 
 + (void)saveAccount:(BKModel *)model {
-    CategoryModel *category = [[CategoryModel getCategoryById:model.category_id] copy];
-    if(category == nil){
-        NSLog(@"分类不存在，更新失败");
-        return;
-    }
     // 插入数据的 SQL 语句
     NSString *insertQuery = @"INSERT INTO AccountBook (price, year, month, day, mark, category_id, type) VALUES (?, ?, ?, ?, ?, ?, ?)";
-    [[DatabaseManager sharedManager].db executeUpdate:insertQuery, @(model.price), @(model.year), @(model.month), @(model.day), model.mark, @(model.category_id), @(category.type)];
+    [[DatabaseManager sharedManager].db executeUpdate:insertQuery, @(model.price), @(model.year), @(model.month), @(model.day), model.mark, @(model.category_id), @(model.type)];
     NSLog(@"Success to save AccountBook");
 }
 
 + (void)updateAccount:(BKModel *)model {
-    CategoryModel *category = [[CategoryModel getCategoryById:model.category_id] copy];
-    if(category == nil){
-        NSLog(@"分类不存在，更新失败");
-        return;
-    }
     NSString *updateQuery = @"UPDATE AccountBook SET price = ?, year = ?, month = ?, day = ?, mark = ?, category_id = ?, type = ?, updated_at = DATETIME('now', 'localtime') WHERE id = ?";
-    [[DatabaseManager sharedManager].db executeUpdate:updateQuery, @(model.price), @(model.year), @(model.month), @(model.day), model.mark, @(model.category_id), @(category.type), @(model.Id)];
+    [[DatabaseManager sharedManager].db executeUpdate:updateQuery, @(model.price), @(model.year), @(model.month), @(model.day), model.mark, @(model.category_id), @(model.type), @(model.Id)];
     NSLog(@"Success to update AccountBook");
 }
 

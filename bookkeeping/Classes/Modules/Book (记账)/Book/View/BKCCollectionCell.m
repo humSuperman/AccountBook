@@ -22,20 +22,20 @@
     self.lab.font = [UIFont systemFontOfSize:AdjustFont(12) weight:UIFontWeightLight];
     self.lab.textColor = kColor_Text_Gary;
 }
-- (void)setModel:(BKCModel *)model {
+- (void)setModel:(CategoryModel *)model {
     _model = model;
     [_lab setText:model.name];
-    [_icon setImage:[UIImage imageNamed:_model.icon_n]];
+    [_icon setImage:[UIImage imageNamed:_model.icon]];
 }
 - (void)setChoose:(BOOL)choose {
     _choose = choose;
     // 选中
     if (choose == YES) {
-        [_icon setImage:[UIImage imageNamed:_model.icon_s]];
+        [_icon setImage:[UIImage imageNamed:[_model getIconForSuffix:@"_s"]]];
     }
     // 未选中
     else {
-        [_icon setImage:[UIImage imageNamed:_model.icon_n]];
+        [_icon setImage:[UIImage imageNamed:_model.icon]];
     }
 }
 

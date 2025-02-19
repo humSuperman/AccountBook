@@ -12,10 +12,11 @@
 @property (nonatomic, copy) NSString *createdAt;
 @property (nonatomic, copy) NSString *updatedAt;
 
++ (CategoryModel *)createSetModel;
 - (NSString *)getIconForSuffix:(NSString *)suffix;
 + (void)addCategory:(CategoryModel *)model;
 + (void)updateCategory:(CategoryModel *)model;
-+ (NSArray<CategoryModel *> *)getAllCategories;
++ (NSArray<CategoryModel *> *)getAllCategories:(NSDictionary<NSString *,id> *)conditions;
 + (CategoryModel *)getCategoryById:(NSInteger)Id;
 + (void)deleteCategoryById :(NSInteger)Id;
 @end

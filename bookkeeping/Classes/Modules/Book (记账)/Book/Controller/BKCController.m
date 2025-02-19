@@ -12,7 +12,7 @@
 #import "KKRefreshGifHeader.h"
 #import "BOOK_EVENT.h"
 #import "BKModel.h"
-#import "DatabaseManager.h"
+#import "CategoryModel.h"
 #import "MoneyConverter.h"
 
 
@@ -41,95 +41,74 @@
     [self scroll];
     [self collections];
     [self keyboard];
-//    [self getCategoryListRequest];
-    
-    
-    
+
+
+
     [self bendiData];
-    
-    
+
+
     if (_model) {
-        dispatch_async(dispatch_get_main_queue(), ^{        
+        dispatch_async(dispatch_get_main_queue(), ^{
             BOOL is_income = (self.model.type == 0);
             [self.scroll setContentOffset:CGPointMake(SCREEN_WIDTH * is_income, 0) animated:false];
             [self.navigation setOffsetX:self.scroll.contentOffset.x];
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 BKCCollection *collection = self.collections[is_income];
-                NSMutableArray *arrm = [NSMutableArray array];
+                NSArray<CategoryModel *> *arrm = [NSArray array];
+                NSMutableDictionary *conditions = [NSMutableDictionary dictionary];
                 if (is_income == false) {
-                    [arrm addObjectsFromArray:[NSUserDefaults objectForKey:PIN_CATE_SYS_HAS_PAY]];
-                    [arrm addObjectsFromArray:[NSUserDefaults objectForKey:PIN_CATE_CUS_HAS_PAY]];
+                    [conditions setObject:@(0) forKey:@"type ="];
+                    arrm = [CategoryModel getAllCategories:conditions];
                 } else {
-                    [arrm addObjectsFromArray:[NSUserDefaults objectForKey:PIN_CATE_SYS_HAS_INCOME]];
-                    [arrm addObjectsFromArray:[NSUserDefaults objectForKey:PIN_CATE_CUS_HAS_INCOME]];
+                    [conditions setObject:@(1) forKey:@"type ="];
+                    arrm = [CategoryModel getAllCategories:conditions];
                 }
-                [collection setSelectIndex:[NSIndexPath indexPathForRow:[arrm indexOfObject:self.model.cmodel] inSection:0]];
+                [collection setSelectIndex:[NSIndexPath indexPathForRow:[arrm indexOfObject:self.model.category] inSection:0]];
                 [collection reloadData];
                 [self bookClickItem:collection];
                 [self.keyboard setModel:self.model];
             });
         });
     }
-    
+
 }
 
 - (void)bendiData {
     BKCIncomeModel *model1 = [[BKCIncomeModel alloc] init];
     model1.is_income = false;
-    model1.list = ({
-        NSMutableArray<BKCModel *> *sysHasPayArr = [NSUserDefaults objectForKey:PIN_CATE_SYS_HAS_PAY];
-        NSMutableArray<BKCModel *> *cusHasPayArr = [NSUserDefaults objectForKey:PIN_CATE_CUS_HAS_PAY];
-        NSMutableArray<BKCModel *> *payArr = ({
-            NSMutableArray *arrm = [NSMutableArray arrayWithArray:sysHasPayArr];
-            [arrm addObjectsFromArray:cusHasPayArr];
-            arrm = [BKCModel mj_objectArrayWithKeyValuesArray:arrm];
-            arrm;
-        });
-        payArr;
-    });
-    
+    NSMutableDictionary *conditions = [NSMutableDictionary dictionary];
+    [conditions setObject:@(0) forKey:@"type ="];
+    model1.list = [NSMutableArray arrayWithArray:[CategoryModel getAllCategories:conditions]];
+
     BKCIncomeModel *model2 = [[BKCIncomeModel alloc] init];
     model2.is_income = true;
-    model2.list = ({
-        NSMutableArray<BKCModel *> *sysHasIncomeArr = [NSUserDefaults objectForKey:PIN_CATE_SYS_HAS_INCOME];
-        NSMutableArray<BKCModel *> *cusHasIncomeArr = [NSUserDefaults objectForKey:PIN_CATE_CUS_HAS_INCOME];
-        NSMutableArray<BKCModel *> *incomeArr = ({
-            NSMutableArray *arrm = [NSMutableArray arrayWithArray:sysHasIncomeArr];
-            [arrm addObjectsFromArray:cusHasIncomeArr];
-            arrm = [BKCModel mj_objectArrayWithKeyValuesArray:arrm];
-            arrm;
-        });
-        incomeArr;
-    });
+    conditions = [NSMutableDictionary dictionary];
+    [conditions setObject:@(1) forKey:@"type ="];
+    model2.list = [NSMutableArray arrayWithArray:[CategoryModel getAllCategories:conditions]];
     [self setModels:@[model1, model2]];
 }
 
 
 #pragma mark - 请求
-// 获取我的分类
-- (void)getCategoryListRequest {
-    @weakify(self)
-    [self.scroll createRequest:CategoryListRequest params:@{} complete:^(APPResult *result) {
-        @strongify(self)
-        [self setModels:[BKCIncomeModel mj_objectArrayWithKeyValuesArray:result.data]];
-    }];
-}
+
 // 记账
 - (void)createBookRequest:(NSString *)price mark:(NSString *)mark date:(NSDate *)date {
     NSInteger index = self.scroll.contentOffset.x / SCREEN_WIDTH;
     BKCCollection *collection = self.collections[index];
-    BKCModel *cmodel = collection.model.list[collection.selectIndex.row];
+    CategoryModel *category = collection.model.list[collection.selectIndex.row];
     BKModel *model = [[BKModel alloc] init];
-    
+    if(category == nil){
+        NSLog(@"分类不存在，%ld",collection.selectIndex.row);
+        return;
+    }
     model.Id = [[BKModel getId] integerValue];
     model.price = [MoneyConverter toIntMoney:price];
     model.year = date.year;
     model.month = date.month;
     model.day = date.day;
     model.mark = mark;
-    model.category_id = cmodel.Id;
-    model.cmodel = cmodel;
-    
+    model.category_id = category.Id;
+
     if (!_model) {
         // 新增
         BKModel *model = [[BKModel alloc] init];
@@ -138,10 +117,11 @@
         model.month = date.month;
         model.day = date.day;
         model.mark = mark;
-        model.category_id = cmodel.Id;
+        model.category_id = category.Id;
+        model.type = category.type;
 
         [BKModel saveAccount:model];
-        
+
     } else {
         // 修改
         _model.price = [MoneyConverter toIntMoney:price];
@@ -149,14 +129,14 @@
         _model.month = date.month;
         _model.day = date.day;
         _model.mark = mark;
-        _model.category_id = cmodel.Id;
-        _model.cmodel = cmodel;
-        
+        _model.category_id = category.Id;
+        _model.type = category.type;
+
         // 更新数据库中的数据
         [BKModel updateAccount:_model];
     }
-    
-    
+
+
     if (self.navigationController.viewControllers.count != 1) {
         [self.navigationController popViewControllerAnimated:true];
         [[NSNotificationCenter defaultCenter] postNotificationName:NOT_BOOK_COMPLETE object:model];
