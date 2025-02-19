@@ -49,7 +49,7 @@
 #pragma mark - set
 - (void)setModel:(BKModel *)model {
     _model = model;
-    [_icon setImage:[UIImage imageNamed:[model.category.icon stringByAppendingString:@"_l"]]];
+    [_icon setImage:[UIImage imageNamed:[model.category getIconForSuffix:@"_l"]]];
     [_nameLab setText:model.category.name];
     [_detailLab setText:[MoneyConverter toRealMoney:model.price]];
     

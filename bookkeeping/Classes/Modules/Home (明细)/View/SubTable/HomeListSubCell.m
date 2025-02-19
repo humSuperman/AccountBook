@@ -59,7 +59,7 @@
 - (void)setModel:(BKModel *)model {
     _model = model;
     //icon 不保存后缀 e_catering,e_catering_l,e_catering_s
-    [_icon setImage:[UIImage imageNamed:[model.category.icon stringByAppendingString:@"_l"]]];
+    [_icon setImage:[UIImage imageNamed:[model.category getIconForSuffix:@"_l"]]];
     [_nameLab setText:model.category.name];
     [_detailLab setText:model.type == 0 ? [MoneyConverter toRealMoney:model.price*-1] : [MoneyConverter toRealMoney:model.price]];
 }

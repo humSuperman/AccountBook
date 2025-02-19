@@ -44,9 +44,8 @@
 #pragma mark - set
 - (void)setModel:(BKModel *)model {
     _model = model;
-    [_icon setImage:[UIImage imageNamed:model.cmodel.icon_l]];
-    [_nameLab setText:model.cmodel.name];
-//    [_icon sd_setImageWithURL:[NSURL URLWithString:KStatic(model.cmodel.icon_l)]];
+    [_icon setImage:[UIImage imageNamed:[model.category getIconForSuffix:@"_l"]]];
+    [_nameLab setText:model.category.name];
 }
 
 

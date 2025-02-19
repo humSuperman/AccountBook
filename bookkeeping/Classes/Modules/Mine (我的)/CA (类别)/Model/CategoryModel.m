@@ -8,6 +8,19 @@
 
 @implementation CategoryModel
 
+- (void)encodeWithCoder:(nonnull NSCoder *)coder {
+    [NSObject encodeClass:self encoder:coder];
+}
+
+- (nullable instancetype)initWithCoder:(nonnull NSCoder *)coder {
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+    self = [NSObject decodeClass:self decoder:coder];
+    return self;
+}
+
 - (instancetype)copyWithZone:(NSZone *)zone {
     CategoryModel *model = [[[self class] allocWithZone:zone] init];
     model.Id = self.Id;
@@ -19,6 +32,11 @@
     model.updatedAt = self.updatedAt;
     return model;
 }
+
+- (NSString *)getIconForSuffix:(NSString *)suffix {
+    return [self.icon stringByAppendingString:suffix];
+}
+
 // 添加分类
 + (void)addCategory:(CategoryModel *)model  {
     NSString *insertSQL = @"INSERT INTO Category (name, type, icon) VALUES (?, ?, ?);";
