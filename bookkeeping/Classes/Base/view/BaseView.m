@@ -52,7 +52,9 @@
 
 // 初始化UI
 - (void)initUI {
-    
+    if (@available(iOS 13.0, *)) {
+        self.overrideUserInterfaceStyle = UIUserInterfaceStyleLight;
+    }
 }
 
 @end

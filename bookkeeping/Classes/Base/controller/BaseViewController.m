@@ -43,6 +43,9 @@ typedef NS_ENUM(NSInteger, BarButtonItemState) {
 - (void)initUI {
     [self setLeftBtn];
     [self setRightBtn];
+    if (@available(iOS 13.0, *)) {
+        self.overrideUserInterfaceStyle = UIUserInterfaceStyleLight;
+    }
 }
 - (void)setNavTitle:(NSString *)navTitle {
     _navTitle = navTitle;

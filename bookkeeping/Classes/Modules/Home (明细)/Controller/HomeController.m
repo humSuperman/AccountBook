@@ -51,11 +51,6 @@
         @strongify(self)
         [self setModels:[BKMonthModel statisticalMonthWithYear:self.date.year month:self.date.month]];
     }];
-    // 同步数据成功
-    [[[[NSNotificationCenter defaultCenter] rac_addObserverForName:SYNCED_DATA_COMPLETE object:nil] takeUntil:self.rac_willDeallocSignal] subscribeNext:^(id x) {
-        @strongify(self)
-        [self setModels:[BKMonthModel statisticalMonthWithYear:self.date.year month:self.date.month]];
-    }];
 }
 
 
@@ -110,11 +105,8 @@
 }
 // 删除Cell
 - (void)homeTableCellRemove:(HomeListSubCell *)cell {
-    NSLog(@"删除Cell");
-    // 删除数据
     [BKModel deleteAccountById:cell.model.Id];
 
-    // 更新
     [[NSNotificationCenter defaultCenter] postNotificationName:NOT_BOOK_DELETE object:nil];
 }
 // 点击Cell

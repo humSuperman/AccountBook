@@ -1,7 +1,6 @@
 /**
  * 添加分类
- * @author 郑业强 2018-12-17 创建文件
- * @author 郑业强 2019-01-04 添加本地数据
+ * @author Hum 2025-02-20 适配刘海屏
  */
 
 #import "ACAController.h"
