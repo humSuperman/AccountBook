@@ -111,6 +111,10 @@
                 [btn setTitle:@"完成" forState:UIControlStateNormal];
                 [btn setTitle:@"完成" forState:UIControlStateHighlighted];
             }
+            else if (btn.tag == DELETE_TAG) {
+                [btn setTitle:@"删除" forState:UIControlStateNormal];
+                [btn setTitle:@"删除" forState:UIControlStateHighlighted];
+            }
             
             [btn setTitleColor:kColor_Text_Black forState:UIControlStateNormal];
             [btn setTitleColor:kColor_Text_Black forState:UIControlStateHighlighted];
@@ -425,8 +429,6 @@
         NSString *str = [NSString stringWithFormat:@"-%@", arrm[0]];
         [arrm replaceObjectAtIndex:0 withObject:str];
     }
-    NSLog(@"%@", arrm);
-    NSLog(@"123");
     return @[];
     
 }
@@ -492,6 +494,8 @@
 
 #pragma mark - set
 - (void)setMoney:(NSMutableString *)money {
+    [money replaceOccurrencesOfString:@"," withString:@"" options:0 range:NSMakeRange(0, money.length)];
+    NSLog(@"setMoney %@",money);
     _money = money;
     _moneyLab.text = money;
 }
