@@ -41,15 +41,11 @@
     [self scroll];
     [self collections];
     [self keyboard];
-
-
-
     [self bendiData];
-
 
     if (_model) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            BOOL is_income = (self.model.type == 0);
+            BOOL is_income = (self.model.type == 1);
             [self.scroll setContentOffset:CGPointMake(SCREEN_WIDTH * is_income, 0) animated:false];
             [self.navigation setOffsetX:self.scroll.contentOffset.x];
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
@@ -63,7 +59,15 @@
                     [conditions setObject:@(1) forKey:@"type ="];
                     arrm = [CategoryModel getAllCategories:conditions];
                 }
-                [collection setSelectIndex:[NSIndexPath indexPathForRow:[arrm indexOfObject:self.model.category] inSection:0]];
+                NSInteger targetIndex = -1;
+                for(NSUInteger i = 0; i < arrm.count; i++){
+                    if(arrm[i].Id == self.model.category.Id){
+                        targetIndex = (NSInteger)i;
+                        break;
+                    }
+                }
+                [collection setSelectIndex:[NSIndexPath indexPathForRow:targetIndex inSection:0]];
+                [collection setSelectedModelId:self.model.category.Id];
                 [collection reloadData];
                 [self bookClickItem:collection];
                 [self.keyboard setModel:self.model];
@@ -95,23 +99,14 @@
 - (void)createBookRequest:(NSString *)price mark:(NSString *)mark date:(NSDate *)date {
     NSInteger index = self.scroll.contentOffset.x / SCREEN_WIDTH;
     BKCCollection *collection = self.collections[index];
-    CategoryModel *category = collection.model.list[collection.selectIndex.row];
-    BKModel *model = [[BKModel alloc] init];
+    CategoryModel *category = [CategoryModel getCategoryById:collection.selectedModelId];
     if(category == nil){
-        NSLog(@"分类不存在，%ld",collection.selectIndex.row);
+        NSLog(@"分类不存在，%ld",collection.selectedModelId);
         return;
     }
-    model.Id = [[BKModel getId] integerValue];
-    model.price = [MoneyConverter toIntMoney:price];
-    model.year = date.year;
-    model.month = date.month;
-    model.day = date.day;
-    model.mark = mark;
-    model.category_id = category.Id;
-
+    BKModel *model = [[BKModel alloc] init];
     if (!_model) {
         // 新增
-        BKModel *model = [[BKModel alloc] init];
         model.price = [MoneyConverter toIntMoney:price];
         model.year = date.year;
         model.month = date.month;
@@ -119,9 +114,7 @@
         model.mark = mark;
         model.category_id = category.Id;
         model.type = category.type;
-
         [BKModel saveAccount:model];
-
     } else {
         // 修改
         _model.price = [MoneyConverter toIntMoney:price];
@@ -131,11 +124,10 @@
         _model.mark = mark;
         _model.category_id = category.Id;
         _model.type = category.type;
-
         // 更新数据库中的数据
         [BKModel updateAccount:_model];
+        model = _model;
     }
-
 
     if (self.navigationController.viewControllers.count != 1) {
         [self.navigationController popViewControllerAnimated:true];
@@ -176,7 +168,7 @@
     NSIndexPath *indexPath = collection.selectIndex;
     BKCIncomeModel *listModel = _models[collection.tag];
     // 选择类别
-    if (indexPath.row != (listModel.list.count - 1)) {
+    if (collection.selectedModelId != -1) {
         // 显示键盘
         [self.keyboard show];
         // 刷新
@@ -232,6 +224,7 @@
     }
     return _scroll;
 }
+
 - (BKCNavigation *)navigation {
     if (!_navigation) {
         _navigation = [BKCNavigation loadFirstNib:CGRectMake(0, 0, SCREEN_WIDTH, NavigationBarHeight)];

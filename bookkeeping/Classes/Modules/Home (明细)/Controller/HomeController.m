@@ -120,7 +120,6 @@
 // 点击Cell
 - (void)homeTableCellClick:(BKModel *)model {
     // 详情
-    NSLog(@"homeTableCellClick %ld",model.Id);
     BKCController *vc = [[BKCController alloc] init];
     vc.model = model;
     [self.navigationController pushViewController:vc animated:true];

@@ -35,7 +35,7 @@
 
 + (CategoryModel *)createSetModel{
     CategoryModel *set = [[CategoryModel alloc] init];
-    set.Id = 0;
+    set.Id = -1;
     set.name = @"设置";
     set.icon = @"cc_home_tools.png";
     return set;

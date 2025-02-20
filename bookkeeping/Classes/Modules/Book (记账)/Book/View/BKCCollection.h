@@ -12,6 +12,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, strong) BKCIncomeModel *model;
 @property (nonatomic, strong) NSIndexPath *selectIndex;
+@property (nonatomic, assign) NSInteger selectedModelId;
+
 
 // 初始化
 + (instancetype)initWithFrame:(CGRect)frame;

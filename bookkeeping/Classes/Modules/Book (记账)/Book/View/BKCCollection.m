@@ -63,7 +63,8 @@
 #pragma mark - 操作
 // 刷新index
 - (void)reloadSelectIndex {
-    if (_selectIndex) {
+    if (_selectedModelId) {
+        _selectedModelId = nil;
         _selectIndex = nil;
         [self reloadData];
     }
@@ -90,26 +91,28 @@
 }
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     BKCCollectionCell *cell = [BKCCollectionCell loadItem:collectionView index:indexPath];
-    cell.model = self.model.list[indexPath.row];
-    cell.choose = [_selectIndex isEqual:indexPath];
+    CategoryModel *model = self.model.list[indexPath.row];
+    cell.model = model;
+    cell.choose = self.selectedModelId == model.Id;
     return cell;
 }
 
 
 #pragma mark - UICollectionViewDelegate
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
+    CategoryModel *selectedModel = self.model.list[indexPath.row];
+    self.selectedModelId = selectedModel.Id;
     // 记账
     if (indexPath.row != (_model.list.count - 1)) {
-        _selectIndex = indexPath;
         [self reloadData];
         [self routerEventWithName:BOOK_CLICK_ITEM data:self];
     }
     // 设置
     else {
-        _selectIndex = indexPath;
         [self routerEventWithName:BOOK_CLICK_ITEM data:self];
     }
 }
+
 - (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section {
     return UIEdgeInsetsMake(countcoordinatesX(10), countcoordinatesX(10), countcoordinatesX(10), countcoordinatesX(10));
 }
