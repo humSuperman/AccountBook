@@ -95,6 +95,7 @@
 }
 // 回前台
 - (void)applicationDidBecomeActive:(UIApplication *)application {
+    [[DatabaseManager sharedManager] openDatabase];
     [ScreenBlurry removeBlurryScreenImage];
 }
 
@@ -104,7 +105,6 @@
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application {
-    // 应用进入后台时可以选择关闭数据库，或者仅释放资源
     [[DatabaseManager sharedManager] closeDatabase];
 }
 

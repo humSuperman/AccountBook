@@ -1,6 +1,6 @@
 /**
  * 键盘
- * @author 郑业强 2018-12-18 创建文件
+ * @author Hum 2025-02-20 创建文件
  */
 
 #import "BKCKeyboard.h"
@@ -200,8 +200,6 @@
             str;
         });
         
-        
-        
         // 是否可以输入
         if ([self isAllowMath:str]) {
             if (_money.length == 0 || [_money isEqualToString:@"0"]) {
@@ -211,7 +209,6 @@
             }
             [self setMoney:_money];
         }
-        
     }
 }
 // 点
@@ -343,13 +340,11 @@
     }
 }
 
-
 // 计算
 - (void)calculationMath {
     if (_money.length == 0) {
         return;
     }
-    
     
     BOOL condition1 = [_money hasSuffix:@"="];
     BOOL condition2 = [_money componentsSeparatedByString:@"+"].count == 3;
@@ -372,11 +367,6 @@
         if ([_money hasSuffix:@"-"]) {
             [strm appendString:@"-"];
         }
-//        // 没加减
-//        if (![_money hasSuffix:@"+"] && ![_money hasSuffix:@"-"]) {
-//            [self reloadCompleteButton];
-//        }
-        
         [self setMoney:strm];
     }
 }
@@ -396,10 +386,7 @@
 - (BOOL)hasDecimal:(NSString *)number {
     NSArray<NSString *> *arr = [number componentsSeparatedByString:@"."];
     NSString *decimal = arr[1];
-    if ([decimal integerValue] == 0) {
-        return false;
-    }
-    return true;
+    return !([decimal integerValue] == 0);
 }
 // 获取字符串中的数字
 - (NSArray<NSString *> *)getNumberWithString:(NSString *)string {
@@ -413,7 +400,6 @@
     if ([lastStr isEqualToString:@"+"] || [lastStr isEqualToString:@"-"]) {
         string = [string substringToIndex:string.length - 1];
     }
-    
     
     NSMutableArray *arrm;
     // 加法
@@ -439,12 +425,9 @@
     if (_money.length >= 15) {
         return false;
     }
-    
-    
     if (!str || str.length == 0) {
         return true;
     }
-    
     NSString *lastStr = [str substringFromIndex:str.length - 1];
     // 最后输入的是数字
     if ([lastStr isEqualToString:@"+"] || [lastStr isEqualToString:@"-"] || [lastStr isEqualToString:@"="]) {
@@ -470,8 +453,6 @@
     if (_money.length >= 15) {
         return false;
     }
-    
-    
     // 是否可以输入
     for (int i=0; i<3; i++) {
         str = [str containsString:@"+"] ? [str componentsSeparatedByString:@"+"][1] : str;
@@ -495,7 +476,6 @@
 #pragma mark - set
 - (void)setMoney:(NSMutableString *)money {
     [money replaceOccurrencesOfString:@"," withString:@"" options:0 range:NSMakeRange(0, money.length)];
-    NSLog(@"setMoney %@",money);
     _money = money;
     _moneyLab.text = money;
 }
@@ -516,11 +496,17 @@
 
 #pragma mark - 通知
 - (void)showKeyboard:(NSNotification *)not {
+    NSLog(@"呼出系统键盘");
     NSTimeInterval time = [not.userInfo[UIKeyboardAnimationDurationUserInfoKey] floatValue];
-    CGFloat keyHeight = [not.userInfo[UIKeyboardFrameBeginUserInfoKey] CGRectValue].size.height;
+    CGFloat keyHeight = [not.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue].size.height;
+    
+    CGFloat safeAreaBottomInset = 0;
+    if (@available(iOS 11.0, *)) {
+        safeAreaBottomInset = self.safeAreaInsets.bottom;
+    }
     
     [UIView animateWithDuration:time delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
-        [self.textContent setTop:(self.height - keyHeight) - countcoordinatesX(60)];
+        [self.textContent setTop:(self.height - keyHeight - safeAreaBottomInset) - countcoordinatesX(80)];
     } completion:^(BOOL finished) {
         
     }];
@@ -539,8 +525,5 @@
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
-
-
-
 
 @end

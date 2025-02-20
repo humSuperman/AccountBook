@@ -29,14 +29,14 @@
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VGS-Ox-08B">
-                        <rect key="frame" x="316" y="0.0" width="42" height="61"/>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VGS-Ox-08B">
+                        <rect key="frame" x="300" y="0.0" width="58" height="61"/>
                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dJV-iS-upS">
-                        <rect key="frame" x="100" y="29" width="42" height="21"/>
+                        <rect key="frame" x="107" y="29" width="106" height="21"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                         <nil key="textColor"/>
@@ -64,7 +64,7 @@
                 <outlet property="markLab" destination="dJV-iS-upS" id="fj1-Hu-8r3"/>
                 <outlet property="nameLab" destination="wms-LC-Dm4" id="yU4-Zt-fHF"/>
             </connections>
-            <point key="canvasLocation" x="658" y="-6"/>
+            <point key="canvasLocation" x="656.79999999999995" y="-6.746626686656672"/>
         </tableViewCell>
     </objects>
 </document>
