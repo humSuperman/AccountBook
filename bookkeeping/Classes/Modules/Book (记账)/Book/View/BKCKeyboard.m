@@ -501,12 +501,13 @@
     CGFloat keyHeight = [not.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue].size.height;
     
     CGFloat safeAreaBottomInset = 0;
+    NSInteger top = 60;
     if (@available(iOS 11.0, *)) {
         safeAreaBottomInset = self.safeAreaInsets.bottom;
+        top = _model == nil ? 80 : 25 ;
     }
-    
     [UIView animateWithDuration:time delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
-        [self.textContent setTop:(self.height - keyHeight - safeAreaBottomInset) - countcoordinatesX(80)];
+        [self.textContent setTop:(self.height - keyHeight - safeAreaBottomInset) - countcoordinatesX(top)];
     } completion:^(BOOL finished) {
         
     }];
