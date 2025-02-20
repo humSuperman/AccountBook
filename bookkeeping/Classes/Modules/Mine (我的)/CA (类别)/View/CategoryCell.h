@@ -5,12 +5,13 @@
 
 #import "BaseTableCell.h"
 #import "CategoryListModel.h"
+#import "CategoryModel.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface CategoryCell : MGSwipeTableCell
 
-@property (nonatomic, strong) BKCModel *model;
+@property (nonatomic, strong) CategoryModel *model;
 
 @property (nonatomic, strong) NSIndexPath *indexPath;
 

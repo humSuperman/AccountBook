@@ -22,6 +22,7 @@
 - (void)openDatabase {
     // 获取数据库路径，保存在 Documents 目录中
     NSString *dbPath = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/bookkeeping.db"];
+    NSLog(@"数据库路径： %@",dbPath);
     self.db = [FMDatabase databaseWithPath:dbPath];
     if (![self.db open]) {
         NSLog(@"Failed to open database!!!");

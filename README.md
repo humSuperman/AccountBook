@@ -4,7 +4,7 @@
 ![Platform](https://img.shields.io/badge/platform-iOS-red.svg?style=flat-square)
 
 ## 代码来源
-![本代码来源](https://github.com/378056350/bookkeeping-iOS)
+[本代码来源](https://github.com/378056350/bookkeeping-iOS)
 
 ### 一. 运行方式
 
@@ -23,6 +23,7 @@
 ### 三、修改内容
 - [x] 使用sqlite数据库保存分类、数据
 - [x] 移除远程同步、登陆、分享功能
+- [ ] bug修复中...
 
 ### 四、最后
 * 基于个人需求与兴趣改编原作者的项目.

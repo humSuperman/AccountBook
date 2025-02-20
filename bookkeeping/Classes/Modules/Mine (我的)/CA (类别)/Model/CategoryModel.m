@@ -61,16 +61,12 @@
 
 // 获取所有分类
 + (NSArray<CategoryModel *> *)getAllCategories:(NSDictionary<NSString *,id> *)conditions {
-    NSMutableString *selectQuery = [NSMutableString stringWithString:@"SELECT * FROM Category"];
+    NSMutableString *selectQuery = [NSMutableString stringWithString:@"SELECT * FROM Category WHERE status = 0"];
     NSMutableArray *arguments = [NSMutableArray array];
     if (conditions.count > 0) {
-        [selectQuery appendString:@" WHERE "];
         __block int i = 0;
         [conditions enumerateKeysAndObjectsUsingBlock:^(NSString * _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
-            if (i > 0) {
-                [selectQuery appendString:@" AND "];
-            }
-            [selectQuery appendFormat:@"%@ ?", key];
+            [selectQuery appendFormat:@" AND %@ ?", key];
             [arguments addObject:obj];
             i++;
         }];
@@ -117,8 +113,9 @@
 
 // 删除分类
 + (void)deleteCategoryById :(NSInteger)Id {
-    NSString *deleteSQL = @"UPDATE Category SET status=1 where id = ?";
-    [[DatabaseManager sharedManager].db executeQuery:deleteSQL, @(Id)];
+    NSString *deleteSQL = @"UPDATE Category SET `status`=1 WHERE `id` = ?;";
+    NSLog(@"%@", deleteSQL);
+    [[DatabaseManager sharedManager].db executeUpdate:deleteSQL, @(Id)];
 }
 
 @end

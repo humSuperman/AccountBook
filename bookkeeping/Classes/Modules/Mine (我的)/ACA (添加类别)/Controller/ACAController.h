@@ -6,11 +6,12 @@
 
 #import "BaseViewController.h"
 #import "BKCIncomeModel.h"
+#import "CategoryModel.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - typedef
-typedef void (^ACAControllerBlock)(BKCModel *model);
+typedef void (^ACAControllerBlock)(CategoryModel *model);
 
 #pragma mark - 声明
 @interface ACAController : BaseViewController

@@ -3404,7 +3404,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -3457,7 +3457,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -3473,7 +3473,7 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_ENTITLEMENTS = bookkeeping/bookkeeping.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 5KVDKFLYG8;
+				DEVELOPMENT_TEAM = DNDNXZ2B8M;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/bookkeeping/KKPrefixHeader.pch";
 				INFOPLIST_FILE = bookkeeping/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
@@ -3481,7 +3481,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.kk.bookkeeping;
+				PRODUCT_BUNDLE_IDENTIFIER = com.hum.bookkeeping;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = 1;
 			};
@@ -3495,7 +3495,7 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_ENTITLEMENTS = bookkeeping/bookkeeping.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 5KVDKFLYG8;
+				DEVELOPMENT_TEAM = DNDNXZ2B8M;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/bookkeeping/KKPrefixHeader.pch";
 				INFOPLIST_FILE = bookkeeping/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
@@ -3503,7 +3503,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.kk.bookkeeping;
+				PRODUCT_BUNDLE_IDENTIFIER = com.hum.bookkeeping;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = 1;
 			};
@@ -3515,7 +3515,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = BookMonth/BookMonth.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 5KVDKFLYG8;
+				DEVELOPMENT_TEAM = DNDNXZ2B8M;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/BookMonth/KKPrefixHeader.pch";
 				INFOPLIST_FILE = BookMonth/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -3523,7 +3523,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.kk.bookkeeping.BookMonth;
+				PRODUCT_BUNDLE_IDENTIFIER = com.hum.bookkeeping.BookMonth;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -3536,7 +3536,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = BookMonth/BookMonth.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 5KVDKFLYG8;
+				DEVELOPMENT_TEAM = DNDNXZ2B8M;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/BookMonth/KKPrefixHeader.pch";
 				INFOPLIST_FILE = BookMonth/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -3544,7 +3544,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.kk.bookkeeping.BookMonth;
+				PRODUCT_BUNDLE_IDENTIFIER = com.hum.bookkeeping.BookMonth;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -3557,7 +3557,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = BookStart/BookStart.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 5KVDKFLYG8;
+				DEVELOPMENT_TEAM = DNDNXZ2B8M;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/BookStart/KKPrefixHeader.pch";
 				INFOPLIST_FILE = BookStart/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -3565,7 +3565,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.kk.bookkeeping.BookStart;
+				PRODUCT_BUNDLE_IDENTIFIER = com.hum.bookkeeping.BookStart;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -3578,7 +3578,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = BookStart/BookStart.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 5KVDKFLYG8;
+				DEVELOPMENT_TEAM = DNDNXZ2B8M;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/BookStart/KKPrefixHeader.pch";
 				INFOPLIST_FILE = BookStart/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -3586,7 +3586,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.kk.bookkeeping.BookStart;
+				PRODUCT_BUNDLE_IDENTIFIER = com.hum.bookkeeping.BookStart;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = 1;

@@ -190,9 +190,9 @@
     return nil;  // 如果找不到，返回 nil
 }
 
-+ (void)deleteAccountById:(NSInteger)id {
++ (void)deleteAccountById:(NSInteger)Id {
     NSString *deleteQuery = @"DELETE FROM AccountBook WHERE id = ?";
-    [[DatabaseManager sharedManager].db executeUpdate:deleteQuery, @(id)];
+    [[DatabaseManager sharedManager].db executeUpdate:deleteQuery, @(Id)];
     NSLog(@"Success to delete BKModel");
 }
 

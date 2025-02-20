@@ -32,7 +32,7 @@
     [self.detailLab setTextColor:kColor_Text_Gary];
     [self.actionBtn.imageView setContentMode:UIViewContentModeScaleAspectFit];
     [self longG];
-    
+
     @weakify(self)
     MGSwipeButton *btn = [MGSwipeButton buttonWithTitle:@"删除" backgroundColor:kColor_Red_Color];
     [btn.titleLabel setFont:[UIFont systemFontOfSize:AdjustFont(14)]];
@@ -66,11 +66,11 @@
         [self.menuBtn setHidden:YES];
     }
 }
-- (void)setModel:(BKCModel *)model {
+- (void)setModel:(CategoryModel *)model {
     _model = model;
     [_nameLab setText:model.name];
-    [_detailLab setText:model.is_system == false ? @"(自定义)" : @""];
-    [_icon setImage:[UIImage imageNamed:model.icon_n]];
+    [_detailLab setText:@""];
+    [_icon setImage:[UIImage imageNamed:model.icon]];
 }
 
 

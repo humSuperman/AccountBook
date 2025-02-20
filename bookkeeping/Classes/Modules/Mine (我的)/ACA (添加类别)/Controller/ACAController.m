@@ -9,6 +9,7 @@
 #import "ACACollection.h"
 #import "ACAListModel.h"
 #import "BKCIncomeModel.h"
+#import "CategoryModel.h"
 #import "ACA_EVENT_MANAGER.h"
 
 
@@ -38,7 +39,6 @@
     [self.rightButton setHidden:NO];
     [self textField];
     [self collection];
-//    [self getCategoryListRequest];
 
     NSMutableArray<ACAListModel *> *arrm = [NSUserDefaults objectForKey:PIN_ACA_CATE];
     [self setModels:arrm];
@@ -46,62 +46,23 @@
 }
 
 - (void)rightButtonClick {
-//    [self addCategoryRequest];
-    
     if ([_textField.textField.text length] == 0) {
         [self showTextHUD:@"类别名称不能为空" delay:1.f];
         return;
     }
     
-    NSMutableArray *cateSysHasPayArr = [NSUserDefaults objectForKey:PIN_CATE_SYS_HAS_PAY];
-    NSMutableArray *cateSysRemovePayArr = [NSUserDefaults objectForKey:PIN_CATE_SYS_REMOVE_PAY];
-    NSMutableArray *cateCusHasPayArr = [NSUserDefaults objectForKey:PIN_CATE_CUS_HAS_PAY];
-    NSMutableArray *cateCusHasPaySyncedArr = [NSUserDefaults objectForKey:PIN_CATE_CUS_HAS_PAY_SYNCED];
-    NSMutableArray *cateCusRemovePaySyncedArr = [NSUserDefaults objectForKey:PIN_CATE_CUS_REMOVE_PAY_SYNCED];
-    
-    NSMutableArray *cateSysHasIncomeArr = [NSUserDefaults objectForKey:PIN_CATE_SYS_HAS_INCOME];
-    NSMutableArray *cateSysRemoveIncomeArr = [NSUserDefaults objectForKey:PIN_CATE_SYS_REMOVE_INCOME];
-    NSMutableArray *cateCusHasIncomeArr = [NSUserDefaults objectForKey:PIN_CATE_CUS_HAS_INCOME];
-    NSMutableArray *cateCusHasIncomeSyncedArr = [NSUserDefaults objectForKey:PIN_CATE_CUS_HAS_INCOME_SYNCED];
-    NSMutableArray *cateCusRemoveIncomeSyncedArr = [NSUserDefaults objectForKey:PIN_CATE_CUS_REMOVE_INCOME_SYNCED];
-    
-    
-    
-    NSDictionary *param = [NSDictionary dictionaryWithObjectsAndKeys:
-                           @(cateSysHasPayArr.count + cateSysRemovePayArr.count + cateCusHasPayArr.count +
-                             cateSysHasIncomeArr.count + cateSysRemoveIncomeArr.count + cateCusHasIncomeArr.count), @"id",
-                           [_textField.textField text], @"name",
-                           [_selectModel icon_n], @"icon_n",
-                           [_selectModel icon_l], @"icon_l",
-                           [_selectModel icon_s], @"icon_s",
-                           @(_is_income), @"is_income",
-                           @(0), @"is_system", nil];
-    BKCModel *model = [BKCModel mj_objectWithKeyValues:param];
-    
-    // 支出
-    if (_is_income == false) {
-        [cateCusHasPayArr addObject:model];
-        [NSUserDefaults setObject:cateCusHasPayArr forKey:PIN_CATE_CUS_HAS_PAY];
-        
-        [cateCusHasPaySyncedArr addObject:model];
-        [NSUserDefaults setObject:cateCusHasPaySyncedArr forKey:PIN_CATE_CUS_HAS_PAY_SYNCED];
-        
-    }
-    // 收入
-    else {
-        [cateCusHasIncomeArr addObject:model];
-        [NSUserDefaults setObject:cateCusHasIncomeArr forKey:PIN_CATE_CUS_HAS_INCOME];
-        
-        [cateCusHasIncomeSyncedArr addObject:model];
-        [NSUserDefaults setObject:cateCusHasIncomeSyncedArr forKey:PIN_CATE_CUS_HAS_INCOME_SYNCED];
-    }
-    
+    // 创建 CategoryModel 对象
+    CategoryModel *category = [[CategoryModel alloc] init];
+    category.name = _textField.textField.text;
+    category.icon = _selectModel.icon_n;
+    category.type = _is_income ? 1 : 0;
     
     [self showTextHUD:@"添加中..." delay:1.f];
+    [CategoryModel addCategory:category];
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [self hideHUD];
         if ([self complete]) {
-            self.complete(model);
+            self.complete(category);
         }
         [self.navigationController popViewControllerAnimated:true];
     });
@@ -143,11 +104,17 @@
     }
     
     @weakify(self)
+    // 创建 CategoryModel 对象
+    CategoryModel *categoryModel = [CategoryModel createSetModel];
+    categoryModel.name = _textField.textField.text;
+    categoryModel.icon = _selectModel.icon_n;
+    categoryModel.type = _is_income ? 1 : 0;
+    
     NSDictionary *param = [NSDictionary dictionaryWithObjectsAndKeys:
-                           _textField.textField.text, @"name",
-                           @(_selectModel.Id), @"category_insert_id",
-                           @(1), @"customer_id",
-                           @(_is_income), @"is_income", nil];
+                           categoryModel.name, @"name",
+                           @(categoryModel.type), @"type",
+                           categoryModel.icon, @"icon",
+                           nil];
     [self showProgressHUD];
     [AFNManager POST:AddInsertCategoryListRequest params:param complete:^(APPResult * _Nonnull result) {
         @strongify(self)
