@@ -4,13 +4,9 @@
  */
 
 #import "MineController.h"
-#import "BadgeController.h"
 #import "CAController.h"
 #import "WebVC.h"
-#import "TIController.h"
-#import "ShareController.h"
 #import "AboutController.h"
-#import "InfoController.h"
 #import "MINE_EVENT_MANAGER.h"
 
 
@@ -39,9 +35,6 @@
 
 
 #pragma mark - 请求
-// 获取个人信息
-- (void)getInfoRequest {
-}
 // 声音
 - (void)soundChangeRequest:(NSNumber *)isOn {
     NSDictionary *param = [NSDictionary dictionaryWithObjectsAndKeys:isOn, @"sound", nil];;
