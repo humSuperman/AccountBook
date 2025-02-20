@@ -1,6 +1,6 @@
 /**
  * 记账model
- * @author 郑业强 2018-12-31 创建文件
+ * @author Hum 2025-02-18 创建文件
  */
 
 #import "BKModel.h"
@@ -57,10 +57,7 @@
         return false;
     }
     BKModel *model = object;
-    if ([self Id] == [model Id]) {
-        return true;
-    }
-    return false;
+    return [self Id] == [model Id];
 }
 
 - (NSString *)dateStr {
@@ -94,24 +91,7 @@
 }
 
 + (NSArray<BKModel *> *)getAllModels {
-    NSMutableArray *models = [NSMutableArray array];
-    NSString *selectQuery = @"SELECT * FROM AccountBook";
-    FMResultSet *results = [[DatabaseManager sharedManager].db executeQuery:selectQuery];
-
-    while ([results next]) {
-        BKModel *model = [[BKModel alloc] init];
-        model.Id = [results intForColumn:@"id"];
-        model.price = [results intForColumn:@"price"];
-        model.year = [results intForColumn:@"year"];
-        model.month = [results intForColumn:@"month"];
-        model.day = [results intForColumn:@"day"];
-        model.mark = [results stringForColumn:@"mark"];
-        model.category_id = [results intForColumn:@"category_id"];
-        model.type = [results intForColumn:@"type"];
-        // 你可以根据需要填充 `cmodel`
-        [models addObject:model];
-    }
-    return models;
+    return [self getAllModelsWithConditions:nil];
 }
 
 + (NSArray<BKModel *> *)getAllModelsWithConditions:(NSDictionary<NSString *,id> *)conditions {
@@ -133,9 +113,7 @@
             i++;
         }];
     }
-    NSLog(@"查询sql及条件");
-    NSLog(@"%@",selectQuery);
-    NSLog(@"%@",arguments);
+
     // 执行查询
     FMResultSet *results = [[DatabaseManager sharedManager].db executeQuery:selectQuery withArgumentsInArray:arguments];
     while ([results next]) {
@@ -148,8 +126,7 @@
         model.mark = [results stringForColumn:@"mark"];
         model.category_id = [results intForColumn:@"category_id"];
         model.type = [results intForColumn:@"type"];
-        CategoryModel *category = [CategoryModel getCategoryById:model.category_id];
-        model.category = category;
+        model.category = [CategoryModel getCategoryById:model.category_id]; // 关联查询Category
         [models addObject:model];
     }
     [results close];
@@ -158,7 +135,6 @@
 }
 
 + (void)saveAccount:(BKModel *)model {
-    // 插入数据的 SQL 语句
     NSString *insertQuery = @"INSERT INTO AccountBook (price, year, month, day, mark, category_id, type) VALUES (?, ?, ?, ?, ?, ?, ?)";
     [[DatabaseManager sharedManager].db executeUpdate:insertQuery, @(model.price), @(model.year), @(model.month), @(model.day), model.mark, @(model.category_id), @(model.type)];
     NSLog(@"Success to save AccountBook");
@@ -184,10 +160,10 @@
         model.mark = [results stringForColumn:@"mark"];
         model.category_id = [results intForColumn:@"category_id"];
         model.type = [results intForColumn:@"type"];
-
+        model.category = [CategoryModel getCategoryById:model.category_id]; // 关联查询Category
         return model;
     }
-    return nil;  // 如果找不到，返回 nil
+    return nil;
 }
 
 + (void)deleteAccountById:(NSInteger)Id {
@@ -195,6 +171,7 @@
     [[DatabaseManager sharedManager].db executeUpdate:deleteQuery, @(Id)];
     NSLog(@"Success to delete BKModel");
 }
+
 
 @end
 
@@ -234,7 +211,6 @@
 }
 
 + (NSMutableArray<BKMonthModel *> *)statisticalMonthWithYear:(NSInteger)year month:(NSInteger)month {
-    NSLog(@"数据查询");
     // 获取数据库中的数据
     NSMutableDictionary *conditions = [NSMutableDictionary dictionary];
     [conditions setObject:@(year) forKey:@"year ="];
@@ -300,15 +276,13 @@
 
 // 统计数据(图表首页)
 + (BKChartModel *)statisticalChart:(NSInteger)status isIncome:(BOOL)isIncome cmodel:(BKModel *)cmodel date:(NSDate *)date {
-    
-    NSLog(@"进入统计sql： statisticalChart");
-    // 初始化
-    BKChartModel *model = [[BKChartModel alloc] init];
 
-    // 构建查询条件
+    BKChartModel *model = [[BKChartModel alloc] init];
+    
+    
     NSMutableDictionary *conditions = [NSMutableDictionary dictionary];
-    // 查询收入、支出
     [conditions setObject:isIncome ? @(1) : @(0) forKey:@"type = "];
+    
     if (status == 0) { // 周
         NSDate *start = [date offsetDays:-[date weekday] + 1];
         NSDate *end = [date offsetDays:7 - [date weekday]];
@@ -324,14 +298,12 @@
     } else if (status == 2) { // 年
         [conditions setObject:@(date.year) forKey:@"year ="];
     }
-
-    // 使用 DatabaseManager 和查询条件获取数据
+    
     NSMutableArray<BKModel *> *filteredModels = [[BKModel getAllModelsWithConditions:conditions] mutableCopy];
     
-    // 在这里声明并初始化 chartArr 和 chartHudArr
     NSMutableArray<BKModel *> *chartArr = [NSMutableArray array];
     NSMutableArray<NSMutableArray<BKModel *> *> *chartHudArr = [NSMutableArray array];
-
+    
     if (status == 0) { // 周
         NSDate *first = [date offsetDays:-[date weekday] + 1];
         for (int i = 0; i < 7; i++) {
@@ -345,9 +317,8 @@
             [chartHudArr addObject:[NSMutableArray array]];
         }
 
-        // 计算每周的总和
         for (BKModel *model in filteredModels) {
-            NSInteger index = [model.date weekday] - 1; // 周日索引是 0，周一是 1，...
+            NSInteger index = [model.date weekday] - 1;
             chartArr[index].price += model.price;
             [chartHudArr[index] addObject:model];
         }
@@ -383,14 +354,13 @@
             [chartHudArr[model.month - 1] addObject:model];
         }
     }
-    
-    // 排序
+
     [chartHudArr enumerateObjectsUsingBlock:^(NSMutableArray * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         [obj sortUsingComparator:^NSComparisonResult(BKModel *obj1, BKModel *obj2) {
             return obj1.price < obj2.price;
         }];
     }];
-
+    
     NSMutableArray<BKModel *> *groupArr = [NSMutableArray array];
     for (BKModel *model in filteredModels) {
         NSInteger index = [groupArr indexOfObjectPassingTest:^BOOL(BKModel * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
@@ -404,11 +374,11 @@
             groupArr[index].price += model.price;
         }
     }
-
+    
     [groupArr sortUsingComparator:^NSComparisonResult(BKModel *obj1, BKModel *obj2) {
         return obj1.price < obj2.price;
     }];
-
+    
     NSInteger sum = 0;
     for (BKModel *model in chartArr) {
         sum += model.price;
@@ -418,14 +388,12 @@
     model.chartArr = chartArr;
     model.chartHudArr = chartHudArr;
     model.is_income = isIncome;
-    model.sum = [MoneyConverter toRealMoney:sum]; // 转换为实际金额
+    model.sum = [MoneyConverter toRealMoney:sum];
     model.max = [[chartArr valueForKeyPath:@"@max.price.floatValue"] stringValue];
     model.avg = [MoneyConverter toRealMoney:[[NSString stringWithFormat:@"%.2lu", sum / chartArr.count] intValue]];
 
-    
     return model;
 }
 
 
 @end
-
