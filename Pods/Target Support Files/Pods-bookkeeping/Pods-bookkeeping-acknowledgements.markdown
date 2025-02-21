@@ -531,11 +531,6 @@ Copyright 2011 - 2018 umeng.com. All rights reserved.
 Copyright 2011 - 2018 umeng.com. All rights reserved.
 
 
-## UMCShare
-
-Copyright 2011 - 2018 umeng.com. All rights reserved.
-
-
 ## ZLPhotoBrowser
 
 The MIT License (MIT)

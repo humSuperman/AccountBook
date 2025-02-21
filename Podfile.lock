@@ -38,20 +38,6 @@ PODS:
   - SDWebImage/Core (4.4.3)
   - UMCCommon (1.5.3)
   - UMCSecurityPlugins (1.0.6)
-  - UMCShare/Core (6.9.5):
-    - UMCCommon
-  - UMCShare/Social/ReducedQQ (6.9.5):
-    - UMCCommon
-    - UMCShare/Core
-  - UMCShare/Social/ReducedSina (6.9.5):
-    - UMCCommon
-    - UMCShare/Core
-  - UMCShare/Social/ReducedWeChat (6.9.5):
-    - UMCCommon
-    - UMCShare/Core
-  - UMCShare/Social/SMS (6.9.5):
-    - UMCCommon
-    - UMCShare/Core
   - ZLPhotoBrowser (2.7.6):
     - GPUImage
     - SDWebImage
@@ -74,10 +60,6 @@ DEPENDENCIES:
   - SDWebImage (= 4.4.3)
   - UMCCommon (= 1.5.3)
   - UMCSecurityPlugins (= 1.0.6)
-  - UMCShare/Social/ReducedQQ
-  - UMCShare/Social/ReducedSina
-  - UMCShare/Social/ReducedWeChat
-  - UMCShare/Social/SMS
   - ZLPhotoBrowser (= 2.7.6)
 
 SPEC REPOS:
@@ -101,7 +83,6 @@ SPEC REPOS:
     - SDWebImage
     - UMCCommon
     - UMCSecurityPlugins
-    - UMCShare
     - ZLPhotoBrowser
 
 SPEC CHECKSUMS:
@@ -124,9 +105,8 @@ SPEC CHECKSUMS:
   SDWebImage: c5594f1a19c48d526d321e548902b56b479cd508
   UMCCommon: 016af43c0f769feb1ae1861d65aaf2b23b89c9c7
   UMCSecurityPlugins: 0831a08f3988f3cea9f1d3a7626cd9bee4fef150
-  UMCShare: 552b29753f1b4da87b51d96545ed19e6263df397
   ZLPhotoBrowser: 6dfadc4706429424f0a851fe40752aff076689ab
 
-PODFILE CHECKSUM: 0f716e91f8b2302064cd0c1cfe5b2fbfd21f5edf
+PODFILE CHECKSUM: 716efc16fac0729450ee7974e1f5afc9b2ead842
 
 COCOAPODS: 1.11.3

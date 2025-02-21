@@ -56,35 +56,8 @@
 
 // 支持所有iOS系统
 - (BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey, id> *)options {
-    BOOL result = [[UMSocialManager defaultManager] handleOpenURL:url options:options];
-    // 分享
-    if (result) {
-        return result;
-    }
-    // 记一笔
-    if ([url.absoluteString isEqualToString:@"kbook://month"]) {
-        BaseTabBarController *tab = (BaseTabBarController *)[UIApplication sharedApplication].keyWindow.rootViewController;
-        BOOL condition1 = [tab isKindOfClass:[BaseTabBarController class]];
-        BOOL condition2 = ![[UIViewController getCurrentVC] isKindOfClass:[BKCController class]];
-        if (condition1 && condition2) {
-            BKCController *vc = [[BKCController alloc] init];
-            UIViewController *current = [UIViewController getCurrentVC];
-            if (current.presentedViewController) {
-                [current.navigationController pushViewController:vc animated:true];
-            } else {
-                BaseNavigationController *nav = [[BaseNavigationController alloc] initWithRootViewController:vc];
-                [tab presentViewController:nav animated:true completion:^{
-                    
-                }];
-            }
-        }
-        return YES;
-    }
-    // 记账完成
-    else if ([url.absoluteString isEqualToString:@"kbook://book"]) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:NOT_BOOK_COMPLETE object:nil];
-    }
-    return result;
+    
+    return YES;
 }
 
 

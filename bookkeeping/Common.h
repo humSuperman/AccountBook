@@ -21,7 +21,6 @@
 #import <SDWebImage/UIImageView+WebCache.h>
 #import <SDWebImage/UIButton+WebCache.h>
 #import <pop/POP.h>
-#import <UMShare/UMShare.h>
 #import <UMCommon/UMCommon.h>
 #import <ZLPhotoBrowser/ZLPhotoActionSheet.h>
 #import <ZLPhotoBrowser/ZLCustomCamera.h>

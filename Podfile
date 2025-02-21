@@ -19,10 +19,6 @@ target ‘bookkeeping’ do
     pod 'UMCCommon', '1.5.3'
     pod 'UMCSecurityPlugins', '1.0.6'
     pod 'KMNavigationBarTransition', '1.1.5'
-    pod 'UMCShare/Social/ReducedWeChat'
-    pod 'UMCShare/Social/ReducedQQ'
-    pod 'UMCShare/Social/ReducedSina'
-    pod 'UMCShare/Social/SMS'
 end
 
 
