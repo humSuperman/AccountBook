@@ -3,41 +3,57 @@
 //  BRPickerViewDemo
 //
 //  Created by 任波 on 2017/8/11.
-//  Copyright © 2017年 renb. All rights reserved.
+//  Copyright © 2017年 91renb. All rights reserved.
 //
 //  最新代码下载地址：https://github.com/91renb/BRPickerView
 
 #import <UIKit/UIKit.h>
+#import "BRPickerStyle.h"
+
+typedef void(^BRCancelBlock)(void);
+typedef void(^BRResultBlock)(void);
 
 @interface BRBaseView : UIView
-// 背景视图
-@property (nonatomic, strong) UIView *backgroundView;
-// 弹出视图
-@property (nonatomic, strong) UIView *alertView;
-// 顶部视图
-@property (nonatomic, strong) UIView *topView;
-// 左边取消按钮
-@property (nonatomic, strong) UIButton *leftBtn;
-// 右边确定按钮
-@property (nonatomic, strong) UIButton *rightBtn;
-// 中间标题
-@property (nonatomic, strong) UILabel *titleLabel;
-// 分割线视图
-@property (nonatomic, strong) UIView *lineView;
 
-/** 初始化子视图 */
-- (void)initUI;
+/** 选择器标题 */
+@property (nonatomic, copy) NSString *title;
 
-/** 点击背景遮罩图层事件 */
-- (void)didTapBackgroundView:(UITapGestureRecognizer *)sender;
+/** 是否自动选择，即滚动选择器后就执行结果回调，默认为NO */
+@property (nonatomic, assign) BOOL isAutoSelect;
 
-/** 取消按钮的点击事件 */
-- (void)clickLeftBtn;
+/** 自定义UI样式（可为空，为nil时是默认样式） */
+@property (nonatomic, strong) BRPickerStyle *pickerStyle;
 
-/** 确定按钮的点击事件 */
-- (void)clickRightBtn;
+/** 取消选择的回调 */
+@property (nonatomic, copy) BRCancelBlock cancelBlock;
 
-/** 自定义主题颜色 */
-- (void)setupThemeColor:(UIColor *)themeColor;
+/** 选择结果的回调（框架内部使用） */
+@property (nonatomic, copy) BRResultBlock doneBlock;
+
+
+/// 扩展一：添加选择器到指定容器视图上
+/// 应用场景：可将选择器（picker）添加到任何视图（UIView）上，也支持自定义更多的弹框样式
+/// @param view 容器视图
+- (void)addPickerToView:(UIView *)view;
+
+/// 从指定容器视图上移除选择器
+/// @param view 容器视图
+- (void)removePickerFromView:(UIView *)view;
+
+/// 扩展二：添加自定义视图到选择器（picker）上
+/// 应用场景：可以添加一些固定的标题、数值的单位等到选择器中间
+/// @param customView 自定义视图
+- (void)addSubViewToPicker:(UIView *)customView;
+
+/// 扩展三：添加自定义视图到标题栏（titleBar）上
+/// 应用场景：先设置标题栏高度，再添加一些固定的标题、数值的单位等到标题栏底部
+/// @param customView 自定义视图
+- (void)addSubViewToTitleBar:(UIView *)customView;
+
+/// 添加 picker 到 alertView（框架内部使用）
+/// @param pickerView 选择器视图
+/// @param view 容器视图
+- (void)setPickerView:(UIView *)pickerView toView:(UIView *)view;
+
 
 @end

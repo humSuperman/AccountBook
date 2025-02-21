@@ -32,18 +32,18 @@
     [self.infoView setBackgroundColor:[UIColor clearColor]];
     [self.nameLab setFont:[UIFont systemFontOfSize:AdjustFont(14) weight:UIFontWeightLight]];
     [self.nameLab setTextColor:kColor_Text_Black];
-    
+
     [self.icon.layer setCornerRadius:countcoordinatesX(70) / 2];
     [self.icon.layer setMasksToBounds:true];
-    
-    
+
+
     @weakify(self)
     // 头像
     [self.infoView addTapActionWithBlock:^(UIGestureRecognizer *gestureRecoginzer) {
         @strongify(self)
         [self routerEventWithName:MINE_HEADER_ICON_CLICK data:nil];
     }];
-    
+
 }
 - (void)createLabel:(UIView *)view {
     for (UIView *subview in view.subviews) {
@@ -67,9 +67,9 @@
 #pragma mark - set
 - (void)setModel:(UserModel *)model {
     _model = model;
-    
+
     [_icon setImage:[UIImage imageNamed:@"default_header"]];
-    [_nameLab setText:@"sqlite记账"];
+    [_nameLab setText:@"私馕记账"];
 }
 
 

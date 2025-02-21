@@ -353,12 +353,17 @@
     BOOL condition4 = [_money containsString:@"+"] &&
                       (([_money hasPrefix:@"-"] && [NSString getDuplicateSubStrCountInCompleteStr:_money withSubStr:@"-"] == 2) ||
                        (![_money hasPrefix:@"-"] && [NSString getDuplicateSubStrCountInCompleteStr:_money withSubStr:@"-"] == 1));
-    if (condition1 == true || condition2 == true || condition3 == true || condition4 == true) {
-        NSMutableString *strm = [NSMutableString stringWithString:[NSString calcComplexFormulaString:_money]];
-        // 没小数
-        if (![self hasDecimal:strm]) {
-            strm = [NSMutableString stringWithString:[strm componentsSeparatedByString:@"."][0]];
-        }
+    if (condition1 || condition2 || condition3 || condition4) {
+        // 使用 NSDecimalNumber 进行高精度计算
+        NSDecimalNumber *result = [NSDecimalNumber decimalNumberWithString:_money];
+        
+        // 进行你自己的计算或转换
+        // 对计算结果进行格式化
+        NSString *formattedResult = [NSString stringWithFormat:@"%.2f", [result doubleValue]];  // 保留两位小数
+        
+        // 处理符号
+        NSMutableString *strm = [NSMutableString stringWithString:formattedResult];
+        
         // 加
         if ([_money hasSuffix:@"+"]) {
             [strm appendString:@"+"];
@@ -367,8 +372,10 @@
         if ([_money hasSuffix:@"-"]) {
             [strm appendString:@"-"];
         }
+        
         [self setMoney:strm];
     }
+    NSLog(@"end money = %@",_money);
 }
 
 
@@ -421,15 +428,17 @@
 
 // 是否可以输入数字
 - (BOOL)isAllowMath:(NSString *)str {
-    // 超过10位
-    if (_money.length >= 15) {
-        return false;
-    }
     if (!str || str.length == 0) {
         return true;
     }
+    // 超过7位
+    NSString *integerPart = [_money componentsSeparatedByString:@"."][0];
+    if (integerPart.length > 6) {
+        [self showTextHUD:@"最大金额999,999.99" delay:1.f];
+        return false;
+    }
     NSString *lastStr = [str substringFromIndex:str.length - 1];
-    // 最后输入的是数字
+    // 最后输入的是运算符
     if ([lastStr isEqualToString:@"+"] || [lastStr isEqualToString:@"-"] || [lastStr isEqualToString:@"="]) {
         return true;
     }
@@ -496,7 +505,6 @@
 
 #pragma mark - 通知
 - (void)showKeyboard:(NSNotification *)not {
-    NSLog(@"呼出系统键盘");
     NSTimeInterval time = [not.userInfo[UIKeyboardAnimationDurationUserInfoKey] floatValue];
     CGFloat keyHeight = [not.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue].size.height;
     

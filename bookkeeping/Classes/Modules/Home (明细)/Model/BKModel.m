@@ -137,13 +137,11 @@
 + (void)saveAccount:(BKModel *)model {
     NSString *insertQuery = @"INSERT INTO AccountBook (price, year, month, day, mark, category_id, type) VALUES (?, ?, ?, ?, ?, ?, ?)";
     [[DatabaseManager sharedManager].db executeUpdate:insertQuery, @(model.price), @(model.year), @(model.month), @(model.day), model.mark, @(model.category_id), @(model.type)];
-    NSLog(@"Success to save AccountBook");
 }
 
 + (void)updateAccount:(BKModel *)model {
     NSString *updateQuery = @"UPDATE AccountBook SET price = ?, year = ?, month = ?, day = ?, mark = ?, category_id = ?, type = ?, updated_at = DATETIME('now', 'localtime') WHERE id = ?";
     [[DatabaseManager sharedManager].db executeUpdate:updateQuery, @(model.price), @(model.year), @(model.month), @(model.day), model.mark, @(model.category_id), @(model.type), @(model.Id)];
-    NSLog(@"Success to update AccountBook");
 }
 
 + (BKModel *)getAccountById:(NSInteger)modelId{

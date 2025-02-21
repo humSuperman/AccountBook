@@ -3,8 +3,9 @@
 //  BRPickerViewDemo
 //
 //  Created by 任波 on 2018/3/15.
-//  Copyright © 2018年 renb. All rights reserved.
+//  Copyright © 2018年 91renb. All rights reserved.
 //
+//  最新代码下载地址：https://github.com/91renb/BRPickerView
 
 #import "NSDate+BRPickerView.h"
 #import "BRPickerViewMacro.h"
@@ -125,50 +126,29 @@ static const NSCalendarUnit unitFlags = (NSCalendarUnitYear | NSCalendarUnitMont
     return [self br_setYear:-1 month:-1 day:-1 hour:hour minute:minute second:-1];
 }
 
-+ (NSDate *)setYear:(NSInteger)year {
-    return [self br_setYear:year];
-}
-
-+ (NSDate *)setYear:(NSInteger)year month:(NSInteger)month {
-    return [self br_setYear:year month:month];
-}
-
-+ (NSDate *)setYear:(NSInteger)year month:(NSInteger)month day:(NSInteger)day {
-    return [self br_setYear:year month:month day:day];
-}
-
-+ (NSDate *)setYear:(NSInteger)year month:(NSInteger)month day:(NSInteger)day hour:(NSInteger)hour minute:(NSInteger)minute {
-    return [self br_setYear:year month:month day:day hour:hour minute:minute];
-}
-
-+ (NSDate *)setMonth:(NSInteger)month day:(NSInteger)day hour:(NSInteger)hour minute:(NSInteger)minute {
-    return [self br_setMonth:month day:day hour:hour minute:minute];
-}
-
-+ (NSDate *)setMonth:(NSInteger)month day:(NSInteger)day {
-    return [self br_setMonth:month day:day];
-}
-
-+ (NSDate *)setHour:(NSInteger)hour minute:(NSInteger)minute {
-    return [self br_setHour:hour minute:minute];
-}
-
-#pragma mark - 日期和字符串之间的转换：NSDate --> NSString
+#pragma mark - 日期和字符串之间的转换：NSDate 转 NSString
 + (NSString *)br_getDateString:(NSDate *)date format:(NSString *)format {
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    dateFormatter.locale = [NSLocale currentLocale];
-    dateFormatter.timeZone = [NSTimeZone localTimeZone];
+    // 设置日期格式
     dateFormatter.dateFormat = format;
     NSString *destDateString = [dateFormatter stringFromDate:date];
     
     return destDateString;
 }
 
-#pragma mark - 日期和字符串之间的转换：NSString --> NSDate
+#pragma mark - 日期和字符串之间的转换：NSString 转 NSDate
 + (NSDate *)br_getDate:(NSString *)dateString format:(NSString *)format {
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     dateFormatter.locale = [NSLocale currentLocale];
-    dateFormatter.timeZone = [NSTimeZone localTimeZone];
+    
+    // 设置转换后的目标日期时区
+    NSTimeZone *toTimeZone = [NSTimeZone localTimeZone];
+    // 转换后源日期与世界标准时间的偏移量（解决8小时时间差问题）
+    NSInteger toGMTOffset = [toTimeZone secondsFromGMTForDate:[NSDate date]];
+    // 设置时区，NSDate存储的是世界标准时间(UTC)，输出时需要根据时区转换为本地时间（及中国时区的时间）
+    dateFormatter.timeZone = [NSTimeZone timeZoneForSecondsFromGMT:toGMTOffset];
+    
+    // 设置日期格式
     dateFormatter.dateFormat = format;
     NSDate *destDate = [dateFormatter dateFromString:dateString];
     

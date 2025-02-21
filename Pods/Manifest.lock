@@ -14,7 +14,18 @@ PODS:
   - AFNetworking/Serialization (3.2.1)
   - AFNetworking/UIKit (3.2.1):
     - AFNetworking/NSURLSession
-  - BRPickerView (2.2.1)
+  - BRPickerView (2.4.0):
+    - BRPickerView/AddressPickerView (= 2.4.0)
+    - BRPickerView/Base (= 2.4.0)
+    - BRPickerView/DatePickerView (= 2.4.0)
+    - BRPickerView/StringPickerView (= 2.4.0)
+  - BRPickerView/AddressPickerView (2.4.0):
+    - BRPickerView/Base
+  - BRPickerView/Base (2.4.0)
+  - BRPickerView/DatePickerView (2.4.0):
+    - BRPickerView/Base
+  - BRPickerView/StringPickerView (2.4.0):
+    - BRPickerView/Base
   - FMDB (2.7.5):
     - FMDB/standard (= 2.7.5)
   - FMDB/standard (2.7.5)
@@ -44,7 +55,7 @@ PODS:
 
 DEPENDENCIES:
   - AFNetworking (= 3.2.1)
-  - BRPickerView (= 2.2.1)
+  - BRPickerView (= 2.4.0)
   - FMDB (= 2.7.5)
   - JGProgressHUD (= 2.0.3)
   - JPush (= 3.1.1.1)
@@ -87,7 +98,7 @@ SPEC REPOS:
 
 SPEC CHECKSUMS:
   AFNetworking: cb604b1c2bded0871f5f61f5d53653739e841d6b
-  BRPickerView: 0590a8c5de9bd98c6b4e4f117a3dff6de287d5b2
+  BRPickerView: 781f8a52b67544bb3de32535fb094d97ce28647d
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   GPUImage: 733a5f0fab92df9de1c37ba9df520a833ccb406d
   JCore: 14706de2640b25fb77dbd02332696491407f37c9
@@ -107,6 +118,6 @@ SPEC CHECKSUMS:
   UMCSecurityPlugins: 0831a08f3988f3cea9f1d3a7626cd9bee4fef150
   ZLPhotoBrowser: 6dfadc4706429424f0a851fe40752aff076689ab
 
-PODFILE CHECKSUM: 716efc16fac0729450ee7974e1f5afc9b2ead842
+PODFILE CHECKSUM: 51a5b24dc529f889c27881834de8e882d84a2168
 
 COCOAPODS: 1.11.3

@@ -107,7 +107,7 @@
     BKModel *model = [[BKModel alloc] init];
     if (!_model) {
         // 新增
-        model.price = [MoneyConverter toIntMoney:price];
+        model.price = labs([MoneyConverter toIntMoney:price]);
         model.year = date.year;
         model.month = date.month;
         model.day = date.day;
@@ -117,7 +117,7 @@
         [BKModel saveAccount:model];
     } else {
         // 修改
-        _model.price = [MoneyConverter toIntMoney:price];
+        _model.price = labs([MoneyConverter toIntMoney:price]);
         _model.year = date.year;
         _model.month = date.month;
         _model.day = date.day;
@@ -166,7 +166,6 @@
 // 点击item
 - (void)bookClickItem:(BKCCollection *)collection {
     NSIndexPath *indexPath = collection.selectIndex;
-    BKCIncomeModel *listModel = _models[collection.tag];
     // 选择类别
     if (collection.selectedModelId != -1) {
         // 显示键盘

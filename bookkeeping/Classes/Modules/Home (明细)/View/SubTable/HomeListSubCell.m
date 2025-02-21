@@ -12,7 +12,6 @@
 
 @property (weak, nonatomic) IBOutlet UIImageView *icon;
 @property (weak, nonatomic) IBOutlet UILabel *nameLab;
-@property (weak, nonatomic) IBOutlet UILabel *markLab;
 @property (weak, nonatomic) IBOutlet UILabel *detailLab;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *iconConstraintL;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *detailConstraintR;
@@ -28,8 +27,6 @@
     [self setSelectionStyle:UITableViewCellSelectionStyleNone];
     [self.nameLab setFont:[UIFont systemFontOfSize:AdjustFont(12) weight:UIFontWeightLight]];
     [self.nameLab setTextColor:kColor_Text_Black];
-    [self.markLab setFont:[UIFont systemFontOfSize:AdjustFont(8) weight:UIFontWeightLight]];
-    [self.markLab setTextColor:kColor_Text_Light];
     [self.detailLab setFont:[UIFont systemFontOfSize:AdjustFont(12) weight:UIFontWeightLight]];
     [self.detailLab setTextColor:kColor_Text_Black];
     
@@ -63,8 +60,7 @@
     _model = model;
     //icon 不保存后缀 e_catering,e_catering_l,e_catering_s
     [_icon setImage:[UIImage imageNamed:[model.category getIconForSuffix:@"_l"]]];
-    [_nameLab setText:model.category.name];
-    [_markLab setText:model.mark];
+    [_nameLab setText:[model.mark  isEqual: @""] ?model.category.name:model.mark];
     [_detailLab setText:model.type == 0 ? [MoneyConverter toRealMoney:model.price*-1] : [MoneyConverter toRealMoney:model.price]];
 }
 

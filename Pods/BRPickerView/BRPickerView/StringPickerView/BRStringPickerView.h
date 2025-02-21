@@ -3,16 +3,88 @@
 //  BRPickerViewDemo
 //
 //  Created by 任波 on 2017/8/11.
-//  Copyright © 2017年 renb. All rights reserved.
+//  Copyright © 2017年 91renb. All rights reserved.
 //
 //  最新代码下载地址：https://github.com/91renb/BRPickerView
 
 #import "BRBaseView.h"
+#import "BRResultModel.h"
+
+/// 字符串选择器类型
+typedef NS_ENUM(NSInteger, BRStringPickerMode) {
+    /** 单列字符串选择 */
+    BRStringPickerComponentSingle = 1,
+    /** 多列字符串选择（两列及两列以上） */
+    BRStringPickerComponentMulti
+};
 
 typedef void(^BRStringResultBlock)(id selectValue);
-typedef void(^BRStringCancelBlock)(void);
+
+typedef void(^BRStringResultModelBlock)(BRResultModel *resultModel);
+
+typedef void(^BRStringResultModelArrayBlock)(NSArray <BRResultModel *>*resultModelArr);
 
 @interface BRStringPickerView : BRBaseView
+
+/**
+//////////////////////////////////////////////////////////////////////////
+///
+///   【用法1】：传统的创建对象设置属性方式（推荐！）
+///    1. 初始化选择器（使用 initWithPickerMode: 方法）
+///    2. 设置相关属性；一些公共的属性或方法参见基类文件 BRBaseView.h
+///    3. 显示选择器（使用 show 方法）
+///
+////////////////////////////////////////////////////////////////////////*/
+
+/**
+ *  1.设置数据源
+ *    单列：@[@"男", @"女", @"其他"]
+ *    两列：@[@[@"语文", @"数学", @"英语"], @[@"优秀", @"良好", @"及格"]]
+ *    多列：... ...
+ */
+@property (nonatomic, copy) NSArray *dataSourceArr;
+/**
+ *  2.设置数据源
+ *    直接传plist文件名：NSString类型（如：@"sex.plist"），要带后缀名
+ *    场景：可以将数据源数据（数组类型）放到plist文件中，直接传plist文件名更加简单
+ */
+@property (nonatomic, copy) NSString *plistName;
+
+/** 单列设置默认选中的位置 */
+@property (nonatomic, assign) NSInteger selectIndex;
+@property (nonatomic, copy) NSString *selectValue BRPickerViewDeprecated("推荐使用 selectIndex");
+
+/** 多列设置默认选中的位置 */
+@property (nonatomic, copy) NSArray <NSNumber *>* selectIndexs;
+@property (nonatomic, copy) NSArray <NSString *>* selectValueArr BRPickerViewDeprecated("推荐使用 selectIndexs");
+
+/** 单列选择结果的回调 */
+@property (nonatomic, copy) BRStringResultModelBlock resultModelBlock;
+/** 多列选择结果的回调 */
+@property (nonatomic, copy) BRStringResultModelArrayBlock resultModelArrayBlock;
+
+/// 初始化字符串选择器
+/// @param pickerMode 字符串选择器类型
+- (instancetype)initWithPickerMode:(BRStringPickerMode)pickerMode;
+
+/// 弹出选择器视图
+- (void)show;
+
+/// 关闭选择器视图
+- (void)dismiss;
+
+
+
+
+//======================================== 华丽的分割线（以下为旧版本用法） ========================================
+
+
+/**
+//////////////////////////////////////////////////////////////////////////
+///
+///   【用法2】：快捷使用，直接选择下面其中的一个方法进行使用
+///
+////////////////////////////////////////////////////////////////////////*/
 
 /**
  *  1.显示自定义字符串选择器
@@ -44,7 +116,7 @@ typedef void(^BRStringCancelBlock)(void);
                   defaultSelValue:(id)defaultSelValue
                      isAutoSelect:(BOOL)isAutoSelect
                        themeColor:(UIColor *)themeColor
-                      resultBlock:(BRStringResultBlock)resultBlock;
+                      resultBlock:(BRStringResultBlock)resultBlock BRPickerViewDeprecated("请使用【用法1】，支持更多的自定义样式");
 
 /**
  *  3.显示自定义字符串选择器（支持 设置自动选择、自定义主题颜色、取消选择的回调）
@@ -64,7 +136,7 @@ typedef void(^BRStringCancelBlock)(void);
                      isAutoSelect:(BOOL)isAutoSelect
                        themeColor:(UIColor *)themeColor
                       resultBlock:(BRStringResultBlock)resultBlock
-                      cancelBlock:(BRStringCancelBlock)cancelBlock;
+                      cancelBlock:(BRCancelBlock)cancelBlock BRPickerViewDeprecated("请使用【用法1】，支持更多的自定义样式");
 
 
 @end

@@ -298,6 +298,7 @@
 		67EA18BF7996F41876A41DF2 /* libPods-BookStart.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B7B55E72CE7D457106A88B25 /* libPods-BookStart.a */; };
 		B53EC2872D62CD9700A44FC6 /* DatabaseManager.m in Sources */ = {isa = PBXBuildFile; fileRef = B53EC2862D62CD9700A44FC6 /* DatabaseManager.m */; };
 		B53EC2892D62DCF200A44FC6 /* MoneyConverter.m in Sources */ = {isa = PBXBuildFile; fileRef = B53EC2882D62DCF200A44FC6 /* MoneyConverter.m */; };
+		B59CFF0E2D68501300D171C6 /* HomeKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B59CFF0D2D68501300D171C6 /* HomeKit.framework */; };
 		B5A25A662D63628500E0687F /* MoneyConverter.m in Sources */ = {isa = PBXBuildFile; fileRef = B53EC2882D62DCF200A44FC6 /* MoneyConverter.m */; };
 		B5A25A672D63628500E0687F /* MoneyConverter.m in Sources */ = {isa = PBXBuildFile; fileRef = B53EC2882D62DCF200A44FC6 /* MoneyConverter.m */; };
 		B5A25A682D63628B00E0687F /* DatabaseManager.m in Sources */ = {isa = PBXBuildFile; fileRef = B53EC2862D62CD9700A44FC6 /* DatabaseManager.m */; };
@@ -781,6 +782,7 @@
 		B53EC2862D62CD9700A44FC6 /* DatabaseManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DatabaseManager.m; sourceTree = "<group>"; };
 		B53EC2882D62DCF200A44FC6 /* MoneyConverter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MoneyConverter.m; sourceTree = "<group>"; };
 		B53EC28A2D62DD0100A44FC6 /* MoneyConverter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MoneyConverter.h; sourceTree = "<group>"; };
+		B59CFF0D2D68501300D171C6 /* HomeKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HomeKit.framework; path = System/Library/Frameworks/HomeKit.framework; sourceTree = SDKROOT; };
 		B5A6BCEA2D645C620089257B /* CategoryModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CategoryModel.h; sourceTree = "<group>"; };
 		B5A6BCEB2D645C750089257B /* CategoryModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CategoryModel.m; sourceTree = "<group>"; };
 		B7B55E72CE7D457106A88B25 /* libPods-BookStart.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-BookStart.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -792,6 +794,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B59CFF0E2D68501300D171C6 /* HomeKit.framework in Frameworks */,
 				033797EA6AC8DA410B19DE10 /* libPods-bookkeeping.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2182,6 +2185,7 @@
 		5BA81AE5E9A23B63357F8783 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				B59CFF0D2D68501300D171C6 /* HomeKit.framework */,
 				32BFA7E721E483F300B926F3 /* NotificationCenter.framework */,
 				DB0BF06C24CEE058B7AB29FC /* libPods-BookMonth.a */,
 				B7B55E72CE7D457106A88B25 /* libPods-BookStart.a */,

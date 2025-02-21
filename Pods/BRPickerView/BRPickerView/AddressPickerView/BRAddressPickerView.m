@@ -3,12 +3,12 @@
 //  BRPickerViewDemo
 //
 //  Created by 任波 on 2017/8/11.
-//  Copyright © 2017年 renb. All rights reserved.
+//  Copyright © 2017年 91renb. All rights reserved.
 //
 //  最新代码下载地址：https://github.com/91renb/BRPickerView
 
 #import "BRAddressPickerView.h"
-#import "BRPickerViewMacro.h"
+#import "NSBundle+BRPickerView.h"
 
 @interface BRAddressPickerView ()<UIPickerViewDataSource, UIPickerViewDelegate>
 {
@@ -16,19 +16,15 @@
     NSInteger _provinceIndex;   // 记录省选中的位置
     NSInteger _cityIndex;       // 记录市选中的位置
     NSInteger _areaIndex;       // 记录区选中的位置
-    
-    NSArray * _defaultSelectedArr;
 }
 // 地址选择器
 @property (nonatomic, strong) UIPickerView *pickerView;
-// 保存传入的数据源
-@property (nonatomic, strong) NSArray *dataSource;
 // 省模型数组
-@property(nonatomic, strong) NSArray *provinceModelArr;
+@property(nonatomic, copy) NSArray *provinceModelArr;
 // 市模型数组
-@property(nonatomic, strong) NSArray *cityModelArr;
+@property(nonatomic, copy) NSArray *cityModelArr;
 // 区模型数组
-@property(nonatomic, strong) NSArray *areaModelArr;
+@property(nonatomic, copy) NSArray *areaModelArr;
 // 显示类型
 @property (nonatomic, assign) BRAddressPickerMode showType;
 // 选中的省
@@ -38,14 +34,8 @@
 // 选中的区
 @property(nonatomic, strong) BRAreaModel *selectAreaModel;
 
-// 是否开启自动选择
-@property (nonatomic, assign) BOOL isAutoSelect;
-// 主题色
-@property (nonatomic, strong) UIColor *themeColor;
-// 选中后的回调
-@property (nonatomic, copy) BRAddressResultBlock resultBlock;
-// 取消选择的回调
-@property (nonatomic, copy) BRAddressCancelBlock cancelBlock;
+/** 是否执行过选择结果的回调（防止 isAutoSelect=YES 时，执行回调两次） */
+@property (nonatomic, assign, getter=isHasResultValue) BOOL hasResultValue;
 
 @end
 
@@ -54,7 +44,11 @@
 #pragma mark - 1.显示地址选择器
 + (void)showAddressPickerWithDefaultSelected:(NSArray *)defaultSelectedArr
                                  resultBlock:(BRAddressResultBlock)resultBlock {
-    [self showAddressPickerWithShowType:BRAddressPickerModeArea dataSource:nil defaultSelected:defaultSelectedArr isAutoSelect:NO themeColor:nil resultBlock:resultBlock cancelBlock:nil];
+    BRAddressPickerView *addressPickerView = [[BRAddressPickerView alloc] initWithShowType:BRAddressPickerModeArea dataSource:nil defaultSelected:defaultSelectedArr isAutoSelect:NO themeColor:nil resultBlock:resultBlock cancelBlock:nil];
+    NSAssert(addressPickerView->_isDataSourceValid, @"数据源不合法！参数异常，请检查地址选择器的数据源是否有误");
+    if (addressPickerView->_isDataSourceValid) {
+        [addressPickerView show];
+    }
 }
 
 #pragma mark - 2.显示地址选择器（支持 设置自动选择 和 自定义主题颜色）
@@ -71,7 +65,7 @@
                         isAutoSelect:(BOOL)isAutoSelect
                           themeColor:(UIColor *)themeColor
                          resultBlock:(BRAddressResultBlock)resultBlock
-                         cancelBlock:(BRAddressCancelBlock)cancelBlock {
+                         cancelBlock:(BRCancelBlock)cancelBlock {
     [self showAddressPickerWithShowType:showType dataSource:nil defaultSelected:defaultSelectedArr isAutoSelect:isAutoSelect themeColor:themeColor resultBlock:resultBlock cancelBlock:cancelBlock];
 }
 
@@ -82,82 +76,93 @@
                          isAutoSelect:(BOOL)isAutoSelect
                            themeColor:(UIColor *)themeColor
                           resultBlock:(BRAddressResultBlock)resultBlock
-                          cancelBlock:(BRAddressCancelBlock)cancelBlock {
+                          cancelBlock:(BRCancelBlock)cancelBlock {
     BRAddressPickerView *addressPickerView = [[BRAddressPickerView alloc] initWithShowType:showType dataSource:dataSource defaultSelected:defaultSelectedArr isAutoSelect:isAutoSelect themeColor:themeColor resultBlock:resultBlock cancelBlock:cancelBlock];
     NSAssert(addressPickerView->_isDataSourceValid, @"数据源不合法！参数异常，请检查地址选择器的数据源是否有误");
     if (addressPickerView->_isDataSourceValid) {
-        [addressPickerView showWithAnimation:YES];
+        [addressPickerView show];
     }
 }
 
 #pragma mark - 初始化地址选择器
+- (instancetype)initWithPickerMode:(BRAddressPickerMode)pickerMode {
+    if (self = [super init]) {
+        self.showType = pickerMode;
+        self.isAutoSelect = NO;
+        _isDataSourceValid = YES;
+    }
+    return self;
+}
+
 - (instancetype)initWithShowType:(BRAddressPickerMode)showType
                       dataSource:(NSArray *)dataSource
                  defaultSelected:(NSArray *)defaultSelectedArr
                     isAutoSelect:(BOOL)isAutoSelect
                       themeColor:(UIColor *)themeColor
                      resultBlock:(BRAddressResultBlock)resultBlock
-                     cancelBlock:(BRAddressCancelBlock)cancelBlock {
+                     cancelBlock:(BRCancelBlock)cancelBlock {
     if (self = [super init]) {
         self.showType = showType;
-        self.dataSource = dataSource;
-        _defaultSelectedArr = defaultSelectedArr;
+        self.dataSourceArr = dataSource;
+        self.defaultSelectedArr = defaultSelectedArr;
         _isDataSourceValid = YES;
     
         self.isAutoSelect = isAutoSelect;
-        self.themeColor = themeColor;
+        
+        // 兼容旧版本，快速设置主题样式
+        if (themeColor && [themeColor isKindOfClass:[UIColor class]]) {
+            self.pickerStyle = [BRPickerStyle pickerStyleWithThemeColor:themeColor];
+        }
+        
         self.resultBlock = resultBlock;
         self.cancelBlock = cancelBlock;
-        
-        [self loadData];
-        if (_isDataSourceValid) {
-            [self initUI];
-        }
     }
     return self;
 }
 
 #pragma mark - 获取地址数据
 - (void)loadData {
-    // 如果外部没有传入地区数据源，就使用本地的数据源
-    if (!self.dataSource || self.dataSource.count == 0) {
-        /*
-            先拿到最外面的 bundle。
-            对 framework 链接方式来说就是 framework 的 bundle 根目录，
-            对静态库链接方式来说就是 target client 的 main bundle，
-            然后再去找下面名为 BRPickerView 的 bundle 对象。
-         */
-        NSBundle *bundle = [NSBundle bundleForClass:[self class]];
-        NSURL *url = [bundle URLForResource:@"BRPickerView" withExtension:@"bundle"];
-        NSBundle *plistBundle = [NSBundle bundleWithURL:url];
+    if (self.dataSourceArr && self.dataSourceArr.count > 0) {
+        id element = [self.dataSourceArr firstObject];
+        // 如果传的值是解析好的模型数组
+        if ([element isKindOfClass:[BRProvinceModel class]]) {
+            self.provinceModelArr = self.dataSourceArr;
+        } else {
+            // 传的是JSON数组，就解析数据源
+            [self parseDataSource];
+        }
+    } else {
+        // 如果外部没有传入地区数据源，就使用本地的数据源
+        NSArray *dataSource = [NSBundle br_addressJsonArray];
         
-        NSString *filePath = [plistBundle pathForResource:@"BRCity" ofType:@"plist"];
-        NSArray *dataSource = [NSArray arrayWithContentsOfFile:filePath];
         if (!dataSource || dataSource.count == 0) {
             _isDataSourceValid = NO;
             return;
         }
-        self.dataSource = dataSource;
+        self.dataSourceArr = dataSource;
+        
+        // 解析数据源
+        [self parseDataSource];
     }
     
-    // 1.解析数据源
-    [self parseDataSource];
-    
-    // 2.设置默认值
+    // 设置默认值
     [self setupDefaultValue];
     
-    // 3.设置默认滚动
+    // 注意必须先刷新UI，再设置默认滚动
+    [self.pickerView reloadAllComponents];
+    
+    // 设置默认滚动
     [self scrollToRow:_provinceIndex secondRow:_cityIndex thirdRow:_areaIndex];
 }
 
 #pragma mark - 解析数据源
 - (void)parseDataSource {
     NSMutableArray *tempArr1 = [NSMutableArray array];
-    for (NSDictionary *proviceDic in self.dataSource) {
+    for (NSDictionary *proviceDic in self.dataSourceArr) {
         BRProvinceModel *proviceModel = [[BRProvinceModel alloc]init];
         proviceModel.code = proviceDic[@"code"];
         proviceModel.name = proviceDic[@"name"];
-        proviceModel.index = [self.dataSource indexOfObject:proviceDic];
+        proviceModel.index = [self.dataSourceArr indexOfObject:proviceDic];
         NSArray *citylist = proviceDic[@"citylist"];
         NSMutableArray *tempArr2 = [NSMutableArray array];
         for (NSDictionary *cityDic in citylist) {
@@ -189,15 +194,15 @@
     __block NSString *selectCityName = nil;
     __block NSString *selectAreaName = nil;
     // 1. 获取默认选中的省市区的名称
-    if (_defaultSelectedArr) {
-        if (_defaultSelectedArr.count > 0 && [_defaultSelectedArr[0] isKindOfClass:[NSString class]]) {
-            selectProvinceName = _defaultSelectedArr[0];
+    if (self.defaultSelectedArr) {
+        if (self.defaultSelectedArr.count > 0) {
+            selectProvinceName = self.defaultSelectedArr[0];
         }
-        if (_defaultSelectedArr.count > 1 && [_defaultSelectedArr[1] isKindOfClass:[NSString class]]) {
-            selectCityName = _defaultSelectedArr[1];
+        if (self.defaultSelectedArr.count > 1) {
+            selectCityName = self.defaultSelectedArr[1];
         }
-        if (_defaultSelectedArr.count > 2 && [_defaultSelectedArr[2] isKindOfClass:[NSString class]]) {
-            selectAreaName = _defaultSelectedArr[2];
+        if (self.defaultSelectedArr.count > 2) {
+            selectAreaName = self.defaultSelectedArr[2];
         }
     }
     
@@ -246,7 +251,7 @@
                 self.selectAreaModel = model;
                 *stop = YES;
             } else {
-                if (idx == self.cityModelArr.count - 1) {
+                if (idx == self.areaModelArr.count - 1) {
                     _areaIndex = 0;
                     self.selectAreaModel = [self.areaModelArr firstObject];
                 }
@@ -279,35 +284,20 @@
 // 根据 省索引和城市索引 获取 区域模型数组
 - (NSArray *)getAreaModelArray:(NSInteger)provinceIndex cityIndex:(NSInteger)cityIndex {
     BRProvinceModel *provinceModel = self.provinceModelArr[provinceIndex];
-    BRCityModel *cityModel = provinceModel.citylist[cityIndex];
-    // 返回地区模型数组
-    return cityModel.arealist;
-}
-
-#pragma mark - 初始化子视图
-- (void)initUI {
-    [super initUI];
-    if (self.showType == BRAddressPickerModeProvince) {
-        self.titleLabel.text = @"请选择省份";
-    } else if (self.showType == BRAddressPickerModeCity) {
-        self.titleLabel.text = @"请选择城市";
+    if (provinceModel.citylist && provinceModel.citylist.count > 0) {
+        BRCityModel *cityModel = provinceModel.citylist[cityIndex];
+        // 返回地区模型数组
+        return cityModel.arealist;
     } else {
-        self.titleLabel.text = @"请选择地区";
+        return nil;
     }
-    // 添加时间选择器
-    [self.alertView addSubview:self.pickerView];
-    if (self.themeColor && [self.themeColor isKindOfClass:[UIColor class]]) {
-        [self setupThemeColor:self.themeColor];
-    }
-    [self.pickerView reloadAllComponents];
 }
 
 #pragma mark - 地址选择器
 - (UIPickerView *)pickerView {
     if (!_pickerView) {
-        _pickerView = [[UIPickerView alloc]initWithFrame:CGRectMake(0, kTopViewHeight + 0.5, self.alertView.frame.size.width, kPickerHeight)];
-        _pickerView.backgroundColor = [UIColor whiteColor];
-        // 设置子视图的大小随着父视图变化
+        _pickerView = [[UIPickerView alloc]initWithFrame:CGRectMake(0, self.pickerStyle.titleBarHeight, SCREEN_WIDTH, kPickerHeight)];
+        _pickerView.backgroundColor = self.pickerStyle.pickerColor;
         _pickerView.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleWidth;
         _pickerView.dataSource = self;
         _pickerView.delegate = self;
@@ -359,17 +349,20 @@
 - (UIView *)pickerView:(UIPickerView *)pickerView viewForRow:(NSInteger)row forComponent:(NSInteger)component reusingView:(nullable UIView *)view {
     
     // 设置分割线的颜色
-    ((UIView *)[pickerView.subviews objectAtIndex:1]).backgroundColor = [UIColor colorWithRed:195/255.0 green:195/255.0 blue:195/255.0 alpha:1.0];
-    ((UIView *)[pickerView.subviews objectAtIndex:2]).backgroundColor = [UIColor colorWithRed:195/255.0 green:195/255.0 blue:195/255.0 alpha:1.0];
+    for (UIView *subView in pickerView.subviews) {
+        if (subView && [subView isKindOfClass:[UIView class]] && subView.frame.size.height <= 1) {
+            subView.backgroundColor = self.pickerStyle.separatorColor;
+        }
+    }
     
-    UIView *bgView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, (self.alertView.frame.size.width) / 3, 35 * kScaleFit)];
+    UIView *bgView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, (self.pickerView.frame.size.width) / pickerView.numberOfComponents, self.pickerStyle.rowHeight)];
     bgView.backgroundColor = [UIColor clearColor];
-    UILabel *label = [[UILabel alloc]initWithFrame:CGRectMake(5 * kScaleFit, 0, (self.alertView.frame.size.width) / 3 - 10 * kScaleFit, 35 * kScaleFit)];
+    UILabel *label = [[UILabel alloc]initWithFrame:CGRectMake(5 * kScaleFit, 0, (self.pickerView.frame.size.width) / pickerView.numberOfComponents - 10 * kScaleFit, self.pickerStyle.rowHeight)];
     [bgView addSubview:label];
     label.backgroundColor = [UIColor clearColor];
     label.textAlignment = NSTextAlignmentCenter;
-    //label.textColor = [UIColor redColor];
-    label.font = [UIFont systemFontOfSize:18.0f * kScaleFit];
+    label.textColor = self.pickerStyle.pickerTextColor;
+    label.font = self.pickerStyle.pickerTextFont;
     // 字体自适应属性
     label.adjustsFontSizeToFitWidth = YES;
     // 自适应最小字体缩放比例
@@ -377,13 +370,14 @@
     if (component == 0) {
         BRProvinceModel *model = self.provinceModelArr[row];
         label.text = model.name;
-    }else if (component == 1){
+    } else if (component == 1) {
         BRCityModel *model = self.cityModelArr[row];
         label.text = model.name;
-    }else if (component == 2){
+    } else if (component == 2) {
         BRAreaModel *model = self.areaModelArr[row];
         label.text = model.name;
     }
+    
     return bgView;
 }
 
@@ -395,7 +389,7 @@
         switch (self.showType) {
             case BRAddressPickerModeProvince:
             {
-                self.selectProvinceModel = self.provinceModelArr[_provinceIndex];
+                self.selectProvinceModel = self.provinceModelArr.count > _provinceIndex ? self.provinceModelArr[_provinceIndex] : nil;
                 self.selectCityModel = nil;
                 self.selectAreaModel = nil;
             }
@@ -405,8 +399,8 @@
                 self.cityModelArr = [self getCityModelArray:_provinceIndex];
                 [self.pickerView reloadComponent:1];
                 [self.pickerView selectRow:0 inComponent:1 animated:YES];
-                self.selectProvinceModel = self.provinceModelArr[_provinceIndex];
-                self.selectCityModel = self.cityModelArr[0];
+                self.selectProvinceModel = self.provinceModelArr.count > _provinceIndex ? self.provinceModelArr[_provinceIndex] : nil;
+                self.selectCityModel = self.cityModelArr.count > 0 ? self.cityModelArr[0] : nil;
                 self.selectAreaModel = nil;
             }
                 break;
@@ -418,9 +412,9 @@
                 [self.pickerView selectRow:0 inComponent:1 animated:YES];
                 [self.pickerView reloadComponent:2];
                 [self.pickerView selectRow:0 inComponent:2 animated:YES];
-                self.selectProvinceModel = self.provinceModelArr[_provinceIndex];
-                self.selectCityModel = self.cityModelArr[0];
-                self.selectAreaModel = self.areaModelArr[0];
+                self.selectProvinceModel = self.provinceModelArr.count > _provinceIndex ? self.provinceModelArr[_provinceIndex] : nil;
+                self.selectCityModel = self.cityModelArr.count > 0 ? self.cityModelArr[0] : nil;
+                self.selectAreaModel = self.areaModelArr.count > 0 ? self.areaModelArr[0] : nil;
             }
                 break;
             default:
@@ -433,7 +427,7 @@
         switch (self.showType) {
             case BRAddressPickerModeCity:
             {
-                self.selectCityModel = self.cityModelArr[_cityIndex];
+                self.selectCityModel = self.cityModelArr.count > _cityIndex ? self.cityModelArr[_cityIndex] : nil;
                 self.selectAreaModel = nil;
             }
                 break;
@@ -442,8 +436,8 @@
                 self.areaModelArr = [self getAreaModelArray:_provinceIndex cityIndex:_cityIndex];
                 [self.pickerView reloadComponent:2];
                 [self.pickerView selectRow:0 inComponent:2 animated:YES];
-                self.selectCityModel = self.cityModelArr[_cityIndex];
-                self.selectAreaModel = self.areaModelArr[0];
+                self.selectCityModel = self.cityModelArr.count > _cityIndex ? self.cityModelArr[_cityIndex] : nil;
+                self.selectAreaModel = self.areaModelArr.count > 0 ? self.areaModelArr[0] : nil;
             }
                 break;
             default:
@@ -454,12 +448,13 @@
         // 保存选择的地区的索引
         _areaIndex = row;
         if (self.showType == BRAddressPickerModeArea) {
-            self.selectAreaModel = self.areaModelArr[_areaIndex];
+            self.selectAreaModel = self.areaModelArr.count > _areaIndex ? self.areaModelArr[_areaIndex] : nil;
         }
     }
     
     // 自动获取数据，滚动完就执行回调
     if (self.isAutoSelect) {
+        self.hasResultValue = YES;
         if (self.resultBlock) {
             self.resultBlock(self.selectProvinceModel, self.selectCityModel, self.selectAreaModel);
         }
@@ -468,64 +463,44 @@
 
 // 设置行高
 - (CGFloat)pickerView:(UIPickerView *)pickerView rowHeightForComponent:(NSInteger)component {
-    return 35.0f * kScaleFit;
+    return self.pickerStyle.rowHeight;
 }
 
-#pragma mark - 背景视图的点击事件
-- (void)didTapBackgroundView:(UITapGestureRecognizer *)sender {
-    [self dismissWithAnimation:NO];
-    if (self.cancelBlock) {
-        self.cancelBlock();
-    }
+#pragma mark - 重写父类方法
+- (void)addPickerToView:(UIView *)view {
+    // 添加地址选择器
+    [self setPickerView:self.pickerView toView:view];
+    [self loadData];
+    
+    __weak typeof(self) weakSelf = self;
+    self.doneBlock = ^{
+        // 点击确定按钮后，执行block回调
+        [weakSelf removePickerFromView:view];
+        
+        // 先判断一下，防止重复执行回调
+        if (!weakSelf.hasResultValue) {
+            if (weakSelf.resultBlock) {
+               weakSelf.resultBlock(weakSelf.selectProvinceModel, weakSelf.selectCityModel, weakSelf.selectAreaModel);
+            }
+        }
+    };
+    
+    [super addPickerToView:view];
 }
 
-#pragma mark - 取消按钮的点击事件
-- (void)clickLeftBtn {
-    [self dismissWithAnimation:YES];
-    if (self.cancelBlock) {
-        self.cancelBlock();
-    }
+#pragma mark - 重写父类方法
+- (void)addSubViewToPicker:(UIView *)customView {
+    [self.pickerView addSubview:customView];
 }
 
-#pragma mark - 确定按钮的点击事件
-- (void)clickRightBtn {
-    [self dismissWithAnimation:YES];
-    // 点击确定按钮后，执行回调
-    if(self.resultBlock) {
-        self.resultBlock(self.selectProvinceModel, self.selectCityModel, self.selectAreaModel);
-    }
+#pragma mark - 弹出选择器视图
+- (void)show {
+    [self addPickerToView:nil];
 }
 
-#pragma mark - 弹出视图方法
-- (void)showWithAnimation:(BOOL)animation {
-    // 1.获取当前应用的主窗口
-    UIWindow *keyWindow = [[UIApplication sharedApplication] keyWindow];
-    [keyWindow addSubview:self];
-    if (animation) {
-        // 动画前初始位置
-        CGRect rect = self.alertView.frame;
-        rect.origin.y = SCREEN_HEIGHT;
-        self.alertView.frame = rect;
-        // 浮现动画
-        [UIView animateWithDuration:0.3 animations:^{
-            CGRect rect = self.alertView.frame;
-            rect.origin.y -= kPickerHeight + kTopViewHeight + BR_BOTTOM_MARGIN;
-            self.alertView.frame = rect;
-        }];
-    }
-}
-
-#pragma mark - 关闭视图方法
-- (void)dismissWithAnimation:(BOOL)animation {
-    // 关闭动画
-    [UIView animateWithDuration:0.2 animations:^{
-        CGRect rect = self.alertView.frame;
-        rect.origin.y += kPickerHeight + kTopViewHeight + BR_BOTTOM_MARGIN;
-        self.alertView.frame = rect;
-        self.backgroundView.alpha = 0;
-    } completion:^(BOOL finished) {
-        [self removeFromSuperview];
-    }];
+#pragma mark - 关闭选择器视图
+- (void)dismiss {
+    [self removePickerFromView:nil];
 }
 
 - (NSArray *)provinceModelArr {
@@ -572,6 +547,20 @@
         _selectAreaModel.name = @"";
     }
     return _selectAreaModel;
+}
+
+- (NSArray *)dataSourceArr {
+    if (!_dataSourceArr) {
+        _dataSourceArr = [NSArray array];
+    }
+    return _dataSourceArr;
+}
+
+- (NSArray *)defaultSelectedArr {
+    if (!_defaultSelectedArr) {
+        _defaultSelectedArr = [NSArray array];
+    }
+    return _defaultSelectedArr;
 }
 
 @end

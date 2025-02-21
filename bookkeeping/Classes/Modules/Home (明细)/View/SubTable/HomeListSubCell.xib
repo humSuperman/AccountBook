@@ -35,13 +35,6 @@
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dJV-iS-upS">
-                        <rect key="frame" x="107" y="29" width="106" height="21"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                        <nil key="textColor"/>
-                        <nil key="highlightedColor"/>
-                    </label>
                 </subviews>
                 <constraints>
                     <constraint firstItem="sBf-RJ-t2d" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="15" id="7Rb-VV-ZG1"/>
@@ -61,7 +54,6 @@
                 <outlet property="detailLab" destination="VGS-Ox-08B" id="EPI-La-Vv0"/>
                 <outlet property="icon" destination="sBf-RJ-t2d" id="Crz-vW-OOE"/>
                 <outlet property="iconConstraintL" destination="7Rb-VV-ZG1" id="rLp-6Y-63E"/>
-                <outlet property="markLab" destination="dJV-iS-upS" id="fj1-Hu-8r3"/>
                 <outlet property="nameLab" destination="wms-LC-Dm4" id="yU4-Zt-fHF"/>
             </connections>
             <point key="canvasLocation" x="656.79999999999995" y="-6.746626686656672"/>
