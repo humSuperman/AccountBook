@@ -235,7 +235,7 @@ static NSString *jgBackSetGetKey = @"jgBackSetGetKey";
     JGProgressHUDInteractionType type = self.hud_type;
     JGProgressHUD *HUD = [[JGProgressHUD alloc] initWithStyle:JGProgressHUDStyleDark];
     [HUD setInteractionType:nil];
-    [HUD setPosition:JGProgressHUDPositionBottomCenter];
+    [HUD setPosition:JGProgressHUDPositionCenter];
     [HUD setVibrancyEnabled:NO];
     [HUD setIndicatorView:nil];
     [HUD setShadow:[JGProgressHUDShadow shadowWithColor:[UIColor blackColor] offset:CGSizeZero radius:5.0 opacity:0.3f]];

@@ -105,8 +105,8 @@
         return;
     }
     NSInteger intPrice = labs([MoneyConverter toIntMoney:price]);
-    if(intPrice == 0){
-        [self showTextHUD:@"请输入记账金额" delay:1.f];
+    if(intPrice == 0 && [mark  isEqual: @""]){
+        [self showTextHUD:@"金额与备注至少输入一个" delay:1.f];
         return;
     }
     if(intPrice > 99999999){

@@ -345,7 +345,10 @@
     if (_money.length == 0) {
         return;
     }
-    
+    if([_money  isEqual: @"="]){
+        [self setMoney:[NSMutableString stringWithString:@"0"]];
+        return;
+    }
     BOOL condition1 = [_money hasSuffix:@"="];
     BOOL condition2 = [_money componentsSeparatedByString:@"+"].count == 3;
     BOOL condition3 = ([_money hasPrefix:@"-"] && [NSString getDuplicateSubStrCountInCompleteStr:_money withSubStr:@"-"] == 3) ||
