@@ -1,0 +1,11 @@
+target/
+bookkeeping.xcworkspace/
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+### VS Code ###
+.vscode/

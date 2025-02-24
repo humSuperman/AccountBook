@@ -104,10 +104,19 @@
         NSLog(@"分类不存在，%ld",collection.selectedModelId);
         return;
     }
+    NSInteger intPrice = labs([MoneyConverter toIntMoney:price]);
+    if(intPrice == 0){
+        [self showTextHUD:@"请输入记账金额" delay:1.f];
+        return;
+    }
+    if(intPrice > 99999999){
+        [self showTextHUD:@"最大金额999,999.99" delay:1.f];
+        return;
+    }
     BKModel *model = [[BKModel alloc] init];
     if (!_model) {
         // 新增
-        model.price = labs([MoneyConverter toIntMoney:price]);
+        model.price = intPrice;
         model.year = date.year;
         model.month = date.month;
         model.day = date.day;
@@ -117,7 +126,7 @@
         [BKModel saveAccount:model];
     } else {
         // 修改
-        _model.price = labs([MoneyConverter toIntMoney:price]);
+        _model.price = intPrice;
         _model.year = date.year;
         _model.month = date.month;
         _model.day = date.day;
