@@ -9,7 +9,7 @@
 #import "AboutController.h"
 #import "DatabaseManager.h"
 #import "MINE_EVENT_MANAGER.h"
-
+#import <MobileCoreServices/MobileCoreServices.h>
 
 #pragma mark - 声明
 @interface MineController()
@@ -88,13 +88,28 @@
             [[DatabaseManager sharedManager] closeDatabase];
             @try {
                 [self shareFile];
+                [[DatabaseManager sharedManager] openDatabase];
             } @catch (NSException *exception){
                 NSLog( @"NSException caught" );
                 NSLog( @"Name: %@", exception.name);
                 NSLog( @"Reason: %@", exception.reason );
                 [self showTextHUD:@"保存数据发生了错误" delay:1.5f];
-              return;
+                return;
             } @finally {
+                [[DatabaseManager sharedManager] openDatabase];
+            }
+        } else if (indexPath.row == 1) {
+            [[DatabaseManager sharedManager] closeDatabase];
+            @try {
+                [self importFile];
+            } @catch (NSException *exception){
+                NSLog( @"NSException caught" );
+                NSLog( @"Name: %@", exception.name);
+                NSLog( @"Reason: %@", exception.reason );
+                [self showTextHUD:@"导入数据发生了错误" delay:1.5f];
+                return;
+            } @finally {
+                NSLog( @" 导入成功，打开数据库");
                 [[DatabaseManager sharedManager] openDatabase];
             }
         }
@@ -166,6 +181,39 @@
     if (![detail isEqual:detail_synced]) {
         [NSUserDefaults setObject:detail forKey:PIN_SETTING_DETAIL_SYNCED];
     }
+}
+
+// 点击导入按钮时触发
+- (void)importFile {
+    UIDocumentPickerViewController *documentPicker = [[UIDocumentPickerViewController alloc] initWithDocumentTypes:@[(NSString *)kUTTypeItem] inMode:UIDocumentPickerModeImport];
+    documentPicker.delegate = self;
+    documentPicker.allowsMultipleSelection = NO;
+    [self presentViewController:documentPicker animated:YES completion:nil];
+}
+
+#pragma mark - UIDocumentPickerDelegate
+
+// 用户选中文件后的回调
+- (void)documentPicker:(UIDocumentPickerViewController *)controller didPickDocumentsAtURLs:(NSArray<NSURL *> *)urls {
+    NSURL *fileURL = [urls firstObject];
+    NSString *documentDirectory = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject];
+    NSString *destinationPath = [documentDirectory stringByAppendingPathComponent:@"bookkeeping.db"]; // 替换为你要覆盖的文件名
+    NSError *error = nil;
+    if ([[NSFileManager defaultManager] fileExistsAtPath:destinationPath]) {
+        [[NSFileManager defaultManager] removeItemAtPath:destinationPath error:&error];
+    }
+    BOOL success = [[NSFileManager defaultManager] copyItemAtURL:fileURL toURL:[NSURL fileURLWithPath:destinationPath] error:&error];
+    if (success) {
+        [self showTextHUD:@"文件导入成功！重启应用生效" delay:3.0f];
+    } else {
+        NSLog(@"文件导入失败: %@", error.localizedDescription);
+        [self showTextHUD:@"文件导入失败" delay:1.5f];
+    }
+}
+
+// 用户取消文件选择的回调
+- (void)documentPickerWasCancelled:(UIDocumentPickerViewController *)controller {
+    NSLog(@"用户取消了文件选择");
 }
 
 
