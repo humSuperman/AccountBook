@@ -7,6 +7,7 @@
 #import "CAController.h"
 #import "WebVC.h"
 #import "AboutController.h"
+#import "DatabaseManager.h"
 #import "MINE_EVENT_MANAGER.h"
 
 
@@ -84,6 +85,22 @@
     }
     else if (indexPath.section == 1) {
         if (indexPath.row == 0) {
+            [[DatabaseManager sharedManager] closeDatabase];
+            @try {
+                [self shareFile];
+            } @catch (NSException *exception){
+                NSLog( @"NSException caught" );
+                NSLog( @"Name: %@", exception.name);
+                NSLog( @"Reason: %@", exception.reason );
+                [self showTextHUD:@"保存数据发生了错误" delay:1.5f];
+              return;
+            } @finally {
+                [[DatabaseManager sharedManager] openDatabase];
+            }
+        }
+    }
+    else if (indexPath.section == 2) {
+        if (indexPath.row == 0) {
             WebVC *vc = [[WebVC alloc] init];
             [vc setNavTitle:@"帮助"];
             [self.navigationController pushViewController:vc animated:YES];
@@ -99,6 +116,36 @@
 - (void)headerIconClick:(id)data {
     
 }
+
+- (void)shareFile {
+    NSString *documentDirectory = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject];
+    NSString *filePath = [documentDirectory stringByAppendingPathComponent:@"bookkeeping.db"];
+    NSURL *fileURL = [NSURL fileURLWithPath:filePath];
+    
+    if (![[NSFileManager defaultManager] fileExistsAtPath:filePath]) {
+        [self showTextHUD:@"文件未找到" delay:1.5f];
+        return;
+    }
+    UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:@[fileURL] applicationActivities:nil];
+    
+    activityVC.excludedActivityTypes = @[UIActivityTypePostToTwitter, UIActivityTypePostToFacebook];
+    
+    if (@available(iOS 10.0, *)) {
+        [self presentViewController:activityVC animated:YES completion:nil];
+    } else {
+        [self presentViewController:activityVC animated:YES completion:nil];
+    }
+    
+    [activityVC setCompletionWithItemsHandler:^(UIActivityType  _Nullable activityType, BOOL completed, NSArray  * _Nullable returnedItems, NSError  * _Nullable activityError) {
+        [self leftButtonClick];
+        if (completed) {
+            [self showTextHUD:@"文件导出成功" delay:1.5f];
+        } else {
+            [self showTextHUD:@"文件导出失败" delay:1.5f];
+        }
+    }];
+}
+
 // 切换声音
 - (void)soundClick:(NSNumber *)isOn {
     NSNumber *sound = [NSUserDefaults objectForKey:PIN_SETTING_SOUND];

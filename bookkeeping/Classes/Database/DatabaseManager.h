@@ -1,6 +1,5 @@
 #import <Foundation/Foundation.h>
 #import <fmdb/FMDB.h>
-#import "BKModel.h"
 
 @interface DatabaseManager : NSObject
 

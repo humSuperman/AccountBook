@@ -296,6 +296,7 @@
 		4BFD381B21E4D7C000BAB0BB /* NSDate+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BE8CC1621C93F21007935E2 /* NSDate+Extension.m */; };
 		4BFD381C21E4D84B00BAB0BB /* NSString+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 321983EB21C6460100311885 /* NSString+Extension.m */; };
 		67EA18BF7996F41876A41DF2 /* libPods-BookStart.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B7B55E72CE7D457106A88B25 /* libPods-BookStart.a */; };
+		B53B8E552D6C6D52008FC5C7 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B53B8E542D6C6D52008FC5C7 /* MapKit.framework */; };
 		B53EC2872D62CD9700A44FC6 /* DatabaseManager.m in Sources */ = {isa = PBXBuildFile; fileRef = B53EC2862D62CD9700A44FC6 /* DatabaseManager.m */; };
 		B53EC2892D62DCF200A44FC6 /* MoneyConverter.m in Sources */ = {isa = PBXBuildFile; fileRef = B53EC2882D62DCF200A44FC6 /* MoneyConverter.m */; };
 		B59CFF0E2D68501300D171C6 /* HomeKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B59CFF0D2D68501300D171C6 /* HomeKit.framework */; };
@@ -778,6 +779,7 @@
 		4F0E80ECE92E16BE87928D34 /* Pods-bookkeeping.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-bookkeeping.release.xcconfig"; path = "Target Support Files/Pods-bookkeeping/Pods-bookkeeping.release.xcconfig"; sourceTree = "<group>"; };
 		6658BDB4EC6B3BBBDA6A5D24 /* Pods-bookkeeping.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-bookkeeping.debug.xcconfig"; path = "Target Support Files/Pods-bookkeeping/Pods-bookkeeping.debug.xcconfig"; sourceTree = "<group>"; };
 		95D2EB3DBE07E36CF1486C89 /* Pods-BookMonth.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BookMonth.release.xcconfig"; path = "Target Support Files/Pods-BookMonth/Pods-BookMonth.release.xcconfig"; sourceTree = "<group>"; };
+		B53B8E542D6C6D52008FC5C7 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		B53EC2852D62CD7400A44FC6 /* DatabaseManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DatabaseManager.h; sourceTree = "<group>"; };
 		B53EC2862D62CD9700A44FC6 /* DatabaseManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DatabaseManager.m; sourceTree = "<group>"; };
 		B53EC2882D62DCF200A44FC6 /* MoneyConverter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MoneyConverter.m; sourceTree = "<group>"; };
@@ -795,6 +797,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B59CFF0E2D68501300D171C6 /* HomeKit.framework in Frameworks */,
+				B53B8E552D6C6D52008FC5C7 /* MapKit.framework in Frameworks */,
 				033797EA6AC8DA410B19DE10 /* libPods-bookkeeping.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2185,6 +2188,7 @@
 		5BA81AE5E9A23B63357F8783 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				B53B8E542D6C6D52008FC5C7 /* MapKit.framework */,
 				B59CFF0D2D68501300D171C6 /* HomeKit.framework */,
 				32BFA7E721E483F300B926F3 /* NotificationCenter.framework */,
 				DB0BF06C24CEE058B7AB29FC /* libPods-BookMonth.a */,
