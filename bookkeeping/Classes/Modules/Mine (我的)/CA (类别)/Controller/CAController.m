@@ -46,20 +46,20 @@
     }
     [self monitorNotification];
     dispatch_async(dispatch_get_main_queue(), ^{
-       
+
         NSMutableDictionary *conditions = [NSMutableDictionary dictionary];
-        
+
         CategoryListModel *model1 = [[CategoryListModel alloc] init];
         model1.is_income = 0;
         [conditions setObject:@(0) forKey:@"type ="];
         model1.insert = [NSMutableArray arrayWithArray:[CategoryModel getAllCategories:conditions]];
-        
+
         CategoryListModel *model2 = [[CategoryListModel alloc] init];
         conditions = [NSMutableDictionary dictionary];
         [conditions setObject:@(1) forKey:@"type ="];
         model2.is_income = 1;
         model2.insert = [NSMutableArray arrayWithArray:[CategoryModel getAllCategories:conditions]];
-        
+
         [self setModels:[NSMutableArray arrayWithArray:@[model1, model2]]];
     });
 }
@@ -71,12 +71,12 @@
     [[[[NSNotificationCenter defaultCenter] rac_addObserverForName:CATEGORY_DELETE object:nil] takeUntil:self.rac_willDeallocSignal] subscribeNext:^(id x) {
         @strongify(self)
         NSMutableDictionary *conditions = [NSMutableDictionary dictionary];
-        
+
         CategoryListModel *model1 = [[CategoryListModel alloc] init];
         model1.is_income = 0;
         [conditions setObject:@(0) forKey:@"type ="];
         model1.insert = [NSMutableArray arrayWithArray:[CategoryModel getAllCategories:conditions]];
-        
+
         CategoryListModel *model2 = [[CategoryListModel alloc] init];
         conditions = [NSMutableDictionary dictionary];
         [conditions setObject:@(1) forKey:@"type ="];
@@ -85,22 +85,6 @@
         [self setModels:[NSMutableArray arrayWithArray:@[model1, model2]]];
     }];
 }
-
-
-#pragma mark - 请求
-// 添加系统分类
-- (void)addSysCateRequest:(CategoryCell *)cell {
-    NSLog(@"addSysCateRequest");
-}
-// 删除系统分类
-- (void)removeSysCateRequest:(CategoryCell *)cell {
-    NSLog(@"removeSysCateRequest");
-}
-// 删除自定义分类
-- (void)removeCustrCateRequest:(CategoryCell *)cell {
-    NSLog(@"removeCustrCateRequest");
-}
-
 
 #pragma mark - set
 - (void)setModels:(NSMutableArray<CategoryListModel *> *)models {
@@ -129,7 +113,7 @@
         [model.insert addObject:submodel];
         [self.models replaceObjectAtIndex:index withObject:model];
         [self.table reloadData];
-        
+
         if (self.complete) {
             self.complete();
         }
@@ -154,13 +138,10 @@
         }
     }];
 }
-// 添加系统分类
-- (void)insertCellClick:(CategoryCell *)cell {
-    
+- (void)updateCellSort:(CategoryCell *)cell {
+    NSLog(@" 重新排序 %@",cell);
+    NSLog(@" 重新排序 %@",cell.indexPath);
 }
-
-
-
 // 删除cell
 - (void)deleteWithCell:(CategoryCell *)cell {
     NSLog(@" deleteWithCell %@",cell);
@@ -207,7 +188,7 @@
                            CATEGORY_BTN_CLICK: [self createInvocationWithSelector:@selector(categoryBtnClick:)],
                            CATEGORY_SEG_CHANGE: [self createInvocationWithSelector:@selector(segValueChange:)],
                            CATEGORY_ACTION_DELETE_CLICK: [self createInvocationWithSelector:@selector(deleteCellClick:)],
-                           CATEGORY_ACTION_INSERT_CLICK: [self createInvocationWithSelector:@selector(insertCellClick:)],
+                           CATEGORY_ACTION_INSERT_CLICK: [self createInvocationWithSelector:@selector(updateCellSort:)],
                            };
     }
     return _eventStrategy;

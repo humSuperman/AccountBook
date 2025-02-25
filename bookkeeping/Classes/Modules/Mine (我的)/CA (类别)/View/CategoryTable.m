@@ -63,6 +63,12 @@ typedef NS_ENUM(NSInteger, LYFTableViewType) {
 #pragma mark - set
 - (void)setModel:(CategoryListModel *)model {
     _model = model;
+    if (!_model.insert) {
+        _model.insert = [NSMutableArray array];
+    }
+    if (!_model.remove) {
+        _model.remove = [NSMutableArray array];
+    }
     [self reloadData];
 }
 
