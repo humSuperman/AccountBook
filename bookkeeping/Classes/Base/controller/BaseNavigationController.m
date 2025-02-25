@@ -1,6 +1,6 @@
 /**
  * 导航栏
- * @author 郑业强 2018-03-19
+ * @author Hum 2025-02-25
  */
 
 #import "BaseNavigationController.h"
@@ -21,35 +21,14 @@
     return nav;
 }
 - (void)pushViewController:(UIViewController *)viewController animated:(BOOL)animated {
+    BaseViewController *vc = (BaseViewController *)viewController;
     if (self.viewControllers.count == 1) {
-        BaseViewController *vc = (BaseViewController *)viewController;
         vc.leftButton.hidden = true;
         vc.hidesBottomBarWhenPushed = true;
     } else {
-        BaseViewController *vc = (BaseViewController *)viewController;
-        vc.leftButton.hidden = true;
+        vc.leftButton.hidden = false;
         vc.hidesBottomBarWhenPushed = false;
     }
-    
-    
-//    BaseTabBarController *tab = (BaseTabBarController *)[UIApplication sharedApplication].keyWindow.rootViewController;
-//    if ([viewController isKindOfClass:[HomeController class]] ||
-//        [viewController isKindOfClass:[ChartController class]] ||
-//        [viewController isKindOfClass:[BKCController class]] ||
-//        [viewController isKindOfClass:[FindController class]] ||
-//        [viewController isKindOfClass:[MineController class]]) {
-//        BaseViewController *vc = (BaseViewController *)viewController;
-//        vc.leftButton.hidden = YES;
-////        [tab hideTabbar:NO];
-//    }
-//    else {
-//        BaseViewController *vc = (BaseViewController *)viewController;
-//        vc.leftButton.hidden = NO;
-//        vc.hidesBottomBarWhenPushed = YES;
-////        [tab hideTabbar:YES];
-//    }
-    
-    
     
     [super pushViewController:viewController animated:animated];
 }

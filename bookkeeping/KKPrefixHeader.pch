@@ -6,9 +6,6 @@
 #ifndef KKPrefixHeader_pch
 #define KKPrefixHeader_pch
 
-// 友盟分享
-#define kUMengAppKey @"5c1dfcc9b465f5828200050f"
-
 // 外部间距
 #define OUT_PADDING countcoordinatesX(15)
 

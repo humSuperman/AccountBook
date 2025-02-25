@@ -276,7 +276,6 @@
 		4BEB731B21CE033300BEF013 /* dropdown_anim__00031@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4BEB72D921CE033300BEF013 /* dropdown_anim__00031@2x.png */; };
 		4BEB731C21CE033300BEF013 /* dropdown_anim__00052@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4BEB72DA21CE033300BEF013 /* dropdown_anim__00052@2x.png */; };
 		4BEB731D21CE033300BEF013 /* KKRefreshGifHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BEB72DC21CE033300BEF013 /* KKRefreshGifHeader.m */; };
-		4BEB732021CE358A00BEF013 /* AppDelegate+UMeng.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BEB731F21CE358A00BEF013 /* AppDelegate+UMeng.m */; };
 		4BF0648D21E10A80005F1665 /* BDController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BF0648C21E10A80005F1665 /* BDController.m */; };
 		4BF0649021E10BAD005F1665 /* BDHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BF0648F21E10BAD005F1665 /* BDHeader.m */; };
 		4BF0649221E10BD3005F1665 /* BDHeader.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4BF0649121E10BD3005F1665 /* BDHeader.xib */; };
@@ -747,8 +746,6 @@
 		4BEB72DA21CE033300BEF013 /* dropdown_anim__00052@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dropdown_anim__00052@2x.png"; sourceTree = "<group>"; };
 		4BEB72DB21CE033300BEF013 /* RequestTipRefreshFooter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RequestTipRefreshFooter.h; sourceTree = "<group>"; };
 		4BEB72DC21CE033300BEF013 /* KKRefreshGifHeader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KKRefreshGifHeader.m; sourceTree = "<group>"; };
-		4BEB731E21CE358A00BEF013 /* AppDelegate+UMeng.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "AppDelegate+UMeng.h"; sourceTree = "<group>"; };
-		4BEB731F21CE358A00BEF013 /* AppDelegate+UMeng.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "AppDelegate+UMeng.m"; sourceTree = "<group>"; };
 		4BF0648B21E10A80005F1665 /* BDController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BDController.h; sourceTree = "<group>"; };
 		4BF0648C21E10A80005F1665 /* BDController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BDController.m; sourceTree = "<group>"; };
 		4BF0648E21E10BAD005F1665 /* BDHeader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BDHeader.h; sourceTree = "<group>"; };
@@ -986,8 +983,6 @@
 			children = (
 				3219837421C642BB00311885 /* AppDelegate.h */,
 				3219837521C642BB00311885 /* AppDelegate.m */,
-				4BEB731E21CE358A00BEF013 /* AppDelegate+UMeng.h */,
-				4BEB731F21CE358A00BEF013 /* AppDelegate+UMeng.m */,
 			);
 			path = AppDelegate;
 			sourceTree = "<group>";
@@ -2637,7 +2632,6 @@
 				4BFD381721E4D3CB00BAB0BB /* UIViewController+Extension.m in Sources */,
 				4B35F1A621CCC641007271BE /* AFNManager.m in Sources */,
 				4B35F1D521CD0798007271BE /* ACAListModel.m in Sources */,
-				4BEB732021CE358A00BEF013 /* AppDelegate+UMeng.m in Sources */,
 				4B35F1A521CCC641007271BE /* APPResult.m in Sources */,
 				4BEB731D21CE033300BEF013 /* KKRefreshGifHeader.m in Sources */,
 				4BA68B0521C7F6FB0063A5C2 /* ACACollectionCell.m in Sources */,

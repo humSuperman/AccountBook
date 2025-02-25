@@ -375,10 +375,8 @@
         if ([_money hasSuffix:@"-"]) {
             [strm appendString:@"-"];
         }
-        
         [self setMoney:strm];
     }
-    NSLog(@"end money = %@",_money);
 }
 
 

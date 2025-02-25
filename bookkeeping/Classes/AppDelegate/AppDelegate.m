@@ -5,7 +5,6 @@
 
 #import "AppDelegate.h"
 #import "DatabaseManager.h"
-#import "AppDelegate+UMeng.h"
 
 
 #pragma mark - 声明
@@ -23,20 +22,8 @@
     [self makeRootController];
     // 系统配置
     [self systemConfig];
-    // 友盟
-    //[self shareUMengConfig];
     // 数据库
     [[DatabaseManager sharedManager] openDatabase];
-//    // 注册通知
-//    if (@available(iOS 10.0, *)) {
-//        UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
-//        [center requestAuthorizationWithOptions:(UNAuthorizationOptionAlert + UNAuthorizationOptionSound) completionHandler:^(BOOL granted, NSError * _Nullable error) {
-//            
-//        }];
-//    }
-    
-    
-    
     
     return YES;
 }

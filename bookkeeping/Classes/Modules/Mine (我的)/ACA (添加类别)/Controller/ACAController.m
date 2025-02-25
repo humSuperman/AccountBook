@@ -85,54 +85,6 @@
     [self.textField setModel:model];
 }
 
-
-#pragma mark - 请求
-// 添加类别列表
-- (void)getCategoryListRequest {
-    @weakify(self)
-    [self.collection createRequest:CustomerCategoryListRequest params:@{} complete:^(APPResult *result) {
-        @strongify(self)
-        [self setModels:[ACAListModel mj_objectArrayWithKeyValuesArray:result.data]];
-    }];
-}
-// 添加自定义类别
-- (void)addCategoryRequest {
-    if (_textField.textField.text.length == 0) {
-        [self showTextHUD:@"类别名称不能为空" delay:1.f];
-        return;
-    }
-    
-    @weakify(self)
-    // 创建 CategoryModel 对象
-    CategoryModel *categoryModel = [CategoryModel createSetModel];
-    categoryModel.name = _textField.textField.text;
-    categoryModel.icon = _selectModel.icon_n;
-    categoryModel.type = _is_income ? 1 : 0;
-    
-    NSDictionary *param = [NSDictionary dictionaryWithObjectsAndKeys:
-                           categoryModel.name, @"name",
-                           @(categoryModel.type), @"type",
-                           categoryModel.icon, @"icon",
-                           nil];
-    [self showProgressHUD];
-    [AFNManager POST:AddInsertCategoryListRequest params:param complete:^(APPResult * _Nonnull result) {
-        @strongify(self)
-        [self hideHUD];
-        if (result.status == ServiceCodeSuccess) {
-            [self showTextHUD:result.message delay:1.5f];
-//            if (self.complete) {
-//                self.complete();
-//            }
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.5f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                [self.navigationController popViewControllerAnimated:YES];
-            });
-        } else {
-            [self showTextHUD:result.message delay:1.5f];
-        }
-    }];
-}
-
-
 #pragma mark - set
 - (void)setModels:(NSArray<ACAListModel *> *)models {
     _models = models;
