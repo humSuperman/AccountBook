@@ -95,12 +95,12 @@
 }
 // 下拉
 - (void)homeTablePull:(id)data {
-    [self setDate:[self.date offsetMonths:1]];
+    [self setDate:[self.date offsetMonths:-1]];
     [self setModels:[BKMonthModel statisticalMonthWithYear:_date.year month:_date.month]];
 }
 // 上拉
 - (void)homeTableUp:(id)data {
-    [self setDate:[self.date offsetMonths:-1]];
+    [self setDate:[self.date offsetMonths:1]];
     [self setModels:[BKMonthModel statisticalMonthWithYear:_date.year month:_date.month]];
 }
 // 删除Cell

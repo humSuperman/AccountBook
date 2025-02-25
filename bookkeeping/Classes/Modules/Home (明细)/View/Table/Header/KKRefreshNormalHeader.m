@@ -20,8 +20,8 @@
 
 + (instancetype)headerWithRefreshingBlock:(MJRefreshComponentRefreshingBlock)refreshingBlock {
     KKRefreshNormalHeader *header = [super headerWithRefreshingBlock:refreshingBlock];
-    [header setTitle:@"下拉查看下月数据" forState:MJRefreshStateIdle];
-    [header setTitle:@"释放可查看下月数据" forState:MJRefreshStatePulling];
+    [header setTitle:@"查看上月数据" forState:MJRefreshStateIdle];
+    [header setTitle:@"释放可查看上月数据" forState:MJRefreshStatePulling];
     [header setTitle:@"查找数据中" forState:MJRefreshStateRefreshing];
     [header setTitle:@"" forState:MJRefreshStateWillRefresh];
     [header.lastUpdatedTimeLabel setHidden:YES];
