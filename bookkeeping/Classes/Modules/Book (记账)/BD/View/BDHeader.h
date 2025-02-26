@@ -7,13 +7,13 @@
 //
 
 #import "BaseView.h"
-#import "BKModel.h"
+#import "AccountBook.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface BDHeader : BaseView
 
-@property (nonatomic, strong) BKModel *model;
+@property (nonatomic, strong) AccountBook *model;
 
 @end
 

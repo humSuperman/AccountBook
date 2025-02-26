@@ -63,46 +63,46 @@
 - (void)changeVlaue:(NSString *)selectValue {
     [self setDate:[NSDate dateWithYMD:[NSString stringWithFormat:@"%@-01-01", selectValue]]];
     [(UILabel *)[self.rightButton viewWithTag:10] setText:[NSString stringWithFormat:@"%ld年", self.date.year]];
-    
+
     // 过滤
-    NSMutableArray<BKModel *> *bookArr = [NSUserDefaults objectForKey:PIN_BOOK];
+    NSMutableArray<AccountBook *> *bookArr = [NSUserDefaults objectForKey:PIN_BOOK];
     NSString *str = [NSString stringWithFormat:@"year == %@", selectValue];
 //    NSPredicate *pre = [NSPredicate predicateWithFormat:str];
 //    bookArr = [NSMutableArray arrayWithArray:[bookArr filteredArrayUsingPredicate:pre]];
     bookArr = [NSMutableArray kk_filteredArrayUsingPredicate:str array:bookArr];
-    
-    
+
+
     str = [NSString stringWithFormat:@"cmodel.is_income == 1"];
 //    pre = [NSPredicate predicateWithFormat:str];
-//    NSMutableArray<BKModel *> *arrm1 = [NSMutableArray arrayWithArray:[bookArr filteredArrayUsingPredicate:pre]];
-    NSMutableArray<BKModel *> *arrm1 = [NSMutableArray kk_filteredArrayUsingPredicate:str array:bookArr];
-    
+//    NSMutableArray<AccountBook *> *arrm1 = [NSMutableArray arrayWithArray:[bookArr filteredArrayUsingPredicate:pre]];
+    NSMutableArray<AccountBook *> *arrm1 = [NSMutableArray kk_filteredArrayUsingPredicate:str array:bookArr];
+
     str = [NSString stringWithFormat:@"cmodel.is_income == 0"];
 //    pre = [NSPredicate predicateWithFormat:str];
-//    NSMutableArray<BKModel *> *arrm2 = [NSMutableArray arrayWithArray:[bookArr filteredArrayUsingPredicate:pre]];
-    NSMutableArray<BKModel *> *arrm2 = [NSMutableArray kk_filteredArrayUsingPredicate:str array:bookArr];
-    
-            
-            
-    
-    
+//    NSMutableArray<AccountBook *> *arrm2 = [NSMutableArray arrayWithArray:[bookArr filteredArrayUsingPredicate:pre]];
+    NSMutableArray<AccountBook *> *arrm2 = [NSMutableArray kk_filteredArrayUsingPredicate:str array:bookArr];
+
+
+
+
+
     [self.table setIncome:[[arrm1 valueForKeyPath:@"@sum.price.floatValue"] floatValue]];
     [self.table setPay:[[arrm2 valueForKeyPath:@"@sum.price.floatValue"] floatValue]];
-    
-    
+
+
     NSMutableArray *arrm = [NSMutableArray array];
     for (NSInteger i=1; i<=12; i++) {
         NSString *str1 = [NSString stringWithFormat:@"month == %ld AND cmodel.is_income == 1", i];
 //        NSPredicate *pre = [NSPredicate predicateWithFormat:str1];
-//        NSMutableArray<BKModel *> *incomeModels = [NSMutableArray arrayWithArray:[bookArr filteredArrayUsingPredicate:pre]];
-        NSMutableArray<BKModel *> *incomeModels = [NSMutableArray kk_filteredArrayUsingPredicate:str1 array:bookArr];
-        
+//        NSMutableArray<AccountBook *> *incomeModels = [NSMutableArray arrayWithArray:[bookArr filteredArrayUsingPredicate:pre]];
+        NSMutableArray<AccountBook *> *incomeModels = [NSMutableArray kk_filteredArrayUsingPredicate:str1 array:bookArr];
+
         NSString *str2 = [NSString stringWithFormat:@"month == %ld AND cmodel.is_income == 0", i];
 //        pre = [NSPredicate predicateWithFormat:str2];
-//        NSMutableArray<BKModel *> *payModels = [NSMutableArray arrayWithArray:[bookArr filteredArrayUsingPredicate:pre]];
-        NSMutableArray<BKModel *> *payModels = [NSMutableArray kk_filteredArrayUsingPredicate:str2 array:bookArr];
-        
-        
+//        NSMutableArray<AccountBook *> *payModels = [NSMutableArray arrayWithArray:[bookArr filteredArrayUsingPredicate:pre]];
+        NSMutableArray<AccountBook *> *payModels = [NSMutableArray kk_filteredArrayUsingPredicate:str2 array:bookArr];
+
+
         CGFloat income = [[incomeModels valueForKeyPath:@"@sum.price.floatValue"] floatValue];
         CGFloat pay = [[payModels valueForKeyPath:@"@sum.price.floatValue"] floatValue];
         NSDictionary *param = @{@"month": [NSString stringWithFormat:@"%ld月", i],
@@ -112,7 +112,7 @@
                                 };
         [arrm addObject:param];
     }
-    
+
     BOOL maxMonth = false;
     NSMutableArray *newArrm = [NSMutableArray array];
     for (NSInteger i=12; i>=1; i--) {

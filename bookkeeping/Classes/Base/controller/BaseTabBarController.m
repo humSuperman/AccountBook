@@ -88,7 +88,7 @@
             @strongify(self)
             // 记账
             if (index == 2) {
-                BKCController *vc = [[BKCController alloc] init];
+                BookController *vc = [[BookController alloc] init];
                 BaseNavigationController *nav = [[BaseNavigationController alloc] initWithRootViewController:vc];
                 [self presentViewController:nav animated:YES completion:^{
                     

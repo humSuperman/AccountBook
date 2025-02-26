@@ -43,15 +43,15 @@
     @weakify(self)
     [[[[NSNotificationCenter defaultCenter] rac_addObserverForName:NOT_BOOK_COMPLETE object:nil] takeUntil:self.rac_willDeallocSignal] subscribeNext:^(NSNotification *x) {
         @strongify(self)
-        BKModel *model = x.object;
+        AccountBook *model = x.object;
         [self setModel:model];
     }];
-    
+
 }
 
 
 #pragma mark - set
-- (void)setModel:(BKModel *)model {
+- (void)setModel:(AccountBook *)model {
     _model = model;
     self.header.model = model;
     self.table.model = model;
@@ -75,27 +75,27 @@
 - (void)bdBottomClick:(NSNumber *)number {
     // 编辑
     if ([number integerValue] == 0) {
-        BKCController *vc = [[BKCController alloc] init];
+        BookController *vc = [[BookController alloc] init];
         vc.model = _model;
         [self.navigationController pushViewController:vc animated:true];
     }
     // 删除
     else if ([number integerValue] == 1) {
         // 删除
-        NSMutableArray<BKModel *> *bookArrm = [NSUserDefaults objectForKey:PIN_BOOK];
-        NSMutableArray<BKModel *> *bookSyncedArrm = [NSUserDefaults objectForKey:PIN_BOOK_SYNCED];
+        NSMutableArray<AccountBook *> *bookArrm = [NSUserDefaults objectForKey:PIN_BOOK];
+        NSMutableArray<AccountBook *> *bookSyncedArrm = [NSUserDefaults objectForKey:PIN_BOOK_SYNCED];
         if ([bookSyncedArrm containsObject:_model]) {
             [bookSyncedArrm removeObject:_model];
         }
         [bookArrm removeObject:_model];
         [NSUserDefaults setObject:bookArrm forKey:PIN_BOOK];
         [NSUserDefaults setObject:bookArrm forKey:PIN_BOOK_SYNCED];
-        
+
         [[NSNotificationCenter defaultCenter] postNotificationName:NOT_BOOK_DELETE object:nil];
-        
+
         // 返回
         [self.navigationController popViewControllerAnimated:true];
-        
+
         // 回调
         if (self.complete) {
             self.complete();
@@ -133,7 +133,7 @@
     if (!_eventStrategy) {
         _eventStrategy = @{
                            BD_BOTTOM_CLICK: [self createInvocationWithSelector:@selector(bdBottomClick:)],
-                           
+
                            };
     }
     return _eventStrategy;

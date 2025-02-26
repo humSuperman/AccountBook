@@ -45,39 +45,39 @@
     [self.moneyLab2 setAttributedText:[NSAttributedString createMath:@"00.00" integer:[UIFont systemFontOfSize:AdjustFont(14)] decimal:[UIFont systemFontOfSize:AdjustFont(12)]]];
     [self.moneyLab3 setAttributedText:[NSAttributedString createMath:@"00.00" integer:[UIFont systemFontOfSize:AdjustFont(14)] decimal:[UIFont systemFontOfSize:AdjustFont(12)]]];
     [self.line setImage:[UIColor createImageWithColor:kColor_BG]];
-    
+
     [self.billConstraintL setConstant:countcoordinatesX(15)];
-    
-    
-    
+
+
+
     // 过滤
     NSDate *date = [NSDate date];
-    NSMutableArray<BKModel *> *bookArr = [NSUserDefaults objectForKey:PIN_BOOK];
+    NSMutableArray<AccountBook *> *bookArr = [NSUserDefaults objectForKey:PIN_BOOK];
     NSString *str = [NSString stringWithFormat:@"year == %ld AND month == %ld", date.year, date.month];
     NSPredicate *pre = [NSPredicate predicateWithFormat:str];
     bookArr = [NSMutableArray arrayWithArray:[bookArr filteredArrayUsingPredicate:pre]];
-    
-    
+
+
 //    pre = [NSPredicate predicateWithFormat:@"cmodel.is_income == 1"];
-//    NSMutableArray<BKModel *> *arrm1 = [NSMutableArray arrayWithArray:[bookArr filteredArrayUsingPredicate:pre]];
-    NSMutableArray<BKModel *> *arrm1 = [NSMutableArray kk_filteredArrayUsingPredicate:@"cmodel.is_income == 1" array:bookArr];
-    
+//    NSMutableArray<AccountBook *> *arrm1 = [NSMutableArray arrayWithArray:[bookArr filteredArrayUsingPredicate:pre]];
+    NSMutableArray<AccountBook *> *arrm1 = [NSMutableArray kk_filteredArrayUsingPredicate:@"cmodel.is_income == 1" array:bookArr];
+
     CGFloat income = [[arrm1 valueForKeyPath:@"@sum.price.floatValue"] floatValue];
     NSString *incomeStr = [NSString stringWithFormat:@"%.2f", income];
     [self.moneyLab1 setAttributedText:[NSAttributedString createMath:incomeStr integer:[UIFont systemFontOfSize:AdjustFont(14)] decimal:[UIFont systemFontOfSize:AdjustFont(12)]]];
-    
+
 //    pre = [NSPredicate predicateWithFormat:@"cmodel.is_income == 0"];
-//    NSMutableArray<BKModel *> *arrm2 = [NSMutableArray arrayWithArray:[bookArr filteredArrayUsingPredicate:pre]];    
-    NSMutableArray<BKModel *> *arrm2 = [NSMutableArray kk_filteredArrayUsingPredicate:@"cmodel.is_income == 0" array:bookArr];
+//    NSMutableArray<AccountBook *> *arrm2 = [NSMutableArray arrayWithArray:[bookArr filteredArrayUsingPredicate:pre]];
+    NSMutableArray<AccountBook *> *arrm2 = [NSMutableArray kk_filteredArrayUsingPredicate:@"cmodel.is_income == 0" array:bookArr];
     CGFloat pay = [[arrm2 valueForKeyPath:@"@sum.price.floatValue"] floatValue];
     NSString *payStr = [NSString stringWithFormat:@"%.2f", pay];
     [self.moneyLab2 setAttributedText:[NSAttributedString createMath:payStr integer:[UIFont systemFontOfSize:AdjustFont(14)] decimal:[UIFont systemFontOfSize:AdjustFont(12)]]];
-    
-    
+
+
     NSString *sum = [NSString stringWithFormat:@"%.2f", income - pay];
     [self.moneyLab3 setAttributedText:[NSAttributedString createMath:sum integer:[UIFont systemFontOfSize:AdjustFont(14)] decimal:[UIFont systemFontOfSize:AdjustFont(12)]]];
-    
-    
+
+
 }
 
 

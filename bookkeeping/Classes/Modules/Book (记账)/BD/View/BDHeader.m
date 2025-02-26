@@ -31,7 +31,7 @@
     [self.shareLab setTextColor:kColor_Text_Black];
     [self.iconConstraintW setConstant:countcoordinatesX(60)];
     [self.shareLab addTapActionWithBlock:^(UIGestureRecognizer *gestureRecoginzer) {
-        
+
     }];
 }
 
@@ -42,7 +42,7 @@
 
 
 #pragma mark - set
-- (void)setModel:(BKModel *)model {
+- (void)setModel:(AccountBook *)model {
     _model = model;
     [_icon setImage:[UIImage imageNamed:[model.category getIconForSuffix:@"_l"]]];
     [_nameLab setText:model.category.name];

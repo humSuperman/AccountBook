@@ -4,7 +4,7 @@
  */
 
 #import "BaseViewController.h"
-#import "BKModel.h"
+#import "AccountBook.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -16,7 +16,7 @@ typedef void (^BDComplete)(void);
 #pragma mark - 声明
 @interface BDController : BaseViewController
 
-@property (nonatomic, strong) BKModel *model;
+@property (nonatomic, strong) AccountBook *model;
 @property (nonatomic, copy  ) BDComplete complete;
 
 @end

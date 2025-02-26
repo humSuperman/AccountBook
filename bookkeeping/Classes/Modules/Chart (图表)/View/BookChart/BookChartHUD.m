@@ -44,17 +44,17 @@
         [self.content setCenterX:CGRectGetMidX(pointFrame)];
         [self.triangle setCenterX:CGRectGetMidX(pointFrame)];
         [self.triangle setTop:self.line.top - 2];
-        
+
         if (self.content.left < 0) {
             self.content.left = 0;
         } else if (self.content.right > SCREEN_WIDTH) {
             self.content.left = SCREEN_WIDTH - self.content.width;
         }
-        
+
         [self setHidden:false];
     });
 }
-- (void)setModels:(NSMutableArray<BKModel *> *)models {
+- (void)setModels:(NSMutableArray<AccountBook *> *)models {
     _models = models;
     _content.models = models;
     NSInteger count = models.count > 3 ? 3 : models.count;

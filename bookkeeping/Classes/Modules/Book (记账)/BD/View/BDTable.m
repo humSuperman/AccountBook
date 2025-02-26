@@ -35,7 +35,7 @@
 
 
 #pragma mark - set
-- (void)setModel:(BKModel *)model {
+- (void)setModel:(AccountBook *)model {
     _model = model;
     [self reloadData];
 }

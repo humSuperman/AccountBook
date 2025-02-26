@@ -100,7 +100,7 @@ typedef NS_ENUM(NSInteger, BarButtonItemState) {
 
     if ([self isKindOfClass:[HomeController class]] ||
         [self isKindOfClass:[ChartController class]] ||
-        [self isKindOfClass:[BKCController class]] ||
+        [self isKindOfClass:[BookController class]] ||
         [self isKindOfClass:[FindController class]] ||
         [self isKindOfClass:[MineController class]]) {
         self.leftButton.hidden = YES;

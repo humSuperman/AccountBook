@@ -49,7 +49,7 @@
     [self setAnimation:NO];
     [self setIsLess:NO];
     [self setCurrentDate:[NSDate date]];
-    
+
     [self.nameLab setFont:[UIFont systemFontOfSize:AdjustFont(14)]];
     [self.nameLab setTextColor:kColor_Text_Gary];
     [self.markField setFont:[UIFont systemFontOfSize:AdjustFont(14)]];
@@ -57,16 +57,16 @@
     [self.markField setFont:[UIFont systemFontOfSize:AdjustFont(14)]];
     [self.markField setTintColor:kColor_Main_Color];
     [self.markField setTextColor:kColor_Text_Gary];
-    
+
     [self.textConstraintH setConstant:countcoordinatesX(60)];
     [self.keyConstraintB setConstant:SafeAreaBottomHeight];
-    
+
     [self createBtn];
-    
+
     if (!_money) {
         _money = [NSMutableString string];
     }
-    
+
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showKeyboard:) name:UIKeyboardWillShowNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(hideKeyboard:) name:UIKeyboardWillHideNotification object:nil];
 }
@@ -84,7 +84,7 @@
                 [btn setBackgroundImage:[UIColor createImageWithColor:kColor_White] forState:UIControlStateNormal];
                 [btn setBackgroundImage:[UIColor createImageWithColor:kColor_BG] forState:UIControlStateHighlighted];
             }
-            
+
             // 数字
             if (IS_MATH(btn.tag)) {
                 NSInteger math = [self getMath:btn.tag];
@@ -115,10 +115,10 @@
                 [btn setTitle:@"删除" forState:UIControlStateNormal];
                 [btn setTitle:@"删除" forState:UIControlStateHighlighted];
             }
-            
+
             [btn setTitleColor:kColor_Text_Black forState:UIControlStateNormal];
             [btn setTitleColor:kColor_Text_Black forState:UIControlStateHighlighted];
-            
+
             [btn addTarget:self action:@selector(btnClick:) forControlEvents:UIControlEventTouchUpInside];
         }
     }
@@ -131,8 +131,8 @@
         return;
     }
     _animation = YES;
-    
-    
+
+
     [self setHidden:NO];
     [UIView animateWithDuration:.3f delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
         [self setTop:SCREEN_HEIGHT - self.height];
@@ -145,7 +145,7 @@
         return;
     }
     _animation = YES;
-    
+
     [self.markField endEditing:YES];
     [self setHidden:NO];
     [UIView animateWithDuration:.3f delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
@@ -188,7 +188,7 @@
 - (void)mathBtnClick:(UIButton *)btn {
     // 数字
     if (IS_MATH(btn.tag)) {
-        
+
         NSInteger math = [self getMath:btn.tag];
         NSString *str = ({
             NSString *str;
@@ -199,7 +199,7 @@
             }
             str;
         });
-        
+
         // 是否可以输入
         if ([self isAllowMath:str]) {
             if (_money.length == 0 || [_money isEqualToString:@"0"]) {
@@ -232,7 +232,7 @@
         if (_money.length == 0) {
             _money = [NSMutableString stringWithString:@"0"];
         }
-        
+
         if ([self isAllowPlusOrLess:_money]) {
             [_money appendString:@"+"];
             [self setMoney:_money];
@@ -246,7 +246,7 @@
         if (_money.length == 0) {
             _money = [NSMutableString stringWithString:@"0"];
         }
-        
+
         if ([self isAllowPlusOrLess:_money]) {
             [_money appendString:@"-"];
             [self setMoney:_money];
@@ -359,14 +359,14 @@
     if (condition1 || condition2 || condition3 || condition4) {
         // 使用 NSDecimalNumber 进行高精度计算
         NSDecimalNumber *result = [NSDecimalNumber decimalNumberWithString:_money];
-        
+
         // 进行你自己的计算或转换
         // 对计算结果进行格式化
         NSString *formattedResult = [NSString stringWithFormat:@"%.2f", [result doubleValue]];  // 保留两位小数
-        
+
         // 处理符号
         NSMutableString *strm = [NSMutableString stringWithString:formattedResult];
-        
+
         // 加
         if ([_money hasSuffix:@"+"]) {
             [strm appendString:@"+"];
@@ -403,12 +403,12 @@
     if (isNegative == true) {
         string = [string substringFromIndex:1];
     }
-    
+
     NSString *lastStr = [string substringWithRange:NSMakeRange(string.length - 1, 1)];
     if ([lastStr isEqualToString:@"+"] || [lastStr isEqualToString:@"-"]) {
         string = [string substringToIndex:string.length - 1];
     }
-    
+
     NSMutableArray *arrm;
     // 加法
     if ([string containsString:@"+"]) {
@@ -424,7 +424,7 @@
         [arrm replaceObjectAtIndex:0 withObject:str];
     }
     return @[];
-    
+
 }
 
 // 是否可以输入数字
@@ -489,13 +489,13 @@
     _money = money;
     _moneyLab.text = money;
 }
-- (void)setModel:(BKModel *)model {
+- (void)setModel:(AccountBook *)model {
     _model = model;
     NSString *key = [NSString stringWithFormat:@"%ld-%02ld-%02ld", model.year, model.month, model.day];
     [self.markField setText:model.mark];
     [self setMoney:[MoneyConverter toRealMoney:model.price].mutableCopy];
     [self setCurrentDate:[NSDate dateWithYMD:key]];
-    
+
     UIButton *btn = [self viewWithTag:DATE_TAG];
     NSString *selectValue = [self.currentDate isToday] ? @"今天" : key;
     [btn setTitle:selectValue forState:UIControlStateNormal];
@@ -508,7 +508,7 @@
 - (void)showKeyboard:(NSNotification *)not {
     NSTimeInterval time = [not.userInfo[UIKeyboardAnimationDurationUserInfoKey] floatValue];
     CGFloat keyHeight = [not.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue].size.height;
-    
+
     CGFloat safeAreaBottomInset = 0;
     NSInteger top = 60;
     if (@available(iOS 11.0, *)) {
@@ -518,7 +518,7 @@
     [UIView animateWithDuration:time delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
         [self.textContent setTop:(self.height - keyHeight - safeAreaBottomInset) - countcoordinatesX(top)];
     } completion:^(BOOL finished) {
-        
+
     }];
 }
 - (void)hideKeyboard:(NSNotification *)not {
@@ -526,7 +526,7 @@
     [UIView animateWithDuration:time delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
         [self.textContent setTop:0];
     } completion:^(BOOL finished) {
-        
+
     }];
 }
 

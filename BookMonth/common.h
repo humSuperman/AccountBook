@@ -30,7 +30,7 @@
 
 // model
 #import "BaseModel.h"
-#import "BKModel.h"
+#import "AccountBook.h"
 #import "ACAListModel.h"
 #import "BKCIncomeModel.h"
 

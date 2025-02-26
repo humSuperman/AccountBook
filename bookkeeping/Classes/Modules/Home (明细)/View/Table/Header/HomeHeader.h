@@ -4,7 +4,7 @@
  */
 
 #import "BaseView.h"
-#import "BKModel.h"
+#import "AccountBook.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -13,7 +13,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) NSDate *date;
 //@property (nonatomic, assign) CGFloat pay;
 //@property (nonatomic, assign) CGFloat income;
-//@property (nonatomic, strong) BKModel *model;
+//@property (nonatomic, strong) AccountBook *model;
 @property (nonatomic, strong) NSMutableArray<BKMonthModel *> *models;
 
 @end

@@ -4,7 +4,7 @@
 #import "HomeList.h"
 #import "HomeListSubCell.h"
 #import "HOME_EVENT.h"
-#import "BKModel.h"
+#import "AccountBook.h"
 #import "BDController.h"
 #import "ACAListModel.h"
 #import "MoneyConverter.h"
@@ -105,14 +105,14 @@
 }
 // 删除Cell
 - (void)homeTableCellRemove:(HomeListSubCell *)cell {
-    [BKModel deleteAccountById:cell.model.Id];
+    [AccountBook deleteAccountById:cell.model.Id];
 
     [[NSNotificationCenter defaultCenter] postNotificationName:NOT_BOOK_DELETE object:nil];
 }
 // 点击Cell
-- (void)homeTableCellClick:(BKModel *)model {
+- (void)homeTableCellClick:(AccountBook *)model {
     // 详情
-    BKCController *vc = [[BKCController alloc] init];
+    BookController *vc = [[BookController alloc] init];
     vc.model = model;
     [self.navigationController pushViewController:vc animated:true];
 }

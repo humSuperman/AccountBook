@@ -82,7 +82,7 @@
     return countcoordinatesX(5);
 }
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    BKModel *model = self.models[indexPath.section].list[indexPath.row];
+    AccountBook *model = self.models[indexPath.section].list[indexPath.row];
     [self routerEventWithName:HOME_CELL_CLICK data:model];
 }
 

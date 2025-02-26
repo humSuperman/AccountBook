@@ -1,10 +1,10 @@
 /**
  * 记账
- * @author 郑业强 2018-12-16 创建文件
+ * @author Hum 2025-02-26
  */
 
 #import "MineController.h"
-#import "CAController.h"
+#import "CategoryController.h"
 #import "WebVC.h"
 #import "AboutController.h"
 #import "DatabaseManager.h"
@@ -31,7 +31,7 @@
     [self setupUI];
 }
 - (void)setupUI {
-    
+
 }
 
 
@@ -39,20 +39,10 @@
 // 声音
 - (void)soundChangeRequest:(NSNumber *)isOn {
     NSDictionary *param = [NSDictionary dictionaryWithObjectsAndKeys:isOn, @"sound", nil];;
-    [AFNManager POST:SoundRequest params:param complete:^(APPResult *result) {
-        UserModel *model = [UserInfo loadUserInfo];
-        model.sound = [isOn integerValue];
-        [UserInfo saveUserModel:model];
-    }];
 }
 // 详情
 - (void)detailChangeRequest:(NSNumber *)isOn {
     NSDictionary *param = [NSDictionary dictionaryWithObjectsAndKeys:isOn, @"detail", nil];;
-    [AFNManager POST:DetailRequest params:param complete:^(APPResult *result) {
-        UserModel *model = [UserInfo loadUserInfo];
-        model.detail = [isOn integerValue];
-        [UserInfo saveUserModel:model];
-    }];
 }
 
 
@@ -79,7 +69,7 @@
     if (indexPath.section == 0) {
         // 类别
         if (indexPath.row == 0) {
-            CAController *vc = [[CAController alloc] init];
+            CategoryController *vc = [[CategoryController alloc] init];
             [self.navigationController pushViewController:vc animated:YES];
         }
     }
@@ -129,28 +119,28 @@
 }
 // 头像
 - (void)headerIconClick:(id)data {
-    
+
 }
 
 - (void)shareFile {
     NSString *documentDirectory = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject];
     NSString *filePath = [documentDirectory stringByAppendingPathComponent:@"bookkeeping.db"];
     NSURL *fileURL = [NSURL fileURLWithPath:filePath];
-    
+
     if (![[NSFileManager defaultManager] fileExistsAtPath:filePath]) {
         [self showTextHUD:@"文件未找到" delay:1.5f];
         return;
     }
     UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:@[fileURL] applicationActivities:nil];
-    
+
     activityVC.excludedActivityTypes = @[UIActivityTypePostToTwitter, UIActivityTypePostToFacebook];
-    
+
     if (@available(iOS 10.0, *)) {
         [self presentViewController:activityVC animated:YES completion:nil];
     } else {
         [self presentViewController:activityVC animated:YES completion:nil];
     }
-    
+
     [activityVC setCompletionWithItemsHandler:^(UIActivityType  _Nullable activityType, BOOL completed, NSArray  * _Nullable returnedItems, NSError  * _Nullable activityError) {
         [self leftButtonClick];
         if (completed) {
@@ -170,7 +160,7 @@
     if (![sound isEqual:sound_synced]) {
         [NSUserDefaults setObject:sound forKey:PIN_SETTING_SOUND_SYNCED];
     }
-    
+
 }
 // 切换详情
 - (void)detailClick:(NSNumber *)isOn {

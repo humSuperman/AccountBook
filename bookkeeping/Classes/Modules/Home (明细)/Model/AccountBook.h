@@ -1,6 +1,6 @@
 /**
  * 记账model
- * @author 郑业强 2018-12-31 创建文件
+ * @author Hum 2025-02-26 创建文件
  */
 
 #import "BaseModel.h"
@@ -11,11 +11,13 @@
 NS_ASSUME_NONNULL_BEGIN
 
 
-@interface BKModel : BaseModel<NSCoding, NSCopying>
+@interface AccountBook : BaseModel<NSCoding, NSCopying>
 
 @property (nonatomic, assign) NSInteger Id;
+@property (nonatomic, assign) NSInteger account_id; // 账本id
 @property (nonatomic, assign) NSInteger category_id;
 @property (nonatomic, assign) NSInteger price;
+@property (nonatomic, assign) NSInteger exchange_rate; // 汇率*10000
 @property (nonatomic, assign) NSInteger year;
 @property (nonatomic, assign) NSInteger month;
 @property (nonatomic, assign) NSInteger day;
@@ -32,11 +34,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 // 获取Id
 + (NSNumber *)getId;
-+ (void)saveAccount:(BKModel *)model;
-+ (NSArray<BKModel *> *)getAllModels;
-+ (NSArray<BKModel *> *)getAllModelsWithConditions:(NSDictionary<NSString *,id> *)conditions;
-+ (void)updateAccount:(BKModel *)model;
-+ (BKModel *)getAccountById:(NSInteger)modelId;
++ (void)saveAccountBook:(AccountBook *)model;
++ (NSArray<AccountBook *> *)getAllModels;
++ (NSArray<AccountBook *> *)getAllModelsWithConditions:(NSDictionary<NSString *,id> *)conditions;
++ (void)updateAccountBook:(AccountBook *)model;
++ (AccountBook *)getAccountById:(NSInteger)modelId;
 + (void)deleteAccountById:(NSInteger)modelId;
 @end
 
@@ -49,7 +51,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy  ) NSString *moneyStr;   // 支出收入(例: 收入: 23  支出: 165)
 @property (nonatomic, assign) NSInteger income;       // 收入
 @property (nonatomic, assign) NSInteger pay;          // 支出
-@property (nonatomic, strong) NSMutableArray<BKModel *> *list;  // 数据
+@property (nonatomic, strong) NSMutableArray<AccountBook *> *list;  // 数据
 
 // 统计数据
 + (NSMutableArray<BKMonthModel *> *)statisticalMonthWithYear:(NSInteger)year month:(NSInteger)month;
@@ -58,18 +60,18 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 // 数据统计(图表)
-@interface BKChartModel : BaseModel<NSCoding>
+@interface BookChartModel : BaseModel<NSCoding>
 
 @property (nonatomic, assign) NSString *sum;                          // 总值
 @property (nonatomic, assign) NSString *max;                          // 最大值
 @property (nonatomic, assign) NSString *avg;                          // 平均值
 @property (nonatomic, assign) BOOL is_income;                       // 是否是收入
-@property (nonatomic, strong) NSMutableArray<BKModel *> *groupArr;  // 排行榜
-@property (nonatomic, strong) NSMutableArray<BKModel *> *chartArr;  // 图表
-@property (nonatomic, strong) NSMutableArray<NSMutableArray<BKModel *> *> *chartHudArr;  // 图表
+@property (nonatomic, strong) NSMutableArray<AccountBook *> *groupArr;  // 排行榜
+@property (nonatomic, strong) NSMutableArray<AccountBook *> *chartArr;  // 图表
+@property (nonatomic, strong) NSMutableArray<NSMutableArray<AccountBook *> *> *chartHudArr;  // 图表
 
 // 统计数据(图表首页)
-+ (BKChartModel *)statisticalChart:(NSInteger)status isIncome:(BOOL)isIncome cmodel:(BKModel *)cmodel date:(NSDate *)date;
++ (BookChartModel *)statisticalChart:(NSInteger)status isIncome:(BOOL)isIncome date:(NSDate *)date;
 
 @end
 

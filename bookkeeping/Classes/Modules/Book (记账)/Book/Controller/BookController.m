@@ -3,21 +3,22 @@
  * @author Hum 2025-02-20 创建文件
  */
 
-#import "BKCController.h"
+#import "BookController.h"
 #import "BKCCollection.h"
 #import "BKCNavigation.h"
 #import "BKCKeyboard.h"
 #import "BKCIncomeModel.h"
-#import "CAController.h"
+#import "CategoryController.h"
 #import "KKRefreshGifHeader.h"
 #import "BOOK_EVENT.h"
-#import "BKModel.h"
+#import "AccountModel.h"
+#import "AccountBook.h"
 #import "CategoryModel.h"
 #import "MoneyConverter.h"
 
 
 #pragma mark - 声明
-@interface BKCController()<UIScrollViewDelegate>
+@interface BookController()<UIScrollViewDelegate>
 
 @property (nonatomic, strong) BKCNavigation *navigation;
 @property (nonatomic, strong) UIScrollView *scroll;
@@ -30,7 +31,7 @@
 
 
 #pragma mark - 实现
-@implementation BKCController
+@implementation BookController
 
 
 - (void)viewDidLoad {
@@ -98,12 +99,6 @@
 // 记账
 - (void)createBookRequest:(NSString *)price mark:(NSString *)mark date:(NSDate *)date {
     NSInteger index = self.scroll.contentOffset.x / SCREEN_WIDTH;
-    BKCCollection *collection = self.collections[index];
-    CategoryModel *category = [CategoryModel getCategoryById:collection.selectedModelId];
-    if(category == nil){
-        NSLog(@"分类不存在，%ld",collection.selectedModelId);
-        return;
-    }
     NSInteger intPrice = labs([MoneyConverter toIntMoney:price]);
     if(intPrice == 0 && [mark  isEqual: @""]){
         [self showTextHUD:@"金额与备注至少输入一个" delay:1.f];
@@ -113,7 +108,14 @@
         [self showTextHUD:@"最大金额999,999.99" delay:1.f];
         return;
     }
-    BKModel *model = [[BKModel alloc] init];
+    BKCCollection *collection = self.collections[index];
+    CategoryModel *category = [CategoryModel getCategoryById:collection.selectedModelId];
+    if(category == nil){
+        NSLog(@"分类不存在，%ld",collection.selectedModelId);
+        return;
+    }
+    AccountModel *account = [AccountModel getDefaultAccount];
+    AccountBook *model = [[AccountBook alloc] init];
     if (!_model) {
         // 新增
         model.price = intPrice;
@@ -122,8 +124,9 @@
         model.day = date.day;
         model.mark = mark;
         model.category_id = category.Id;
+        model.account_id = account.Id;
         model.type = category.type;
-        [BKModel saveAccount:model];
+        [AccountBook saveAccountBook:model];
     } else {
         // 修改
         _model.price = intPrice;
@@ -132,9 +135,10 @@
         _model.day = date.day;
         _model.mark = mark;
         _model.category_id = category.Id;
+        model.account_id = account.Id;
         _model.type = category.type;
         // 更新数据库中的数据
-        [BKModel updateAccount:_model];
+        [AccountBook updateAccountBook:_model];
         model = _model;
     }
 
@@ -194,7 +198,7 @@
         }
         [self.keyboard hide];
         // 刷新
-        CAController *vc = [[CAController alloc] init];
+        CategoryController *vc = [[CategoryController alloc] init];
         [vc setIs_income:collection.tag];
         [vc setComplete:^{
             [self bendiData];

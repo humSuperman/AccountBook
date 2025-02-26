@@ -87,17 +87,17 @@
 - (void)migrateDatabaseFromVersion:(NSInteger)fromVersion  {
     // 执行迁移逻辑
     if (fromVersion < 1) {
-        [self createBKModel];
+        [self createAccountBook];
         [self updateDatabaseVersion:1];
         fromVersion = 1;
     }
-    
+
     if (fromVersion < 2) {
         [self createCategoryModel];
         [self updateDatabaseVersion:2];
         fromVersion = 2;
     }
-    
+
     if (fromVersion < 3) {
         [self createAccountTable];
         [self accountBookAddAccountIdField];
@@ -110,7 +110,7 @@
 
 
 
-- (void)createBKModel {
+- (void)createAccountBook {
     // 创建表格的 SQL 语句
     NSString *tableSql = @"CREATE TABLE IF NOT EXISTS `AccountBook` (`id` INTEGER PRIMARY KEY autoincrement, `price` INTEGER not null default 0, `year` INTEGER not null default 0, `month` INTEGER not null default 0, `day` INTEGER not null default 0, `mark` varchar(50) not null default '', `category_id` INTEGER not null default 0, `type` INTEGER not null default 0,`created_at` datetime default (datetime('now', 'localtime')),`updated_at` datetime default (datetime('now', 'localtime')))";
 
@@ -140,7 +140,7 @@
 - (void)createCategoryModel {
     // 创建表格的 SQL 语句
     NSString *tableSql = @"CREATE TABLE IF NOT EXISTS `Category` (`id` INTEGER PRIMARY KEY AUTOINCREMENT,`name` varchar(50) NOT NULL default '',`type` INTEGER NOT NULL default 0,`status` INTEGER DEFAULT 0,`icon` varchar(100) default '',`created_at` datetime default (datetime('now', 'localtime')),`updated_at` datetime default (datetime('now', 'localtime')))";
-    
+
     NSString *dataSql = @"INSERT INTO `Category` (`id`, `name`, `type`, `icon`)"
     "VALUES"
     "(1, '餐饮', 0, 'e_catering'),"
@@ -186,7 +186,7 @@
     if (![self.db executeUpdate:tableSql]) {
         NSLog(@"Failed to create Category table: %@", [self.db lastErrorMessage]);
     }
-    
+
     if (![self.db executeUpdate:dataSql]) {
         NSLog(@"Failed to insert Category data: %@", [self.db lastErrorMessage]);
     }
@@ -203,7 +203,7 @@
     if (![self.db executeUpdate:tableSql]) {
         NSLog(@"Failed to create Account table: %@", [self.db lastErrorMessage]);
     }
-    
+
     if (![self.db executeUpdate:@"INSERT INTO Account (`id`,`name`,`money_icon`,`status`,`is_default`,`default_exchange_rate`) VALUES (1,'默认账本','¥',1,1,10000);"]) {
         NSLog(@"Failed to insert Account: %@", [self.db lastErrorMessage]);
     }
@@ -213,7 +213,7 @@
     if (![self.db executeUpdate:@"ALTER TABLE AccountBook ADD COLUMN `account_id` INTEGER not null default 0;"]) {
         NSLog(@"Failed to create Account table: %@", [self.db lastErrorMessage]);
     }
-    
+
     if (![self.db executeUpdate:@"UPDATE AccountBook set `account_id`=1;"]) {
         NSLog(@"Failed to update Account account_id: %@", [self.db lastErrorMessage]);
     }
@@ -221,7 +221,7 @@
     if (![self.db executeUpdate:@"ALTER TABLE AccountBook ADD COLUMN `exchange_rate` INTEGER not null default 0;"]) {
         NSLog(@"Failed to create Account table: %@", [self.db lastErrorMessage]);
     }
-    
+
     if (![self.db executeUpdate:@"UPDATE AccountBook set `exchange_rate`=10000;"]) {
         NSLog(@"Failed to update Account account_id: %@", [self.db lastErrorMessage]);
     }

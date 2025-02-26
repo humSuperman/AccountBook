@@ -59,8 +59,8 @@
     if (!_minModel || !_maxModel) {
         return;
     }
-    
-    
+
+
     // 更新控件
     [self.selectIndexs removeAllObjects];
     // 周
@@ -80,7 +80,7 @@
             [submodel setWeek_day:[newDate weekday]];
             [submodel setSelectIndex:0];
             [submodels addObject:submodel];
-            
+
             if ([[submodel detail] isEqualToString:@"本周"] && self.selectIndexs.count == 0) {
                 NSIndexPath *indexPath = [NSIndexPath indexPathForRow:i inSection:0];
                 [self.selectIndexs addObject:indexPath];
@@ -105,7 +105,7 @@
                 [submodel setMonth:m];
                 [submodel setSelectIndex:1];
                 [submodels addObject:submodel];
-                
+
                 NSDate *date = [NSDate date];
                 if (y == date.year && m == date.month && self.selectIndexs.count == 1) {
                     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:submodels.count - 1 inSection:0];
@@ -139,8 +139,8 @@
         }
         submodels;
     })];
-    
-    
+
+
     [self.collection reloadData];
     dispatch_async(dispatch_get_main_queue(), ^{
         [self collectionDidSelect:self.selectIndexs[self.segmentIndex] animation:false];
@@ -150,11 +150,11 @@
 
 
 #pragma mark - set
-- (void)setMinModel:(BKModel *)minModel {
+- (void)setMinModel:(AccountBook *)minModel {
     _minModel = minModel;
     [self updateDateRange];
 }
-- (void)setMaxModel:(BKModel *)maxModel {
+- (void)setMaxModel:(AccountBook *)maxModel {
     _maxModel = maxModel;
     [self updateDateRange];
 }
@@ -162,7 +162,7 @@
     _segmentIndex = segmentIndex;
 //    _selectIndex = nil;
 //    [self updateDateRange];
-    
+
     [self.collection reloadData];
     dispatch_async(dispatch_get_main_queue(), ^{
         [self collectionDidSelect:self.selectIndexs[self.segmentIndex] animation:false];
@@ -217,7 +217,7 @@
     [UIView animateWithDuration:duration delay:0 options:UIViewAnimationOptionCurveEaseIn animations:^{
         ChartSubModel *model = self.sModels[self.segmentIndex][indexPath.row];
         self.line.width = [model.detail sizeWithMaxSize:CGSizeMake(MAXFLOAT, MAXFLOAT) font:LAB_FONT].width;
-        
+
         CGFloat left = countcoordinatesX(70) * indexPath.row;
         left += indexPath.row != 0 ? indexPath.row * countcoordinatesX(10) : 0;
         left += countcoordinatesX(70) / 2;

@@ -43,7 +43,7 @@
         _nameLab.text = @"收入";
     }
 }
-- (void)setCmodel:(BKModel *)cmodel {
+- (void)setCmodel:(AccountBook *)cmodel {
     _cmodel = cmodel;
     if (_cmodel) {
         _nameLab.hidden = true;

@@ -3,7 +3,7 @@
  * @author Hum 2025-02-19 添加本地数据
  */
 
-#import "CAController.h"
+#import "CategoryController.h"
 #import "CAHeader.h"
 #import "CategoryTable.h"
 #import "BottomButton.h"
@@ -15,7 +15,7 @@
 
 
 #pragma mark - 声明
-@interface CAController()
+@interface CategoryController()
 
 @property (nonatomic, strong) CAHeader *header;
 @property (nonatomic, strong) CategoryTable *table;
@@ -27,7 +27,7 @@
 
 
 #pragma mark - 实现
-@implementation CAController
+@implementation CategoryController
 
 
 - (void)viewDidLoad {

@@ -36,7 +36,7 @@
 }
 
 #pragma mark - set
-- (void)setModels:(NSMutableArray<BKModel *> *)models {
+- (void)setModels:(NSMutableArray<AccountBook *> *)models {
     _models = models;
     [self.table reloadData];
     [self.lab setHidden:models.count != 0];
@@ -65,7 +65,7 @@
 }
 - (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
 
-    
+
     UILabel *lab = [[UILabel alloc] initWithFrame:({
         CGRectMake(0, 0, _table.width, countcoordinatesX(20));
     })];

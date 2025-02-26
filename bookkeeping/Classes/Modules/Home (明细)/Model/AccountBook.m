@@ -1,19 +1,19 @@
 /**
  * 记账model
- * @author Hum 2025-02-18 创建文件
+ * @author Hum 2025-02-26 创建文件
  */
 
-#import "BKModel.h"
+#import "AccountBook.h"
 #import "CategoryModel.h"
 #import "DatabaseManager.h"
 #import "MoneyConverter.h"
 
-#define BKModelId @"BKModelId"
+#define AccountBookId @"AccountBookId"
 
-@implementation BKModel
+@implementation AccountBook
 
 + (void)load {
-    [BKModel mj_setupIgnoredPropertyNames:^NSArray *{
+    [AccountBook mj_setupIgnoredPropertyNames:^NSArray *{
         return @[@"date"];
     }];
 }
@@ -36,7 +36,7 @@
 }
 
 - (instancetype)copyWithZone:(NSZone *)zone {
-    BKModel *model = [[[self class] allocWithZone:zone] init];
+    AccountBook *model = [[[self class] allocWithZone:zone] init];
     model.Id = self.Id;
     model.category_id = self.category_id;
     model.price = self.price;
@@ -53,10 +53,10 @@
 }
 
 - (BOOL)isEqual:(id)object {
-    if (![object isKindOfClass:[BKModel class]]) {
+    if (![object isKindOfClass:[AccountBook class]]) {
         return false;
     }
-    BKModel *model = object;
+    AccountBook *model = object;
     return [self Id] == [model Id];
 }
 
@@ -90,17 +90,17 @@
     return @(lastId + 1);
 }
 
-+ (NSArray<BKModel *> *)getAllModels {
++ (NSArray<AccountBook *> *)getAllModels {
     return [self getAllModelsWithConditions:nil];
 }
 
-+ (NSArray<BKModel *> *)getAllModelsWithConditions:(NSDictionary<NSString *,id> *)conditions {
++ (NSArray<AccountBook *> *)getAllModelsWithConditions:(NSDictionary<NSString *,id> *)conditions {
     NSMutableArray *models = [NSMutableArray array];
-    
+
     // 构建 SQL 查询语句
     NSMutableString *selectQuery = [NSMutableString stringWithString:@"SELECT * FROM AccountBook"];
     NSMutableArray *arguments = [NSMutableArray array];
-    
+
     if (conditions.count > 0) {
         [selectQuery appendString:@" WHERE "];
         __block int i = 0;
@@ -117,7 +117,7 @@
     // 执行查询
     FMResultSet *results = [[DatabaseManager sharedManager].db executeQuery:selectQuery withArgumentsInArray:arguments];
     while ([results next]) {
-        BKModel *model = [[BKModel alloc] init];
+        AccountBook *model = [[AccountBook alloc] init];
         model.Id = [results intForColumn:@"id"];
         model.price = [results intForColumn:@"price"];
         model.year = [results intForColumn:@"year"];
@@ -130,26 +130,26 @@
         [models addObject:model];
     }
     [results close];
-    
+
     return models;
 }
 
-+ (void)saveAccount:(BKModel *)model {
-    NSString *insertQuery = @"INSERT INTO AccountBook (price, year, month, day, mark, category_id, type) VALUES (?, ?, ?, ?, ?, ?, ?)";
-    [[DatabaseManager sharedManager].db executeUpdate:insertQuery, @(model.price), @(model.year), @(model.month), @(model.day), model.mark, @(model.category_id), @(model.type)];
++ (void)saveAccountBook:(AccountBook *)model {
+    NSString *insertQuery = @"INSERT INTO AccountBook (price, year, month, day, mark, category_id, account_id, type) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    [[DatabaseManager sharedManager].db executeUpdate:insertQuery, @(model.price), @(model.year), @(model.month), @(model.day), model.mark, @(model.category_id), @(model.account_id), @(model.type)];
 }
 
-+ (void)updateAccount:(BKModel *)model {
-    NSString *updateQuery = @"UPDATE AccountBook SET price = ?, year = ?, month = ?, day = ?, mark = ?, category_id = ?, type = ?, updated_at = DATETIME('now', 'localtime') WHERE id = ?";
-    [[DatabaseManager sharedManager].db executeUpdate:updateQuery, @(model.price), @(model.year), @(model.month), @(model.day), model.mark, @(model.category_id), @(model.type), @(model.Id)];
++ (void)updateAccountBook:(AccountBook *)model {
+    NSString *updateQuery = @"UPDATE AccountBook SET price = ?, year = ?, month = ?, day = ?, mark = ?, category_id = ?, account_id = ?, type = ?, updated_at = DATETIME('now', 'localtime') WHERE id = ?";
+    [[DatabaseManager sharedManager].db executeUpdate:updateQuery, @(model.price), @(model.year), @(model.month), @(model.day), model.mark, @(model.category_id), @(model.account_id), @(model.type), @(model.Id)];
 }
 
-+ (BKModel *)getAccountById:(NSInteger)modelId{
++ (AccountBook *)getAccountById:(NSInteger)modelId{
     NSString *selectQuery = @"SELECT * FROM AccountBook WHERE Id = ?";
     FMResultSet *results = [[DatabaseManager sharedManager].db executeQuery:selectQuery, @(modelId)];
 
     if ([results next]) {
-        BKModel *model = [[BKModel alloc] init];
+        AccountBook *model = [[AccountBook alloc] init];
         model.Id = [results intForColumn:@"id"];
         model.price = [results doubleForColumn:@"price"];
         model.year = [results intForColumn:@"year"];
@@ -167,7 +167,7 @@
 + (void)deleteAccountById:(NSInteger)Id {
     NSString *deleteQuery = @"DELETE FROM AccountBook WHERE id = ?";
     [[DatabaseManager sharedManager].db executeUpdate:deleteQuery, @(Id)];
-    NSLog(@"Success to delete BKModel");
+    NSLog(@"Success to delete AccountBook");
 }
 
 
@@ -213,14 +213,14 @@
     NSMutableDictionary *conditions = [NSMutableDictionary dictionary];
     [conditions setObject:@(year) forKey:@"year ="];
     [conditions setObject:@(month) forKey:@"month ="];
-    NSMutableArray<BKModel *> *models = [[BKModel getAllModelsWithConditions:conditions] mutableCopy];
-    
+    NSMutableArray<AccountBook *> *models = [[AccountBook getAllModelsWithConditions:conditions] mutableCopy];
+
     // 统计数据
     NSMutableDictionary *dictm = [NSMutableDictionary dictionary];
-    
-    for (BKModel *model in models) {
+
+    for (AccountBook *model in models) {
         NSString *key = [NSString stringWithFormat:@"%ld-%02ld-%02ld", model.year, model.month, model.day];
-        
+
         // 初始化字典中的值
         if (![dictm objectForKey:key]) {
             BKMonthModel *submodel = [[BKMonthModel alloc] init];
@@ -230,11 +230,11 @@
             submodel.date = [NSDate dateWithYMD:key];
             [dictm setObject:submodel forKey:key];
         }
-        
+
         // 更新数据
         BKMonthModel *submodel = dictm[key];
         [submodel.list addObject:model];
-        
+
         // 收入或支出
         if (model.type == 0) {
             submodel.pay += model.price;
@@ -242,13 +242,13 @@
             submodel.income += model.price;
         }
     }
-    
+
     // 将字典中的所有值转换为数组，并按照日期进行排序
     NSMutableArray<BKMonthModel *> *arrm = [NSMutableArray arrayWithArray:[dictm allValues]];
     [arrm sortUsingComparator:^NSComparisonResult(BKMonthModel *obj1, BKMonthModel *obj2) {
         return [obj1.dateStr compare:obj2.dateStr];
     }];
-    
+
     return arrm;
 }
 
@@ -257,7 +257,7 @@
 
 
 
-@implementation BKChartModel
+@implementation BookChartModel
 
 - (instancetype)initWithCoder:(NSCoder *)aDecoder {
     self = [super init];
@@ -273,14 +273,14 @@
 }
 
 // 统计数据(图表首页)
-+ (BKChartModel *)statisticalChart:(NSInteger)status isIncome:(BOOL)isIncome cmodel:(BKModel *)cmodel date:(NSDate *)date {
++ (BookChartModel *)statisticalChart:(NSInteger)status isIncome:(BOOL)isIncome date:(NSDate *)date {
 
-    BKChartModel *model = [[BKChartModel alloc] init];
-    
-    
+    BookChartModel *model = [[BookChartModel alloc] init];
+
+
     NSMutableDictionary *conditions = [NSMutableDictionary dictionary];
     [conditions setObject:isIncome ? @(1) : @(0) forKey:@"type = "];
-    
+
     if (status == 0) { // 周
         NSDate *start = [date offsetDays:-[date weekday] + 1];
         NSDate *end = [date offsetDays:7 - [date weekday]];
@@ -296,17 +296,17 @@
     } else if (status == 2) { // 年
         [conditions setObject:@(date.year) forKey:@"year ="];
     }
-    
-    NSMutableArray<BKModel *> *filteredModels = [[BKModel getAllModelsWithConditions:conditions] mutableCopy];
-    
-    NSMutableArray<BKModel *> *chartArr = [NSMutableArray array];
-    NSMutableArray<NSMutableArray<BKModel *> *> *chartHudArr = [NSMutableArray array];
-    
+
+    NSMutableArray<AccountBook *> *filteredModels = [[AccountBook getAllModelsWithConditions:conditions] mutableCopy];
+
+    NSMutableArray<AccountBook *> *chartArr = [NSMutableArray array];
+    NSMutableArray<NSMutableArray<AccountBook *> *> *chartHudArr = [NSMutableArray array];
+
     if (status == 0) { // 周
         NSDate *first = [date offsetDays:-[date weekday] + 1];
         for (int i = 0; i < 7; i++) {
             NSDate *currentDate = [first offsetDays:i];
-            BKModel *model = [[BKModel alloc] init];
+            AccountBook *model = [[AccountBook alloc] init];
             model.year = currentDate.year;
             model.month = currentDate.month;
             model.day = currentDate.day;
@@ -315,7 +315,7 @@
             [chartHudArr addObject:[NSMutableArray array]];
         }
 
-        for (BKModel *model in filteredModels) {
+        for (AccountBook *model in filteredModels) {
             NSInteger index = [model.date weekday] - 1;
             chartArr[index].price += model.price;
             [chartHudArr[index] addObject:model];
@@ -323,7 +323,7 @@
     } else if (status == 1) { // 月
         NSInteger daysInMonth = [date daysInMonth];
         for (int i = 1; i <= daysInMonth; i++) {
-            BKModel *model = [[BKModel alloc] init];
+            AccountBook *model = [[AccountBook alloc] init];
             model.year = date.year;
             model.month = date.month;
             model.day = i;
@@ -332,13 +332,13 @@
             [chartHudArr addObject:[NSMutableArray array]];
         }
 
-        for (BKModel *model in filteredModels) {
+        for (AccountBook *model in filteredModels) {
             chartArr[model.day - 1].price += model.price;
             [chartHudArr[model.day - 1] addObject:model];
         }
     } else if (status == 2) { // 年
         for (int i = 1; i <= 12; i++) {
-            BKModel *model = [[BKModel alloc] init];
+            AccountBook *model = [[AccountBook alloc] init];
             model.year = date.year;
             model.month = i;
             model.day = 1;
@@ -347,38 +347,38 @@
             [chartHudArr addObject:[NSMutableArray array]];
         }
 
-        for (BKModel *model in filteredModels) {
+        for (AccountBook *model in filteredModels) {
             chartArr[model.month - 1].price += model.price;
             [chartHudArr[model.month - 1] addObject:model];
         }
     }
 
     [chartHudArr enumerateObjectsUsingBlock:^(NSMutableArray * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        [obj sortUsingComparator:^NSComparisonResult(BKModel *obj1, BKModel *obj2) {
+        [obj sortUsingComparator:^NSComparisonResult(AccountBook *obj1, AccountBook *obj2) {
             return obj1.price < obj2.price;
         }];
     }];
-    
-    NSMutableArray<BKModel *> *groupArr = [NSMutableArray array];
-    for (BKModel *model in filteredModels) {
-        NSInteger index = [groupArr indexOfObjectPassingTest:^BOOL(BKModel * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+
+    NSMutableArray<AccountBook *> *groupArr = [NSMutableArray array];
+    for (AccountBook *model in filteredModels) {
+        NSInteger index = [groupArr indexOfObjectPassingTest:^BOOL(AccountBook * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
             return obj.category_id == model.category_id;
         }];
         if (index == NSNotFound) {
-            BKModel *submodel = [model copy];
+            AccountBook *submodel = [model copy];
             submodel.category = model.category;
             [groupArr addObject:submodel];
         } else {
             groupArr[index].price += model.price;
         }
     }
-    
-    [groupArr sortUsingComparator:^NSComparisonResult(BKModel *obj1, BKModel *obj2) {
+
+    [groupArr sortUsingComparator:^NSComparisonResult(AccountBook *obj1, AccountBook *obj2) {
         return obj1.price < obj2.price;
     }];
-    
+
     NSInteger sum = 0;
-    for (BKModel *model in chartArr) {
+    for (AccountBook *model in chartArr) {
         sum += model.price;
     }
 

@@ -6,7 +6,7 @@
 #import "BKCCollection.h"
 #import "BKCCollectionCell.h"
 #import "BKCRefreshHeader.h"
-#import "CAController.h"
+#import "CategoryController.h"
 #import "CategoryModel.h"
 #import "BOOK_EVENT.h"
 
@@ -54,7 +54,7 @@
     CategoryModel *set = [CategoryModel createSetModel];
     NSMutableArray<CategoryModel *> *list = model.list;
     [list addObject:set];
-    
+
     _model = model;
     [self reloadData];
 }
@@ -74,7 +74,7 @@
     NSInteger col = indexPath.row / ROW + 1;
     CGFloat bottomOffsetY = col * CELL_H - (self.height);
     CGFloat topOffsetY = (col - 1) * CELL_H;
-    
+
     if (self.contentOffset.y > topOffsetY || self.contentOffset.y < bottomOffsetY) {
         if (ABS(self.contentOffset.y - topOffsetY) < ABS(self.contentOffset.y - bottomOffsetY)) {
             [self setContentOffset:CGPointMake(-self.contentInset.left, topOffsetY) animated:YES];
@@ -123,7 +123,7 @@
             [self.viewController.navigationController popViewControllerAnimated:true];
         } else {
             [self.viewController.navigationController dismissViewControllerAnimated:YES completion:^{
-                
+
             }];
         }
     }

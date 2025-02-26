@@ -37,10 +37,10 @@
 
 
 #pragma mark - set
-- (void)setModel:(BKChartModel *)model {
+- (void)setModel:(BookChartModel *)model {
     _model = model;
     _chart.model = model;
-    
+
     _avgLab.text = [NSString stringWithFormat:@"平均值: %@", model.avg];
     _maxLab.text = ({
         NSString *str;

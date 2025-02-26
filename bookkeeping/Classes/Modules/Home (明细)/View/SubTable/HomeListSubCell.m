@@ -29,11 +29,11 @@
     [self.nameLab setTextColor:kColor_Text_Black];
     [self.detailLab setFont:[UIFont systemFontOfSize:AdjustFont(12) weight:UIFontWeightLight]];
     [self.detailLab setTextColor:kColor_Text_Black];
-    
+
     [self.iconConstraintL setConstant:countcoordinatesX(15)];
     [self.detailConstraintR setConstant:countcoordinatesX(15)];
-    
-    
+
+
     @weakify(self)
     MGSwipeButton *btn = [MGSwipeButton buttonWithTitle:@"删除" backgroundColor:kColor_Red_Color];
     [btn.titleLabel setFont:[UIFont systemFontOfSize:AdjustFont(14)]];
@@ -56,7 +56,7 @@
 
 
 #pragma mark - set
-- (void)setModel:(BKModel *)model {
+- (void)setModel:(AccountBook *)model {
     _model = model;
     //icon 不保存后缀 e_catering,e_catering_l,e_catering_s
     [_icon setImage:[UIImage imageNamed:[model.category getIconForSuffix:@"_l"]]];

@@ -35,7 +35,7 @@
     [self.detailLab setFont:[UIFont fontWithName:@"Helvetica Neue" size:AdjustFont(12)]];
     [self.detailLab setTextColor:kColor_Text_Black];
     [self.line setImage:[UIColor createImageWithColor:kColor_Main_Color]];
-    
+
     [self.iconConstraintL setConstant:OUT_PADDING];
     [self.iconConstraintW setConstant:ICON_W];
     [self.lineConstraintL setConstant:LINE_L];
@@ -47,12 +47,12 @@
 
 
 #pragma mark - set
-- (void)setModel:(BKModel *)model {
+- (void)setModel:(AccountBook *)model {
     _model = model;
     [_icon setImage:[UIImage imageNamed:[model.category getIconForSuffix:@"_l"]]];
     [_nameLab setText:model.category.name];
     [_detailLab setText:[MoneyConverter toRealMoney:model.price]];
-    
+
     CGFloat width = SCREEN_WIDTH - OUT_PADDING * 2 - ICON_W - LINE_L;
     width = width / _maxPrice * model.price;
     [self.lineConstraintW setConstant:width];

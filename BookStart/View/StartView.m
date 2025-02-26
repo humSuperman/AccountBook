@@ -51,10 +51,10 @@
     if (!price || price.length == 0 || [price isEqualToString:@"0"]) {
         return;
     }
-    
+
     BKCModel *cmodel = self.scroll.models[self.scroll.currentPage];
-    BKModel *model = [[BKModel alloc] init];
-    model.Id = [[BKModel getId] integerValue];
+    AccountBook *model = [[AccountBook alloc] init];
+    model.Id = [[AccountBook getId] integerValue];
     model.price = [price floatValue];
     model.year = date.year;
     model.month = date.month;
@@ -62,7 +62,7 @@
     model.mark = @"";
     model.category_id = cmodel.Id;
     model.cmodel = cmodel;
-    
+
     // 新增
     NSMutableArray *bookArr = [NSUserDefaults objectForKey:PIN_BOOK];
     NSMutableArray *bookSyncedArr = [NSUserDefaults objectForKey:PIN_BOOK_SYNCED];
@@ -70,7 +70,7 @@
     [bookSyncedArr addObject:model];
     [NSUserDefaults setObject:bookArr forKey:PIN_BOOK];
     [NSUserDefaults setObject:bookArr forKey:PIN_BOOK_SYNCED];
-    
+
     // 传递
     [super routerEventWithName:START_SEG_BOOK data:nil];
 }

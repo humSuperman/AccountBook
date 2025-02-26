@@ -28,9 +28,9 @@
 @property (nonatomic, assign) NSInteger segmentIndex;
 
 @property (nonatomic, strong) NSDate *date;
-@property (nonatomic, strong) BKChartModel *model;
-@property (nonatomic, strong) BKModel *minModel;
-@property (nonatomic, strong) BKModel *maxModel;
+@property (nonatomic, strong) BookChartModel *model;
+@property (nonatomic, strong) AccountBook *minModel;
+@property (nonatomic, strong) AccountBook *maxModel;
 
 @property (nonatomic, strong) NSDictionary<NSString *, NSInvocation *> *eventStrategy;
 
@@ -54,7 +54,7 @@
 
     [self updateDateRange];
     [self monitorNotification];
-    [self setModel:[BKChartModel statisticalChart:self.segmentIndex isIncome:self.navigationIndex cmodel:self.cmodel date:self.date]];
+    [self setModel:[BookChartModel statisticalChart:self.segmentIndex isIncome:self.navigationIndex date:self.date]];
 }
 // 监听通知
 - (void)monitorNotification {
@@ -63,21 +63,21 @@
     [[[[NSNotificationCenter defaultCenter] rac_addObserverForName:NOT_BOOK_COMPLETE object:nil] takeUntil:self.rac_willDeallocSignal] subscribeNext:^(id x) {
         @strongify(self)
         [self setDate:[NSDate date]];
-        [self setModel:[BKChartModel statisticalChart:self.segmentIndex isIncome:self.navigationIndex cmodel:self.cmodel date:self.date]];
+        [self setModel:[BookChartModel statisticalChart:self.segmentIndex isIncome:self.navigationIndex date:self.date]];
         [self updateDateRange];
     }];
     // 删除记账
     [[[[NSNotificationCenter defaultCenter] rac_addObserverForName:NOT_BOOK_DELETE object:nil] takeUntil:self.rac_willDeallocSignal] subscribeNext:^(id x) {
         @strongify(self)
         [self setDate:[NSDate date]];
-        [self setModel:[BKChartModel statisticalChart:self.segmentIndex isIncome:self.navigationIndex cmodel:self.cmodel date:self.date]];
+        [self setModel:[BookChartModel statisticalChart:self.segmentIndex isIncome:self.navigationIndex date:self.date]];
         [self updateDateRange];
     }];
     // 同步数据成功
     [[[[NSNotificationCenter defaultCenter] rac_addObserverForName:SYNCED_DATA_COMPLETE object:nil] takeUntil:self.rac_willDeallocSignal] subscribeNext:^(id x) {
         @strongify(self)
         [self setDate:[NSDate date]];
-        [self setModel:[BKChartModel statisticalChart:self.segmentIndex isIncome:self.navigationIndex cmodel:self.cmodel date:self.date]];
+        [self setModel:[BookChartModel statisticalChart:self.segmentIndex isIncome:self.navigationIndex date:self.date]];
         [self updateDateRange];
     }];
 }
@@ -85,12 +85,12 @@
 - (void)updateDateRange {
     // 收入
     NSInteger is_income = _navigationIndex == 1;
-    NSMutableArray<BKModel *> *bookArr = [NSUserDefaults objectForKey:PIN_BOOK];
+    NSMutableArray<AccountBook *> *bookArr = [NSUserDefaults objectForKey:PIN_BOOK];
     NSString *preStr = [NSString stringWithFormat:@"cmodel.is_income == %ld", is_income];
     if (_cmodel) {
         preStr = [preStr stringByAppendingString:[NSString stringWithFormat:@" AND cmodel.Id == %ld", _cmodel.cmodel.Id]];
     }
-    NSMutableArray<BKModel *> *models = [NSMutableArray kk_filteredArrayUsingPredicate:preStr array:bookArr];
+    NSMutableArray<AccountBook *> *models = [NSMutableArray kk_filteredArrayUsingPredicate:preStr array:bookArr];
     // 最小时间
     _minModel = ({
         NSDate *minDate = [models valueForKeyPath:@"@min.date"];
@@ -98,7 +98,7 @@
             preStr = [NSString stringWithFormat:@"year == %ld AND month == %02ld AND day == %02ld", minDate.year, minDate.month, minDate.day];
         }
         NSMutableArray *arr = [NSMutableArray kk_filteredArrayUsingPredicate:preStr array:models];
-        BKModel *model;
+        AccountBook *model;
         if (arr.count != 0) {
             model = arr[0];
         }
@@ -111,7 +111,7 @@
             preStr = [NSString stringWithFormat:@"year == %ld AND month == %02ld AND day == %02ld", maxDate.year, maxDate.month, maxDate.day];
         }
         NSMutableArray *arr = [NSMutableArray kk_filteredArrayUsingPredicate:preStr array:models];
-        BKModel *model;
+        AccountBook *model;
         if (arr.count != 0) {
             model = arr[0];
         }
@@ -136,7 +136,7 @@
 }
 // 点击Cell
 - (void)chartTableClick:(NSIndexPath *)indexPath {
-    BKModel *model = self.model.groupArr[indexPath.row];
+    AccountBook *model = self.model.groupArr[indexPath.row];
     if (!_cmodel) {
         ChartController *vc = [[ChartController alloc] init];
         vc.cmodel = model;
@@ -150,7 +150,7 @@
 
 
 #pragma mark - set
-- (void)setModel:(BKChartModel *)model {
+- (void)setModel:(BookChartModel *)model {
     _model = model;
     _table.model = model;
 }
@@ -197,7 +197,7 @@
                 date;
             })];
             [self setSegmentIndex:seg.selectedSegmentIndex];
-            [self setModel:[BKChartModel statisticalChart:self.segmentIndex isIncome:self.navigationIndex cmodel:self.cmodel date:self.date]];
+            [self setModel:[BookChartModel statisticalChart:self.segmentIndex isIncome:self.navigationIndex date:self.date]];
         }];
         [self.view addSubview:_seg];
     }
@@ -213,7 +213,7 @@
             NSInteger day = model.day == -1 ? 1 : model.day;
             NSString *str = [NSString stringWithFormat:@"%ld-%02ld-%02ld", model.year, month, day];
             [self setDate:[NSDate dateWithYMD:str]];
-            [self setModel:[BKChartModel statisticalChart:self.segmentIndex isIncome:self.navigationIndex cmodel:self.cmodel date:self.date]];
+            [self setModel:[BookChartModel statisticalChart:self.segmentIndex isIncome:self.navigationIndex date:self.date]];
         }];
         [self.view addSubview:_subdate];
     }
@@ -239,7 +239,7 @@
             @strongify(self)
             [self setNavigationIndex:index];
             [self updateDateRange];
-            [self setModel:[BKChartModel statisticalChart:self.segmentIndex isIncome:self.navigationIndex cmodel:self.cmodel date:self.date]];
+            [self setModel:[BookChartModel statisticalChart:self.segmentIndex isIncome:self.navigationIndex date:self.date]];
         }];
         [self.view addSubview:_chud];
     }

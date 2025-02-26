@@ -35,7 +35,7 @@
 @implementation BookChart
 
 - (void)initUI {
-    
+
 }
 
 #pragma mark - 点击
@@ -84,14 +84,14 @@
 }
 
 #pragma mark - set
-- (void)setModel:(BKChartModel *)model {
+- (void)setModel:(BookChartModel *)model {
     _model = model;
-    
+
     NSMutableArray<NSNumber *> *arrm = [NSMutableArray array];
     for (int i=0; i<model.chartArr.count; i++) {
         [arrm addObject:@(0)];
     }
-    for (BKModel *submodel in model.chartArr) {
+    for (AccountBook *submodel in model.chartArr) {
         // 周
         if (model.chartArr.count == 7) {
             NSInteger index = 7 - [submodel.date weekday];
@@ -122,14 +122,14 @@
 - (void)drawRect:(CGRect)rect {
     [kColor_White setFill];
     UIRectFill(rect);
-    
+
     // 顶部
     [self drawLine:CGPointMake(CHART_L, CHART_T) point2:CGPointMake(CHART_W + CHART_L, CHART_T) color:kColor_Text_Gary isDash:NO];
     // 底部
     [self drawLine:CGPointMake(CHART_L, CHART_T + countcoordinatesX(80)) point2:CGPointMake(CHART_W + CHART_L, CHART_T + countcoordinatesX(80)) color:kColor_Text_Black isDash:NO];
     // 内容
     [self drawTable];
-    
+
 //    if (_model.chartArr.count == 7) {
 //        [self drawWeek];
 //    }
@@ -144,33 +144,33 @@
 // 画表
 - (void)drawTable {
     [self.points removeAllObjects];
-    
+
     NSInteger count = _model.chartArr.count;
-    
-    
+
+
     NSMutableArray *lines = [[NSMutableArray alloc] init];
     CGFloat maxPrice = [_model.max floatValue];
     CGFloat avgPrice = [_model.avg floatValue];
-    
-    
+
+
     // 平均线
     CGFloat avgH = CHART_H - CHART_H / maxPrice * avgPrice;
     [self drawLine:CGPointMake(CHART_L, avgH) point2:CGPointMake(CHART_W + CHART_L, avgH) color:kColor_Text_Gary isDash:YES];
 
-    
+
     for (int i=0; i<count; i++) {
         CGFloat width = CHART_W / (count - 1);
         CGFloat left = CHART_L - CHART_POINT_W / 2 + width * i;
         CGFloat value = [self.numbers[i] floatValue];
         CGFloat valueH = value != 0 ? CHART_H / maxPrice * [self.numbers[i] floatValue] : 0;
         CGFloat top = CHART_T + countcoordinatesX(80) - CHART_POINT_W / 2 - valueH;
-        
+
         CGPoint linePoint = CGPointMake(left + CHART_POINT_W / 2, top + CHART_POINT_W / 2);
         [lines addObject:@(linePoint)];
-        
+
         CGRect pointFrame = CGRectMake(left, top, CHART_POINT_W, CHART_POINT_W);
         [self.points addObject:@(pointFrame)];
-        
+
         // 文字
         BOOL conditionWeek   = _model.chartArr.count == 7;
         BOOL conditionMonth1 = i == 0 || i == (count - 1);
@@ -187,7 +187,7 @@
                 } else {
                     str = [NSString stringWithFormat:@"%02ld-%02ld", _model.chartArr[i].month, _model.chartArr[i].day];
                 }
-                
+
             }
             // 月
             else if (_model.chartArr.count > 20) {
@@ -197,7 +197,7 @@
             else if (_model.chartArr.count == 12) {
                 str = [NSString stringWithFormat:@"%d月", i + 1];
             }
-            
+
             [self drawText:str color:kColor_Text_Black frame:({
                 CGFloat textW = [str sizeWithMaxSize:CGSizeMake(MAXFLOAT, MAXFLOAT) font:CHART_FONT].width;
                 CGFloat top = CHART_T + countcoordinatesX(80) + countcoordinatesX(5);
@@ -212,26 +212,26 @@
             })];
         }
     }
-    
+
     // 折线
     [self drawLine:kColor_Text_Gary points:lines];
     for (int i=0; i<self.numbers.count; i++) {
         CGFloat value = [self.numbers[i] floatValue];
         UIColor *color = value == 0 ? kColor_White : kColor_Main_Color;
-        
+
         NSValue *point = self.points[i];
         CGRect pointFrame = [point CGRectValue];
         [self drawArc:kColor_Text_Gary fill:color frame:pointFrame];
     }
-    
-    
-    
+
+
+
 }
 
 // 绘制线条
 - (void)drawLine:(CGPoint)point point2:(CGPoint)point2 color:(UIColor *)color isDash:(BOOL)isDash {
     CGContextRef ctx = UIGraphicsGetCurrentContext();
-    
+
     CGContextMoveToPoint(ctx, point.x, point.y);
     CGContextAddLineToPoint(ctx, point2.x, point2.y);
     [color set];
@@ -251,7 +251,7 @@
 - (void)drawText:(NSString *)text color:(UIColor *)color frame:(CGRect)frame {
     NSMutableParagraphStyle *style = [[NSMutableParagraphStyle alloc] init];
     style.alignment = NSTextAlignmentCenter;
-    
+
     NSDictionary *dict = @{NSForegroundColorAttributeName: color,
                            NSFontAttributeName: CHART_FONT,
                            NSParagraphStyleAttributeName: style
@@ -270,7 +270,7 @@
 // 绘制折现
 - (void)drawLine:(UIColor *)color points:(NSArray<NSValue *> *)arr {
     CGContextRef ctx = UIGraphicsGetCurrentContext();
-    
+
     for (int i=0; i<arr.count; i++) {
         CGPoint point = [arr[i] CGPointValue];
         if (i == 0) {
