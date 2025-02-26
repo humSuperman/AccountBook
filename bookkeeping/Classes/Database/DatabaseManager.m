@@ -91,11 +91,19 @@
         [self updateDatabaseVersion:1];
         fromVersion = 1;
     }
-
+    
     if (fromVersion < 2) {
         [self createCategoryModel];
         [self updateDatabaseVersion:2];
         fromVersion = 2;
+    }
+    
+    if (fromVersion < 3) {
+        [self createAccountTable];
+        [self accountBookAddAccountIdField];
+        [self categoryAddSortField];
+        [self updateDatabaseVersion:3];
+        fromVersion = 3;
     }
 
 }
@@ -189,4 +197,39 @@
     NSLog(@"Success to create Category table");
 }
 
+- (void) createAccountTable{
+    NSString *tableSql = @"CREATE TABLE IF NOT EXISTS `Account` (`id` INTEGER PRIMARY KEY autoincrement, `name` varchar(20) not null default '', `money_icon` varchar(10) not null default '',`status` INTEGER not null default 0,`is_default` INTEGER not null default 0,`default_exchange_rate` INTEGER not null default 0,`created_at` datetime default (datetime('now', 'localtime')),`updated_at` datetime default (datetime('now', 'localtime')))";
+
+    if (![self.db executeUpdate:tableSql]) {
+        NSLog(@"Failed to create Account table: %@", [self.db lastErrorMessage]);
+    }
+    
+    if (![self.db executeUpdate:@"INSERT INTO Account (`id`,`name`,`money_icon`,`status`,`is_default`,`default_exchange_rate`) VALUES (1,'默认账本','¥',1,1,10000);"]) {
+        NSLog(@"Failed to insert Account: %@", [self.db lastErrorMessage]);
+    }
+}
+
+- (void) accountBookAddAccountIdField{
+    if (![self.db executeUpdate:@"ALTER TABLE AccountBook ADD COLUMN `account_id` INTEGER not null default 0;"]) {
+        NSLog(@"Failed to create Account table: %@", [self.db lastErrorMessage]);
+    }
+    
+    if (![self.db executeUpdate:@"UPDATE AccountBook set `account_id`=1;"]) {
+        NSLog(@"Failed to update Account account_id: %@", [self.db lastErrorMessage]);
+    }
+
+    if (![self.db executeUpdate:@"ALTER TABLE AccountBook ADD COLUMN `exchange_rate` INTEGER not null default 0;"]) {
+        NSLog(@"Failed to create Account table: %@", [self.db lastErrorMessage]);
+    }
+    
+    if (![self.db executeUpdate:@"UPDATE AccountBook set `exchange_rate`=10000;"]) {
+        NSLog(@"Failed to update Account account_id: %@", [self.db lastErrorMessage]);
+    }
+}
+
+- (void) categoryAddSortField{
+    if (![self.db executeUpdate:@"ALTER TABLE Category ADD COLUMN `sort` INTEGER not null default 0;"]) {
+        NSLog(@"Failed to Category sort: %@", [self.db lastErrorMessage]);
+    }
+}
 @end

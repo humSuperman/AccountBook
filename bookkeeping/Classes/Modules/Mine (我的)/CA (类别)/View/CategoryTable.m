@@ -281,6 +281,7 @@ typedef NS_ENUM(NSInteger, LYFTableViewType) {
 
 #pragma mark - 拖拽结束，显示cell，并移除截图
 - (void)didEndDraging {
+    
     UITableViewCell *cell = [self cellForRowAtIndexPath:self.oldIndexPath];
     cell.hidden = NO;
     cell.alpha = 0;
@@ -349,20 +350,11 @@ typedef NS_ENUM(NSInteger, LYFTableViewType) {
 #pragma mark - 更新数据源
 - (void)updateData {
     // 通过DataSource代理获得原始数据源数组
-//    NSMutableArray *tempArray = self.datas;
     NSMutableArray *tempArray = [NSMutableArray arrayWithArray:@[_model.insert, _model.remove]];
     // 判断原始数据源是否为多重数组
     if ([self arrayCheck:tempArray]) {
         // 是嵌套数组
-        if (self.oldIndexPath.section == self.newestIndexPath.section) {
-            // 在同一个section内
-            [self moveObjectInMutableArray:tempArray[self.oldIndexPath.section] fromIndex:self.oldIndexPath.row toIndex:self.newestIndexPath.row];
-        } else {
-            // 不在同一个section内
-            id originalObj = tempArray[self.oldIndexPath.section][self.oldIndexPath.item];
-            [tempArray[self.newestIndexPath.section] insertObject:originalObj atIndex:self.newestIndexPath.item];
-            [tempArray[self.oldIndexPath.section] removeObjectAtIndex:self.oldIndexPath.item];
-        }
+        [self moveObjectInMutableArray:tempArray[self.oldIndexPath.section] fromIndex:self.oldIndexPath.row toIndex:self.newestIndexPath.row];
     } else {
         // 不是嵌套数组
         [self moveObjectInMutableArray:tempArray fromIndex:self.oldIndexPath.row toIndex:self.newestIndexPath.row];
