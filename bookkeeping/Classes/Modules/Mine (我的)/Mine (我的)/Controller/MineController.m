@@ -38,11 +38,11 @@
 #pragma mark - 请求
 // 声音
 - (void)soundChangeRequest:(NSNumber *)isOn {
-    NSDictionary *param = [NSDictionary dictionaryWithObjectsAndKeys:isOn, @"sound", nil];;
+    NSDictionary *param = [NSDictionary dictionaryWithObjectsAndKeys:isOn, @"sound", nil];
 }
 // 详情
 - (void)detailChangeRequest:(NSNumber *)isOn {
-    NSDictionary *param = [NSDictionary dictionaryWithObjectsAndKeys:isOn, @"detail", nil];;
+    NSDictionary *param = [NSDictionary dictionaryWithObjectsAndKeys:isOn, @"detail", nil];
 }
 
 
@@ -231,7 +231,6 @@
 #pragma mark - 系统
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    [self setModel:[UserInfo loadUserInfo]];
 }
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];

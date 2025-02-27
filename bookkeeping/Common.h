@@ -86,14 +86,6 @@
 #import "ScreenBlurry.h"
 
 
-//================================= Network ==================================//
-#import "NSString+API.h"
-#import "APPResult.h"
-#import "AFNManager.h"
-#import "APPViewRequest.h"
-#import "UIViewController+APPViewRequest.h"
-#import "UIView+APPViewRequest.h"
-
 
 //================================= Controller ===============================//
 #import "HomeController.h"

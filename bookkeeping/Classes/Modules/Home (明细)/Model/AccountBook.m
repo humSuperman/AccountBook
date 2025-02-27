@@ -135,7 +135,7 @@
 }
 
 + (void)saveAccountBook:(AccountBook *)model {
-    NSString *insertQuery = @"INSERT INTO AccountBook (price, year, month, day, mark, category_id, account_id, type) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    NSString *insertQuery = @"INSERT INTO AccountBook (price, year, month, day, mark, category_id, account_id, type) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
     [[DatabaseManager sharedManager].db executeUpdate:insertQuery, @(model.price), @(model.year), @(model.month), @(model.day), model.mark, @(model.category_id), @(model.account_id), @(model.type)];
 }
 
