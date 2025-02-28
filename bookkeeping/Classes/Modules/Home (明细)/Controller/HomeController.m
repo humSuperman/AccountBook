@@ -100,8 +100,20 @@
 }
 // 上拉
 - (void)homeTableUp:(id)data {
-    [self setDate:[self.date offsetMonths:1]];
-    [self setModels:[BKMonthModel statisticalMonthWithYear:_date.year month:_date.month]];
+    NSDate *currentDate = [NSDate date];
+    NSCalendar *calendar = [NSCalendar currentCalendar];
+    NSInteger currentYear = [calendar component:NSCalendarUnitYear fromDate:currentDate];
+    NSInteger currentMonth = [calendar component:NSCalendarUnitMonth fromDate:currentDate];
+
+    // 检查日期
+    if (_date.year > currentYear || (_date.year == currentYear && _date.month >= currentMonth)) {
+        // 没有更多了
+        [self showTextHUD:@"没有更多了" delay:1.f];
+        return;
+    }else{
+        [self setDate:[self.date offsetMonths:1]];
+        [self setModels:[BKMonthModel statisticalMonthWithYear:_date.year month:_date.month]];
+    }
 }
 // 删除Cell
 - (void)homeTableCellRemove:(HomeListSubCell *)cell {

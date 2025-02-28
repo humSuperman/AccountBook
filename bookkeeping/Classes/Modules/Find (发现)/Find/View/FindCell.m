@@ -1,9 +1,11 @@
 /**
  * 发现
- * @author 郑业强 2019-01-08 创建文件
+ * @author Hum 2025-02-28
  */
 
 #import "FindCell.h"
+#import "AccountBook.h"
+#import "MoneyConverter.h"
 
 #pragma mark - 声明
 @interface FindCell()
@@ -29,8 +31,10 @@
 
 
 - (void)initUI {
+    NSDate *date = [NSDate date];
     [self.billLab setFont:[UIFont systemFontOfSize:AdjustFont(12) weight:UIFontWeightLight]];
     [self.billLab setTextColor:kColor_Text_Black];
+    [self.monthLab setText:[NSString stringWithFormat:@"%ld",date.month]];
     [self.monthLab setFont:[UIFont systemFontOfSize:AdjustFont(18)]];
     [self.monthLab setTextColor:kColor_Text_Black];
     [self.monthDescLab setFont:[UIFont systemFontOfSize:AdjustFont(12) weight:UIFontWeightLight]];
@@ -45,38 +49,28 @@
     [self.moneyLab2 setAttributedText:[NSAttributedString createMath:@"00.00" integer:[UIFont systemFontOfSize:AdjustFont(14)] decimal:[UIFont systemFontOfSize:AdjustFont(12)]]];
     [self.moneyLab3 setAttributedText:[NSAttributedString createMath:@"00.00" integer:[UIFont systemFontOfSize:AdjustFont(14)] decimal:[UIFont systemFontOfSize:AdjustFont(12)]]];
     [self.line setImage:[UIColor createImageWithColor:kColor_BG]];
-
     [self.billConstraintL setConstant:countcoordinatesX(15)];
 
-
-
     // 过滤
-    NSDate *date = [NSDate date];
-    NSMutableArray<AccountBook *> *bookArr = [NSUserDefaults objectForKey:PIN_BOOK];
-    NSString *str = [NSString stringWithFormat:@"year == %ld AND month == %ld", date.year, date.month];
-    NSPredicate *pre = [NSPredicate predicateWithFormat:str];
-    bookArr = [NSMutableArray arrayWithArray:[bookArr filteredArrayUsingPredicate:pre]];
+    NSMutableDictionary *conditions = [NSMutableDictionary dictionary];
+    [conditions setObject:@(date.year) forKey:@"year ="];
+    [conditions setObject:@(date.month) forKey:@"month ="];
+    NSArray<AccountBook *> *list = [AccountBook getAllModelsWithConditions:conditions];
+    
+    NSInteger income = 0;
+    NSInteger pay = 0;
+    for (AccountBook *item in list) {
+        if(item.type == 1){
+            income += item.price;
+        }else if(item.type == 0){
+            pay += item.price;
+        }
+    }
+    [self.moneyLab1 setAttributedText:[NSAttributedString createMath:[MoneyConverter toRealMoney:income] integer:[UIFont systemFontOfSize:AdjustFont(14)] decimal:[UIFont systemFontOfSize:AdjustFont(12)]]];
 
+    [self.moneyLab2 setAttributedText:[NSAttributedString createMath:[MoneyConverter toRealMoney:pay] integer:[UIFont systemFontOfSize:AdjustFont(14)] decimal:[UIFont systemFontOfSize:AdjustFont(12)]]];
 
-//    pre = [NSPredicate predicateWithFormat:@"cmodel.is_income == 1"];
-//    NSMutableArray<AccountBook *> *arrm1 = [NSMutableArray arrayWithArray:[bookArr filteredArrayUsingPredicate:pre]];
-    NSMutableArray<AccountBook *> *arrm1 = [NSMutableArray kk_filteredArrayUsingPredicate:@"cmodel.is_income == 1" array:bookArr];
-
-    CGFloat income = [[arrm1 valueForKeyPath:@"@sum.price.floatValue"] floatValue];
-    NSString *incomeStr = [NSString stringWithFormat:@"%.2f", income];
-    [self.moneyLab1 setAttributedText:[NSAttributedString createMath:incomeStr integer:[UIFont systemFontOfSize:AdjustFont(14)] decimal:[UIFont systemFontOfSize:AdjustFont(12)]]];
-
-//    pre = [NSPredicate predicateWithFormat:@"cmodel.is_income == 0"];
-//    NSMutableArray<AccountBook *> *arrm2 = [NSMutableArray arrayWithArray:[bookArr filteredArrayUsingPredicate:pre]];
-    NSMutableArray<AccountBook *> *arrm2 = [NSMutableArray kk_filteredArrayUsingPredicate:@"cmodel.is_income == 0" array:bookArr];
-    CGFloat pay = [[arrm2 valueForKeyPath:@"@sum.price.floatValue"] floatValue];
-    NSString *payStr = [NSString stringWithFormat:@"%.2f", pay];
-    [self.moneyLab2 setAttributedText:[NSAttributedString createMath:payStr integer:[UIFont systemFontOfSize:AdjustFont(14)] decimal:[UIFont systemFontOfSize:AdjustFont(12)]]];
-
-
-    NSString *sum = [NSString stringWithFormat:@"%.2f", income - pay];
-    [self.moneyLab3 setAttributedText:[NSAttributedString createMath:sum integer:[UIFont systemFontOfSize:AdjustFont(14)] decimal:[UIFont systemFontOfSize:AdjustFont(12)]]];
-
+    [self.moneyLab3 setAttributedText:[NSAttributedString createMath:[MoneyConverter toRealMoney:(income-pay)] integer:[UIFont systemFontOfSize:AdjustFont(14)] decimal:[UIFont systemFontOfSize:AdjustFont(12)]]];
 
 }
 
