@@ -5,6 +5,7 @@
 
 #import "CategoryTable.h"
 #import "CategoryCell.h"
+#import "CategoryModel.h"
 #import "CategorySectionHeader.h"
 #import "KKRefreshGifHeader.h"
 #import "CA_EVENT.h"
@@ -27,6 +28,8 @@ typedef NS_ENUM(NSInteger, LYFTableViewType) {
 @property (nonatomic, assign) CGPoint longLocation;
 /// 对被选中的cell的截图
 @property (nonatomic, strong) UIView *snapshotView;
+/// 被选中的cell的原始位置
+@property (nonatomic, strong) NSIndexPath *startIndexPath;
 /// 被选中的cell的原始位置
 @property (nonatomic, strong) NSIndexPath *oldIndexPath;
 /// 被选中的cell的新位置
@@ -142,6 +145,7 @@ typedef NS_ENUM(NSInteger, LYFTableViewType) {
         case UIGestureRecognizerStateBegan:{
             // 手势开始，对被选中cell截图，隐藏原cell
             self.oldIndexPath = [self indexPathForRowAtPoint:self.longLocation];
+            self.startIndexPath = [self indexPathForRowAtPoint:self.longLocation];
             if (self.oldIndexPath) {
                 [self snapshotCellAtIndexPath:self.oldIndexPath];
             }
@@ -285,6 +289,7 @@ typedef NS_ENUM(NSInteger, LYFTableViewType) {
     UITableViewCell *cell = [self cellForRowAtIndexPath:self.oldIndexPath];
     cell.hidden = NO;
     cell.alpha = 0;
+    [CategoryModel updateCategorySort:self.startIndexPath.row newSort:self.newestIndexPath.row];
     [UIView animateWithDuration:0.2 animations:^{
         self.snapshotView.center = cell.center;
         self.snapshotView.alpha = 0;

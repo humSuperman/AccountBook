@@ -59,6 +59,45 @@
     [[DatabaseManager sharedManager].db executeUpdate:updateSQL,model.name,@(model.type),model.icon,@(model.status),@(model.Id)];
 }
 
+// 修改分类排序
++ (void)updateCategorySort:(NSInteger)oldSort newSort:(NSInteger)newSort {
+    if (oldSort == newSort) {
+        return;
+    }
+    NSArray<CategoryModel *> *list = [self getAllCategories:nil];
+    if (list.count == 0) {
+        NSLog(@"分类列表为空，无法更新排序");
+        return;
+    }
+    if (oldSort < 0 || oldSort >= list.count || newSort < 0 || newSort >= list.count) {
+        NSLog(@"oldSort 或 newSort 超出范围");
+        return;
+    }
+    CategoryModel *model = list[oldSort];
+    NSMutableArray<CategoryModel *> *mutableList = [list mutableCopy];
+    NSLog(@"移动的分类：%@",model.name);
+    [[DatabaseManager sharedManager].db beginTransaction];
+    @try {
+        [mutableList removeObjectAtIndex:oldSort];
+        [mutableList insertObject:model atIndex:newSort];
+        NSString *sortSQL = @"UPDATE Category SET sort = ? WHERE id = ?;";
+        for (NSInteger i = 0; i < mutableList.count; i++) {
+            CategoryModel *category = mutableList[i];
+            if(category.sort == i){
+                continue;
+            }
+            [[DatabaseManager sharedManager].db executeUpdate:sortSQL, @(i), @(category.Id)];
+        }
+        [[DatabaseManager sharedManager].db commit];
+        NSLog(@"排序更新成功！");
+    }
+    @catch (NSException *exception) {
+        // 如果发生异常，回滚事务
+        [[DatabaseManager sharedManager].db rollback];
+        NSLog(@"发生错误，回滚事务：%@", exception.reason);
+    }
+}
+
 // 获取所有分类
 + (NSArray<CategoryModel *> *)getAllCategories:(NSDictionary<NSString *,id> *)conditions {
     NSMutableString *selectQuery = [NSMutableString stringWithString:@"SELECT * FROM Category WHERE status = 0"];
@@ -71,6 +110,8 @@
             i++;
         }];
     }
+    
+    [selectQuery appendString:@" ORDER BY sort asc"];
     // 获取查询结果
     FMResultSet *results = [[DatabaseManager sharedManager].db executeQuery:selectQuery withArgumentsInArray:arguments];
     NSMutableArray *categories = [NSMutableArray array];
