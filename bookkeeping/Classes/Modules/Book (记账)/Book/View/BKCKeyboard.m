@@ -259,8 +259,8 @@
     if (btn.tag == DATE_TAG) {
         @weakify(self)
         NSDate *date = [NSDate date];
-        NSDate *min = [NSDate br_setYear:2000 month:1 day:1];
-        NSDate *max = [NSDate br_setYear:date.year + 3 month:12 day:31];
+        NSDate *min = [NSDate br_setYear:2010 month:1 day:1];
+        NSDate *max = [NSDate br_setYear:date.year month:12 day:31];
         [BRDatePickerView showDatePickerWithTitle:@"选择日期" dateType:BRDatePickerModeYMD defaultSelValue:[self.currentDate formatYMD] minDate:min maxDate:max isAutoSelect:false themeColor:nil resultBlock:^(NSString *selectValue) {
             @strongify(self)
             [self setCurrentDate:({
