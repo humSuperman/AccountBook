@@ -20,6 +20,35 @@
     nav.jz_navigationBarTransitionStyle = JZNavigationBarTransitionStyleSystem;
     return nav;
 }
+
+- (void)viewDidLayoutSubviews {
+    
+    // 顶部标题栏及按钮被遮盖的bug
+    [super viewDidLayoutSubviews];
+    UINavigationBar *navigationBar = self.navigationBar;
+    if (!navigationBar) {
+        return;
+    }
+    
+    UIView *navigationBarContentView = nil;
+    for (UIView *subview in navigationBar.subviews) {
+        if ([NSStringFromClass([subview class]) isEqualToString:@"_UINavigationBarContentView"]) {
+            navigationBarContentView = subview;
+            break;
+        }
+    }
+        
+    if (navigationBarContentView) {
+        for (UIView *subview in navigationBar.subviews) {
+            if ([subview isKindOfClass:[UIView class]]) {
+                [navigationBarContentView setBackgroundColor:kColor_Main_Color];
+                subview.frame = CGRectMake(0, 0, 0, 0);
+                [navigationBar insertSubview:subview belowSubview:navigationBarContentView];
+            }
+        }
+    }
+}
+
 - (void)pushViewController:(UIViewController *)viewController animated:(BOOL)animated {
     BaseViewController *vc = (BaseViewController *)viewController;
     if (self.viewControllers.count == 1) {

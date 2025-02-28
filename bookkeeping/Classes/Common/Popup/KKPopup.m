@@ -48,14 +48,14 @@ static NSString *_clsName;
 #pragma mark - action
 - (void)show {
     [self show:^{
-        
+
     }];
 }
 - (void)show:(void (^)(void))complete {
     if (_status == KKPopupStatusBottom) {
         _contentv.alpha = 0;
         _contentv.top = SCREEN_HEIGHT - self.contentv.height;
-        
+
         __weak typeof(self) weak = self;
         POPBasicAnimation *scaleAnimation = [POPBasicAnimation animationWithPropertyNamed:kPOPLayerTranslationY];
         scaleAnimation.fromValue = @(self.contentv.height);
@@ -66,15 +66,15 @@ static NSString *_clsName;
             weak.contentv.alpha = 1;
         }];
         [self.contentv.layer pop_addAnimation:scaleAnimation forKey:@"scaleAnimation"];
-        
-        
+
+
         POPBasicAnimation *alphaAnimation = [POPBasicAnimation animationWithPropertyNamed:kPOPViewAlpha];
         alphaAnimation.toValue  = @(1);
         alphaAnimation.beginTime = CACurrentMediaTime();
         alphaAnimation.duration = 0.2f;
         [self.shadow pop_addAnimation:alphaAnimation forKey:@"alphaAnimation"];
-        
-        
+
+
         [alphaAnimation setCompletionBlock:^(POPAnimation *anim, BOOL finished) {
             self.userInteractionEnabled = YES;
             if (complete) {
@@ -85,23 +85,23 @@ static NSString *_clsName;
     else if (_status == KKPopupStatusCenter) {
         _contentv.alpha = 0;
         _contentv.center = CGPointMake(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2);
-        
+
         POPBasicAnimation *scaleAnimation = [POPBasicAnimation animationWithPropertyNamed:kPOPLayerScaleXY];
         scaleAnimation.fromValue = [NSValue valueWithCGSize:CGSizeMake(0.2, 0.2f)];
         scaleAnimation.toValue  = [NSValue valueWithCGSize:CGSizeMake(1.0f, 1.0f)];
         scaleAnimation.beginTime = CACurrentMediaTime();
         scaleAnimation.duration = 0.2f;
         [self.contentv.layer pop_addAnimation:scaleAnimation forKey:@"scaleAnimation"];
-        
-        
+
+
         POPBasicAnimation *alphaAnimation = [POPBasicAnimation animationWithPropertyNamed:kPOPViewAlpha];
         alphaAnimation.toValue  = @(1);
         alphaAnimation.beginTime = CACurrentMediaTime();
         alphaAnimation.duration = 0.2f;
         [self.contentv pop_addAnimation:alphaAnimation forKey:@"alphaAnimation"];
         [self.shadow pop_addAnimation:alphaAnimation forKey:@"alphaAnimation"];
-        
-        
+
+
         [alphaAnimation setCompletionBlock:^(POPAnimation *anim, BOOL finished) {
             self.userInteractionEnabled = YES;
             if (complete) {
@@ -112,7 +112,7 @@ static NSString *_clsName;
     else if (_status == KKPopupStatusTop) {
         _contentv.alpha = 0;
         _contentv.top = 0;
-        
+
         __weak typeof(self) weak = self;
         POPBasicAnimation *scaleAnimation = [POPBasicAnimation animationWithPropertyNamed:kPOPLayerTranslationY];
         scaleAnimation.fromValue = @(-self.contentv.height);
@@ -123,13 +123,13 @@ static NSString *_clsName;
             weak.contentv.alpha = 1;
         }];
         [self.contentv.layer pop_addAnimation:scaleAnimation forKey:@"scaleAnimation"];
-        
+
         POPBasicAnimation *alphaAnimation = [POPBasicAnimation animationWithPropertyNamed:kPOPViewAlpha];
         alphaAnimation.toValue  = @(1);
         alphaAnimation.beginTime = CACurrentMediaTime();
         alphaAnimation.duration = 0.2f;
         [self.shadow pop_addAnimation:alphaAnimation forKey:@"alphaAnimation"];
-        
+
         [alphaAnimation setCompletionBlock:^(POPAnimation *anim, BOOL finished) {
             self.userInteractionEnabled = YES;
             if (complete) {
@@ -140,7 +140,7 @@ static NSString *_clsName;
 }
 - (void)hide {
     [self hide:^{
-        
+
     }];
 }
 - (void)hide:(void (^)(void))complete {
@@ -151,14 +151,14 @@ static NSString *_clsName;
         scaleAnimation.springBounciness = 8.f;
         scaleAnimation.springSpeed = 6;
         [self.contentv.layer pop_addAnimation:scaleAnimation forKey:@"scaleAnimation"];
-        
+
         POPBasicAnimation *alphaAnimation = [POPBasicAnimation animationWithPropertyNamed:kPOPViewAlpha];
         alphaAnimation.toValue  = @(0);
         alphaAnimation.beginTime = CACurrentMediaTime();
         alphaAnimation.duration = 0.2f;
         [self.shadow pop_addAnimation:alphaAnimation forKey:@"alphaAnimation"];
-        
-        
+
+
         [alphaAnimation setCompletionBlock:^(POPAnimation *anim, BOOL finished) {
             [self removeFromSuperview];
             if (complete) {
@@ -174,14 +174,14 @@ static NSString *_clsName;
         scaleAnimation.springBounciness = 8.f;
         scaleAnimation.springSpeed = 3;
         [self.contentv.layer pop_addAnimation:scaleAnimation forKey:@"scaleAnimation"];
-        
+
         POPBasicAnimation *alphaAnimation = [POPBasicAnimation animationWithPropertyNamed:kPOPViewAlpha];
         alphaAnimation.toValue  = @(0);
         alphaAnimation.beginTime = CACurrentMediaTime();
         alphaAnimation.duration = 0.2f;
         [self.contentv pop_addAnimation:alphaAnimation forKey:@"alphaAnimation"];
         [self.shadow pop_addAnimation:alphaAnimation forKey:@"alphaAnimation"];
-        
+
         [alphaAnimation setCompletionBlock:^(POPAnimation *anim, BOOL finished) {
             [self removeFromSuperview];
             if (complete) {
@@ -190,19 +190,19 @@ static NSString *_clsName;
         }];
     }
     else if (_status == KKPopupStatusTop) {
-        
+
         POPBasicAnimation *scaleAnimation = [POPBasicAnimation animationWithPropertyNamed:kPOPLayerTranslationY];
         scaleAnimation.toValue = @(-self.contentv.height);
         scaleAnimation.beginTime = CACurrentMediaTime();
         scaleAnimation.duration = 0.2f;
         [self.contentv.layer pop_addAnimation:scaleAnimation forKey:@"scaleAnimation"];
-        
+
         POPBasicAnimation *alphaAnimation = [POPBasicAnimation animationWithPropertyNamed:kPOPViewAlpha];
         alphaAnimation.toValue  = @(0);
         alphaAnimation.beginTime = CACurrentMediaTime();
         alphaAnimation.duration = 0.2f;
         [self.shadow pop_addAnimation:alphaAnimation forKey:@"alphaAnimation"];
-        
+
         [alphaAnimation setCompletionBlock:^(POPAnimation *anim, BOOL finished) {
             [self removeFromSuperview];
             if (complete) {
