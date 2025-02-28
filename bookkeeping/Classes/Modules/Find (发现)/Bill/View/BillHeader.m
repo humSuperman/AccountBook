@@ -4,6 +4,7 @@
  */
 
 #import "BillHeader.h"
+#import "MoneyConverter.h"
 
 #pragma mark - 声明
 @interface BillHeader()
@@ -52,20 +53,16 @@
 
 
 #pragma mark - set
-- (void)setIncome:(CGFloat)income {
+// todo 这里有bug
+- (void)setIncome:(NSInteger )income {
     _income = income;
-    NSString *incomeStr = [NSString stringWithFormat:@"%.2f", income];
-    [self.money2Lab setAttributedText:[NSAttributedString createMath:incomeStr integer:[UIFont systemFontOfSize:AdjustFont(14) weight:UIFontWeightLight] decimal:[UIFont systemFontOfSize:AdjustFont(10) weight:UIFontWeightLight]]];
-    
-    NSString *money = [NSString stringWithFormat:@"%.2f", income - _pay];
-    [self.money1Lab setAttributedText:[NSAttributedString createMath:money integer:[UIFont systemFontOfSize:AdjustFont(30) weight:UIFontWeightLight] decimal:[UIFont systemFontOfSize:AdjustFont(26) weight:UIFontWeightLight]]];
+    self.money2Lab.text = [MoneyConverter toRealMoney:income];
+    self.money1Lab.text = [MoneyConverter toRealMoney:(income-_pay)];
 }
-- (void)setPay:(CGFloat)pay {
+- (void)setPay:(NSInteger )pay {
     _pay = pay;
-    NSString *payStr = [NSString stringWithFormat:@"%.2f", pay];
-    [self.money3Lab setAttributedText:[NSAttributedString createMath:payStr integer:[UIFont systemFontOfSize:AdjustFont(14) weight:UIFontWeightLight] decimal:[UIFont systemFontOfSize:AdjustFont(10) weight:UIFontWeightLight]]];
-    NSString *money = [NSString stringWithFormat:@"%.2f", _income - pay];
-    [self.money1Lab setAttributedText:[NSAttributedString createMath:money integer:[UIFont systemFontOfSize:AdjustFont(30) weight:UIFontWeightLight] decimal:[UIFont systemFontOfSize:AdjustFont(26) weight:UIFontWeightLight]]];
+    self.money3Lab.text = [MoneyConverter toRealMoney:pay];
+    self.money1Lab.text = [MoneyConverter toRealMoney:(_income-pay)];
 }
 
 

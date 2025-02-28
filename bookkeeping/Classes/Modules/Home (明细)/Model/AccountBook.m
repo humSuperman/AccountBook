@@ -134,6 +134,36 @@
     return models;
 }
 
++ (NSInteger)sumPriceWithConditions:(NSDictionary<NSString *,id> *)conditions {
+    // 构建 SQL 查询语句
+    NSMutableString *selectQuery = [NSMutableString stringWithString:@"SELECT SUM(price) FROM AccountBook"];
+    NSMutableArray *arguments = [NSMutableArray array];
+
+    if (conditions.count > 0) {
+        [selectQuery appendString:@" WHERE "];
+        __block int i = 0;
+        [conditions enumerateKeysAndObjectsUsingBlock:^(NSString * _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
+            if (i > 0) {
+                [selectQuery appendString:@" AND "];
+            }
+            [selectQuery appendFormat:@"%@ ?", key];
+            [arguments addObject:obj];
+            i++;
+        }];
+    }
+
+    // 执行查询
+    FMResultSet *results = [[DatabaseManager sharedManager].db executeQuery:selectQuery withArgumentsInArray:arguments];
+    NSInteger sum = 0;
+    if ([results next]) {
+        sum = [results intForColumnIndex:0];
+    }
+    [results close];
+
+    return sum;
+}
+
+
 + (void)saveAccountBook:(AccountBook *)model {
     NSString *insertQuery = @"INSERT INTO AccountBook (price, year, month, day, mark, category_id, account_id, type) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
     [[DatabaseManager sharedManager].db executeUpdate:insertQuery, @(model.price), @(model.year), @(model.month), @(model.day), model.mark, @(model.category_id), @(model.account_id), @(model.type)];

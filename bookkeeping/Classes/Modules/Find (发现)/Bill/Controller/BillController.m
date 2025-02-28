@@ -1,10 +1,12 @@
 /**
  * 账单
- * @author 郑业强 2019-01-09 创建文件
+ * @author Hum  2025-02-28
  */
 
 #import "BillController.h"
 #import "BillTable.h"
+#import "AccountBook.h"
+#import "MoneyConverter.h"
 
 #pragma mark - 声明
 @interface BillController()
@@ -33,7 +35,12 @@
         image;
     })];
     [self.rightButton addSubview:({
-        UILabel *lab = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 50, 44)];
+        UILabel *lab = nil;
+        if(@available(iOS 11.0, *)){
+            lab = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 65.54, 44)];
+        }else{
+            lab = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 55, 44)];
+        }
         lab.text = @"2019年";
         lab.font = [UIFont systemFontOfSize:AdjustFont(14)];
         lab.textColor = kColor_Text_Black;
@@ -43,7 +50,7 @@
     })];
     [self table];
     dispatch_async(dispatch_get_main_queue(), ^{
-       [self changeVlaue:[@(self.date.year) description]];
+       [self changeVlaue:[@(self.date.year) stringValue]];
     });
 }
 
@@ -51,64 +58,52 @@
 - (void)rightButtonClick {
     @weakify(self)
     NSDate *date = [NSDate date];
-    NSDate *min = [NSDate br_setYear:2000 month:1 day:1];
-    NSDate *max = [NSDate br_setYear:date.year + 3 month:12 day:31];
-    [BRDatePickerView showDatePickerWithTitle:@"选择日期" dateType:BRDatePickerModeY defaultSelValue:[@(self.date.year) description] minDate:min maxDate:max isAutoSelect:false themeColor:nil resultBlock:^(NSString *selectValue) {
+    NSDate *min = [NSDate br_setYear:2010 month:1 day:1];
+    NSDate *max = [NSDate br_setYear:date.year month:date.month day:31];
+    [BRDatePickerView showDatePickerWithTitle:@"选择日期" dateType:BRDatePickerModeY defaultSelValue:[@(self.date.year) description] minDate:min maxDate:max isAutoSelect:false themeColor:nil resultBlock:^(NSString *selectYear) {
         @strongify(self)
-        [self changeVlaue:selectValue];
+        [self changeVlaue:selectYear];
     }];
 }
 
 
-- (void)changeVlaue:(NSString *)selectValue {
-    [self setDate:[NSDate dateWithYMD:[NSString stringWithFormat:@"%@-01-01", selectValue]]];
+- (void)changeVlaue:(NSString *)selectYear {
+    
+    [self setDate:[NSDate dateWithYMD:[NSString stringWithFormat:@"%@-01-01", selectYear]]];
     [(UILabel *)[self.rightButton viewWithTag:10] setText:[NSString stringWithFormat:@"%ld年", self.date.year]];
-
     // 过滤
-    NSMutableArray<AccountBook *> *bookArr = [NSUserDefaults objectForKey:PIN_BOOK];
-    NSString *str = [NSString stringWithFormat:@"year == %@", selectValue];
-//    NSPredicate *pre = [NSPredicate predicateWithFormat:str];
-//    bookArr = [NSMutableArray arrayWithArray:[bookArr filteredArrayUsingPredicate:pre]];
-    bookArr = [NSMutableArray kk_filteredArrayUsingPredicate:str array:bookArr];
-
-
-    str = [NSString stringWithFormat:@"cmodel.is_income == 1"];
-//    pre = [NSPredicate predicateWithFormat:str];
-//    NSMutableArray<AccountBook *> *arrm1 = [NSMutableArray arrayWithArray:[bookArr filteredArrayUsingPredicate:pre]];
-    NSMutableArray<AccountBook *> *arrm1 = [NSMutableArray kk_filteredArrayUsingPredicate:str array:bookArr];
-
-    str = [NSString stringWithFormat:@"cmodel.is_income == 0"];
-//    pre = [NSPredicate predicateWithFormat:str];
-//    NSMutableArray<AccountBook *> *arrm2 = [NSMutableArray arrayWithArray:[bookArr filteredArrayUsingPredicate:pre]];
-    NSMutableArray<AccountBook *> *arrm2 = [NSMutableArray kk_filteredArrayUsingPredicate:str array:bookArr];
-
-
-
-
-
-    [self.table setIncome:[[arrm1 valueForKeyPath:@"@sum.price.floatValue"] floatValue]];
-    [self.table setPay:[[arrm2 valueForKeyPath:@"@sum.price.floatValue"] floatValue]];
-
-
+    NSMutableDictionary *incomeConditions = [NSMutableDictionary dictionary];
+    [incomeConditions setObject:selectYear forKey:@"year ="];
+    [incomeConditions setObject:@(1) forKey:@"type ="];
+    NSInteger incomeAmount = [AccountBook sumPriceWithConditions:incomeConditions];
+    
+    NSMutableDictionary *payConditions = [NSMutableDictionary dictionary];
+    [payConditions setObject:selectYear forKey:@"year ="];
+    [payConditions setObject:@(0) forKey:@"type ="];
+    
+    NSInteger payAmount = [AccountBook sumPriceWithConditions:payConditions];
+    
+    [self.table setIncome:incomeAmount];
+    [self.table setPay:payAmount];
+    
     NSMutableArray *arrm = [NSMutableArray array];
     for (NSInteger i=1; i<=12; i++) {
-        NSString *str1 = [NSString stringWithFormat:@"month == %ld AND cmodel.is_income == 1", i];
-//        NSPredicate *pre = [NSPredicate predicateWithFormat:str1];
-//        NSMutableArray<AccountBook *> *incomeModels = [NSMutableArray arrayWithArray:[bookArr filteredArrayUsingPredicate:pre]];
-        NSMutableArray<AccountBook *> *incomeModels = [NSMutableArray kk_filteredArrayUsingPredicate:str1 array:bookArr];
-
-        NSString *str2 = [NSString stringWithFormat:@"month == %ld AND cmodel.is_income == 0", i];
-//        pre = [NSPredicate predicateWithFormat:str2];
-//        NSMutableArray<AccountBook *> *payModels = [NSMutableArray arrayWithArray:[bookArr filteredArrayUsingPredicate:pre]];
-        NSMutableArray<AccountBook *> *payModels = [NSMutableArray kk_filteredArrayUsingPredicate:str2 array:bookArr];
-
-
-        CGFloat income = [[incomeModels valueForKeyPath:@"@sum.price.floatValue"] floatValue];
-        CGFloat pay = [[payModels valueForKeyPath:@"@sum.price.floatValue"] floatValue];
+        NSMutableDictionary *monthIncomeConditions = [NSMutableDictionary dictionary];
+        [monthIncomeConditions setObject:selectYear forKey:@"year ="];
+        [monthIncomeConditions setObject:@(i) forKey:@"month ="];
+        [monthIncomeConditions setObject:@(1) forKey:@"type ="];
+        NSInteger income = [AccountBook sumPriceWithConditions:monthIncomeConditions];
+        
+        NSMutableDictionary *monthPayConditions = [NSMutableDictionary dictionary];
+        [monthPayConditions setObject:selectYear forKey:@"year ="];
+        [monthPayConditions setObject:@(i) forKey:@"month ="];
+        [monthPayConditions setObject:@(0) forKey:@"type ="];
+        NSInteger pay = [AccountBook sumPriceWithConditions:monthPayConditions];
+        
         NSDictionary *param = @{@"month": [NSString stringWithFormat:@"%ld月", i],
-                                @"income": [NSString stringWithFormat:@"%.2f", income],
-                                @"pay": [NSString stringWithFormat:@"%.2f", pay],
-                                @"sum": [NSString stringWithFormat:@"%.2f", income - pay]
+                                @"income":[MoneyConverter toRealMoney:income],
+                                @"pay": [MoneyConverter toRealMoney:pay],
+                                @"sum": [MoneyConverter toRealMoney:(income-pay)]
                                 };
         [arrm addObject:param];
     }

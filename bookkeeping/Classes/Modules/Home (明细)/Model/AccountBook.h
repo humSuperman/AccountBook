@@ -37,6 +37,7 @@ NS_ASSUME_NONNULL_BEGIN
 + (void)saveAccountBook:(AccountBook *)model;
 + (NSArray<AccountBook *> *)getAllModels;
 + (NSArray<AccountBook *> *)getAllModelsWithConditions:(NSDictionary<NSString *,id> *)conditions;
++ (NSInteger)sumPriceWithConditions:(NSDictionary<NSString *,id> *)conditions;
 + (void)updateAccountBook:(AccountBook *)model;
 + (AccountBook *)getAccountById:(NSInteger)modelId;
 + (void)deleteAccountById:(NSInteger)modelId;
