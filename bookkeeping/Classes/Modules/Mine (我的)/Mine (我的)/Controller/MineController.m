@@ -125,28 +125,39 @@
 - (void)shareFile {
     NSString *documentDirectory = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject];
     NSString *filePath = [documentDirectory stringByAppendingPathComponent:@"bookkeeping.db"];
-    NSURL *fileURL = [NSURL fileURLWithPath:filePath];
 
     if (![[NSFileManager defaultManager] fileExistsAtPath:filePath]) {
-        [self showTextHUD:@"文件未找到" delay:1.5f];
+        [self showTextHUD:@"数据库未找到" delay:1.5f];
         return;
     }
-    UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:@[fileURL] applicationActivities:nil];
+
+    NSURL *fileURL = [NSURL fileURLWithPath:filePath];
+
+    NSString *tmpPath = [NSTemporaryDirectory() stringByAppendingPathComponent:@"bookkeeping.db"];
+    NSError *copyError;
+    [[NSFileManager defaultManager] copyItemAtPath:filePath toPath:tmpPath error:&copyError];
+    if (copyError) {
+        NSLog(@"数据库复制失败: %@", copyError.localizedDescription);
+        [self showTextHUD:@"数据库复制失败" delay:1.5f];
+        return;
+    }
+
+    NSURL *tmpFileURL = [NSURL fileURLWithPath:tmpPath];
+
+    UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:@[tmpFileURL] applicationActivities:nil];
 
     activityVC.excludedActivityTypes = @[UIActivityTypePostToTwitter, UIActivityTypePostToFacebook];
 
-    if (@available(iOS 10.0, *)) {
+    dispatch_async(dispatch_get_main_queue(), ^{
         [self presentViewController:activityVC animated:YES completion:nil];
-    } else {
-        [self presentViewController:activityVC animated:YES completion:nil];
-    }
+    });
 
     [activityVC setCompletionWithItemsHandler:^(UIActivityType  _Nullable activityType, BOOL completed, NSArray  * _Nullable returnedItems, NSError  * _Nullable activityError) {
         [self leftButtonClick];
         if (completed) {
-            [self showTextHUD:@"文件导出成功" delay:1.5f];
+            [self showTextHUD:@"数据库导出成功" delay:1.5f];
         } else {
-            [self showTextHUD:@"文件导出失败" delay:1.5f];
+            [self showTextHUD:@"数据库导出失败" delay:1.5f];
         }
     }];
 }

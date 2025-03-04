@@ -276,7 +276,7 @@
     // 将字典中的所有值转换为数组，并按照日期进行排序
     NSMutableArray<BKMonthModel *> *arrm = [NSMutableArray arrayWithArray:[dictm allValues]];
     [arrm sortUsingComparator:^NSComparisonResult(BKMonthModel *obj1, BKMonthModel *obj2) {
-        return [obj1.dateStr compare:obj2.dateStr];
+        return [obj2.dateStr compare:obj1.dateStr];
     }];
 
     return arrm;
